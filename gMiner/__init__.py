@@ -15,7 +15,7 @@ __version__ = gm_project_version
 try:
     gm_constants.gm_path = __path__[0]
 except NameError:
-    gm_constants.gm_path = False
+    gm_constants.gm_path = 'gMiner'
 
 
 ###########################################################################   

@@ -99,9 +99,9 @@ class gmSubtrack(object):
     def __iter__(self):
         if self.selection['type'] == 'chr':
             yield self.track.get_data_qual(self.selection, self.fields)
-        if self.selection['type'] == 'all':
+        elif self.selection['type'] == 'all':
             for chr in self.track.chrs: yield self.track.get_data_qual({'type': 'chr', 'chr': chr}, self.fields)
-        if self.selection['type'] == 'region': 
+        elif self.selection['type'] == 'region': 
             for span in self.selection['region']: yield self.track.get_data_qual({'type': 'span', 'span': span}, self.fields)
 
     def cleanup(self):

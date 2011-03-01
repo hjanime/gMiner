@@ -75,9 +75,7 @@ def parse_chrlist(request):
         request['wanted_chromosomes'] = [c for c in request['wanted_chromosomes'].split(';')]
 
 def default_if_none(dict, key, default=False):
-    if dict.has_key(key):
-        if dict[key] != '': return 0
-    dict[key] = default
+    if not (dict.has_key(key) and dict[key] != ''): dict[key] = default
 
 def convert_to_bool(dict, key):
     dict[key] = dict[key] in [True, 'True', 'true', '1', 'y', 'yes', 'on']
