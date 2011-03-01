@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Send a request to gMiner</title>
+<style type="text/css">
+<!--
+#send_post_btn{
+    width: 300px;
+    height: 100px;
+    background: lightblue;
+    border-style: solid;
+    text-align: center;
+}
+#response_data{
+    background: white;
+}
+-->
+</style>
+<script language="JavaScript">
+    function send_post() {
+        var xhr = getXMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 ) {
+                process_response(xhr.responseText);
+            }
+        };
+        xhr.open("POST", "http://www.example.com/gMiner/", true);
+        var request = (<r><![CDATA[
+
+
+
+
+[gMiner]
+version=0.1.5
+selected_regions=
+track1=/scratch/tracks/qual/sql/ribosome_genesis.sql
+track1_name="Fake client track one"
+track1=/scratch/tracks/qual/sql/ribosome_proteins.sql
+track2_name="Fake client track two"
+operation_type=desc_stat
+characteristic=number_of_features
+per_chromosome=True
+compare_parents=False
+
+
+
+
+        ]]></r>).toString();
+        xhr.send(request);
+    }
+    function getXMLHttpRequest() {
+        var xhr = null;
+        if (window.XMLHttpRequest || window.ActiveXObject) {
+            if (window.ActiveXObject) {
+                try {
+                    xhr = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch(e) {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            } else {
+                xhr = new XMLHttpRequest(); 
+            }
+        } else {
+            alert("Your browser must be too old");
+            return null;
+        }
+        return xhr;
+    }
+    function process_response(data) {
+        var myimg = document.createElement("IMG");
+        myimg.src = 'data:image/png;base64,' + data;
+        var myDiv = document.getElementById('response_data');
+        myDiv.appendChild(myimg);
+    }
+</script>
+</head>
+<body>
+    <div id="send_post_btn" onclick="send_post();">
+    <p>Click in this blue rectangle to send a POST request to gMiner</p>
+    </div>
+    <br>
+    <div id="response_data">
+    </div>
+</body>
+</html>
+
