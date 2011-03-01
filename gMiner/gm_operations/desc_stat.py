@@ -24,10 +24,6 @@ def list_options():
 
 ###########################################################################   
 class gmOperation(object):
-    '''
-    Examples of variable contents:
-    '''
-
     def __init__(self, request, tracks):
         self.type = 'desc_stat'
         self.request = request

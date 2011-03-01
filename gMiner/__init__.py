@@ -8,6 +8,9 @@ from . import gm_operations as op
 from . import gm_constants
 from gm_constants import *
 
+# Current version #
+__version__ = gm_project_version
+
 # Current path #
 try:
     gm_constants.gm_path = __path__[0]
