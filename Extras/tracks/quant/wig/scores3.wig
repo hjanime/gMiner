@@ -1,0 +1,4 @@
+customStep chrom=chr1
+20	50	20
+50	80	300
+120	130	0
