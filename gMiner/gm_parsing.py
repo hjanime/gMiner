@@ -12,11 +12,11 @@ def parse_request(request_file):
     try:
         config.readfp(request_file)
     except ConfigParser.MissingSectionHeaderError as err:
-        raise gm_err.gmError(400, "The request file does not seam to be valid. It does not start with a proper header.", err)
+        raise gm_err.gmError(400, "The request file does not seem to be valid. It does not start with a proper header.", err)
 
     # Check for prog name #
     if not config.has_section(gm_project_name):
-        raise gm_err.gmError(400, "The request file does not seam to be valid. It does not start with [" + gm_project_name + "].")
+        raise gm_err.gmError(400, "The request file does not seem to be valid. It does not start with [" + gm_project_name + "].")
     
     # Check for version number #
     for i, num in enumerate(config.get(gm_project_name, "version").split('.')):
@@ -89,14 +89,14 @@ def exists_in_dict(dict, key):
 
 def assert_is_type(var, type, name):
     if not isinstance(var, type):
-        raise gm_err.gmError(400, "The '" + name + "' variable does not seam to be of type '" + type.__name__ + "'.") 
+        raise gm_err.gmError(400, "The '" + name + "' variable does not seem to be of type '" + type.__name__ + "'.") 
 
 def assert_has_method(object, attribute):
     if not hasattr(object, attribute):
-        raise gm_err.gmError(400, "The '" + object.__name__ + "' object does not seam to have '" + attribute + "'.")
+        raise gm_err.gmError(400, "The '" + object.__name__ + "' object does not seem to have '" + attribute + "'.")
 
 def assert_is_among(var, list, name):
     if var not in list:
-        raise gm_err.gmError(400, "The '" + name + "' variable does not seam to be any of the following possibilites: " + str(list) + ".")
+        raise gm_err.gmError(400, "The '" + name + "' variable does not seem to be any of the following possibilites: " + str(list) + ".")
         
 

@@ -36,7 +36,7 @@ class gmOperation(object):
     def prepare(self):
         # characteristic #
         if not gm_par.exists_in_dict(self.request, 'characteristic'):
-            raise gm_err.gmError(400, "There does not seam to be a characteristic specified in the request")
+            raise gm_err.gmError(400, "There does not seem to be a characteristic specified in the request")
         gm_par.assert_has_method(gmCharacteristic, self.request['characteristic'])
         # per_chromosome #
         gm_par.default_if_none(self.request, 'per_chromosome')

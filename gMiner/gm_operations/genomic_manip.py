@@ -21,7 +21,7 @@ class gmOperation(object):
     def prepare(self):
         # Manipulation specified #
         if not gm_par.exists_in_dict(self.request, 'manipulation'):
-            raise gm_err.gmError(400, "There does not seam to be a manipulation specified in the request")
+            raise gm_err.gmError(400, "There does not seem to be a manipulation specified in the request")
         # Manipulation exists #        
         gm_par.assert_has_method(gmManipulation, self.request['manipulation'])
         self.mani_fn = getattr(gmManipulation, self.request['manipulation'])
@@ -30,7 +30,7 @@ class gmOperation(object):
             raise gm_err.gmError(400, "The number of tracks inputed does not suit the manipulation requested")
         # Output specified #
         if not gm_par.exists_in_dict(self.request, 'output_location'):
-            raise gm_err.gmError(400, "There does not seam to be an output location specified in the request")
+            raise gm_err.gmError(400, "There does not seem to be an output location specified in the request")
         # Determine chromosomes #
         self.chrs = self.mani_fn.chr_fn([track.chrs for track in self.tracks])
         # Determine chr metadata #

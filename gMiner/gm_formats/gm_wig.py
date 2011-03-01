@@ -82,7 +82,7 @@ class gmFormat(gm_tra.gmTrack):
         # Check #
         for feature in all_features:
             if feature['start'] >= feature['end']:
-                raise gm_err.ParsingError("400", "The wig track " + self.name + " seams to contain negative or null intervals")
+                raise gm_err.ParsingError("400", "The wig track " + self.name + " seems to contain negative or null intervals")
 
         # Store #
         self.all_chrs = list(set([feature['chr'] for feature in all_features]))

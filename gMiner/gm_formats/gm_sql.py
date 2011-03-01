@@ -36,7 +36,7 @@ class gmFormat(gm_tra.gmTrack):
             # General Attributes #
             self.get_meta_data()
         except sqlite3.OperationalError as err:
-            raise gm_err.gmError("400", "The sql track " + self.name + " doesn't seam to have the correct format", err)
+            raise gm_err.gmError("400", "The sql track " + self.name + " doesn't seem to have the correct format", err)
 
     def refresh_table_list(self):
         self.cursor.execute("select name from sqlite_master where type='table'")

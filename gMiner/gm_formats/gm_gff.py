@@ -34,7 +34,7 @@ class gmFormat(gm_tra.gmTrack):
                 line = line.strip("\n").split('\t')
                 # Check format #
                 if len(line) < 5:
-                    raise gm_err.ParsingError("400", "The gff track " + self.name + " does not seam to be a valid interval file")
+                    raise gm_err.ParsingError("400", "The gff track " + self.name + " does not seem to be a valid interval file")
                 # Chromosome #
                 feature['chr'] = line[0]
                 # Start and end #
@@ -82,7 +82,7 @@ class gmFormat(gm_tra.gmTrack):
         # Check #
         for feature in all_features:
             if feature['start'] >= feature['end']:
-                raise gm_err.ParsingError("400", "The gff track " + self.name + " seams to contain negative or null intervals")
+                raise gm_err.ParsingError("400", "The gff track " + self.name + " seems to contain negative or null intervals")
 
         # Store #
         self.all_chrs = list(set([feature['chr'] for feature in all_features]))
