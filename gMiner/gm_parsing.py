@@ -22,6 +22,8 @@ def parse_request(request_file):
     for i, num in enumerate(config.get(gm_project_name, "version").split('.')):
         if num > gm_project_version.split('.')[i]:
             raise gm_err.gmError(400, "The request file has a version number higher than this current installation of " + gm_project_name + ".")
+	if num < gm_project_version.split('.')[i]:
+            break
 
     # Return everything #
     return dict(config.items(gm_project_name))
