@@ -16,6 +16,7 @@ gm_convert_dict = {
 # File types to extensions #
 gm_known_extensions = {
     'SQLite 3.x database': 'sql',
+    'SQLite database (Version 3)': 'sql',
     'Hierarchical Data Format (version 5) data': 'hdf5',
 }
 
