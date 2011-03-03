@@ -40,8 +40,15 @@ class gmTrack(object):
     
     @classmethod
     def determine_format_magic(cls, location):
-        import magic
-        m = magic.Magic()
+        try:
+            import magic
+        except:
+            print >>sys.stderr, "magic not found. Skipping."
+            return ''
+        if os.path.exists('magic'):
+            m = magic.Magic('magic')
+        else:
+            m = magic.Magic()
         type = m.from_file(location)
         try:
             extension = gm_known_extensions[type]
