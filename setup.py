@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = 'gMiner',
-    version          = '0.1.5',
+    version          = '0.1.6',
     packages         = ['gMiner','gMiner.gm_formats', 'gMiner.gm_operations'],
     license          = 'Kopimi',
     description      = "Manuiplations and statistics on genomic data.",

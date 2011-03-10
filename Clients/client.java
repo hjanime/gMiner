@@ -9,7 +9,7 @@ import java.net.URL;
 
 public class Client {    
     // Build parameter string for gMiner
-    public static final String content = "[gMiner]" + "\n" + "version=0.1.5"
+    public static final String content = "[gMiner]" + "\n" + "version=0.1.6"
     + "\n" + "track1=/scratch/tracks/qual/sql/ribosome_genesis.sql"
     + "\n" + "track1_name='Fake client track one'"
     + "\n" + "track2=/scratch/tracks/qual/sql/ribosome_proteins.sql"

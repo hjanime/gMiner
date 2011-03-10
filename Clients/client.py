@@ -6,7 +6,7 @@ args = [('track1', '/scratch/tracks/qual/sql/ribosome_genesis.sql'), ('track1_na
 
 # Make the request #
 request = '[gMiner]' + '\n'
-request += 'version=0.1.5\n'
+request += 'version=0.1.6\n'
 request += '\n'.join([x[0] + '=' + x[1] for x in args])
 
 # Send it #
