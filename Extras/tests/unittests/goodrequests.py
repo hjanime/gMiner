@@ -22,7 +22,6 @@ class Unittest_DescStat(unittest.TestCase):
         sql_qual = qual_path + 'sql/'
         sql_quan = quan_path + 'sql/'
 
-        print sql_quan 
         # Lists #
         normal_files = [
             (qual_path + 'bed/validation1.bed', ['start', 'end', 'name', 'score', 'strand'], 'qualitative'),
