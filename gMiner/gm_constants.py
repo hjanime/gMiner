@@ -75,5 +75,10 @@ gm_terminal_colors = {
     'bakwht': '\033[47m',   # White
 }
 
+# Reloading #
+def recompile():
+    import sys
+    for mod in [mod for mod in sys.modules.values() if mod != None and mod.__name__.startswith('gMiner.gm_')]: reload(mod)
+
 # Debuging #
 def trace(): __import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()

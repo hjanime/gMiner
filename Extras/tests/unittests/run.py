@@ -1,22 +1,21 @@
+'''
+This script will run all the unittests we have. 
+'''
+
 # Modules #
-import sys, os, inspect, doctest
+import sys, os, doctest
 
-# Reload everything #
-for mod in [mod for mod in sys.modules.values() if mod != None and mod.__name__.startswith('gMiner.gm_')]: reload(mod)
-
-# The module #
-import gMiner as gMiner
-reload(gMiner)
+# gMiner #
+import gMiner
 from gMiner.gm_constants import *
 
-# Speical path #
-sys.path.append(gm_path + '/../Extras/scripts/')
-
-# Prepare unittest execution #
+# Check version of unittest #
 try:
     import unittest2 as unittest
 except ImportError:
     import unittest
+
+# Prepare unittest execution #
 suite = unittest.TestSuite()
 runner = unittest.TextTestRunner(verbosity=1)
 
@@ -34,10 +33,7 @@ for m in modules_base + modules_operation + modules_formats:
 
 # Add other tests #
 execfile(gm_path + '/../Extras/tests/unittests/goodrequests.py')
-#execfile(gm_path + '/../Extras/tests/unittests/badrequests.py')
+execfile(gm_path + '/../Extras/tests/unittests/badrequests.py')
 
 # Run every unittest #
 runner.run(suite)
-
-# Run other tests #
-# execfile(gm_path + '/../Extras/tests/graphs/run.py')
