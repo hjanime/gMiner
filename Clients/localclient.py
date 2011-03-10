@@ -1,5 +1,9 @@
 # Modules #
-import sys, gMiner
+import sys
+
+# gMiner #
+import gMiner
+from gMiner.gm_constants import *
 
 # Parser #
 def parse_args(args):
@@ -16,7 +20,7 @@ def parse_args(args):
 # Make the request #
 request = '[gMiner]' + '\n'
 request += 'version=' + str(gm_project_version) + '\n'
-request += '\n'.join([x[0] + '=' + x[1] for x in parse_args(sys.argv[1:])]
+request += '\n'.join([x[0] + '=' + x[1] for x in parse_args(sys.argv[1:])])
 
 # Run it #
 req = gMiner.gmRequest(request, True)
