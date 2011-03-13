@@ -6,7 +6,7 @@ from . import gm_formats   as formats
 from .gm_constants import *
 
 # Extra modules #
-import os, re
+import os, re, sys
 
 
 ###########################################################################   
