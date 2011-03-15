@@ -21,26 +21,14 @@ As well as access functionality involving genomic manipulations like:
 Typical usage often looks like this:
 
     # Import gFeatMiner #
-    import gMiner as gm
+    import gMiner
 
-    # Create the request #
-    req = '''
-    [gMiner]
-    version=0.1.6
-    track1=/tmp/a.sql
-    track1_name="Test track 1"
-    operation_type=genomic_manip 
-    manipulation=complement 
-    output_location=/tmp/result.sql
-    '''
-
-    # Run it #
-    job = gm.gmJob(req)
-    error, result, type = job.prepare()                                                                                                      
-    if error != 200: print error, result; sys.exit()
-    error, result, type = job.run()
-    if error != 200: print error, result; sys.exit()
-
+    # Run a request #
+    gMiner.run(track1          = '/tmp/a.sql',
+               track1_name     = 'Test track 1',
+               operation_type  = 'genomic_manip', 
+               manipulation    = 'complement',
+               output_location = '/tmp/result.sql')
 
 Full documentation
 =========

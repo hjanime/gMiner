@@ -68,29 +68,29 @@ for col_name, col_path in collections.items():
                         print "Graph " + str(count) + " out of " + str(max_count) + "   (" + name + ")"
                         count += 1
                         # Making the request #
-                        request = '[gMiner]'
-                        request{'version'} = '0.1.5'
-                        request{'gm_encoding'} = 'image/png'
-                        request{'operation_type'} = 'desc_stat'
-                        request{'characteristic'} =  chara 
+                        request = {}
+                        request['version'] = '0.1.5'
+                        request['gm_encoding'] = 'image/png'
+                        request['operation_type'] = 'desc_stat'
+                        request['characteristic'] = chara 
                         if b_many:
-                            request{'track1'} = track_set['many'][1] 
-                            request{'track1_name'} = make_track_name(track_set['many'][1])
-                            request{'track2'} = track_set['many'][2] 
-                            request{'track2_name'} = make_track_name(track_set['many'][2]) 
-                            request{'track3'} = track_set['many'][3] 
-                            request{'track3_name'} = make_track_name(track_set['many'][3])
+                            request['track1'] = track_set['many'][1] 
+                            request['track1_name'] = make_track_name(track_set['many'][1])
+                            request['track2'] = track_set['many'][2] 
+                            request['track2_name'] = make_track_name(track_set['many'][2]) 
+                            request['track3'] = track_set['many'][3] 
+                            request['track3_name'] = make_track_name(track_set['many'][3])
                         else:
-                            request{'track1'} = track_set['single'] 
-                            request{'track1_name'} = make_track_name(track_set['single']) 
+                            request['track1'] = track_set['single'] 
+                            request['track1_name'] = make_track_name(track_set['single']) 
                         if b_sel:
-                            request{'selected_regions'} = request_selection_string
+                            request['selected_regions'] = request_selection_string
                         if b_chr: 
-                            request{'per_chromosome'} = 'True' 
+                            request['per_chromosome'] = 'True' 
                         if b_comp: 
-                            request{'compare_parents'} = 'True'
+                            request['compare_parents'] = 'True'
                         # Executing the request #
-                        job = gMiner.gmJob(request, True)
+                        job = gMiner.run(**request)
                         error, result, type = job.prepare()
                         error, result, type = job.run()
                         # Write the result #
