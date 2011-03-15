@@ -19,10 +19,9 @@ def parse_args(args):
 
 # Make the request #
 request = dict([(x[0], x[1]) for x in parse_args(sys.argv[1:])])
-request['version'] = str(gm_project_version)
 
 # Run it #
-job = gMiner.gmJob(request, True)
+job = gMiner.run(**request)
 error, result, type = job.prepare()
 error, result, type = job.run()
 

@@ -412,6 +412,8 @@ class gmBarElement(gmPlotElement):
             self.name = ''
             return 0
         if len(self.subtracks) == 2:
+            trace()
+            print 'lol'
             ratio = 100.0*[s for s in self.subtracks if s.selection['type'] == 'region'][0].stat / [s for s in self.subtracks if s.selection['type'] != 'region'][0].stat  
             big_rect = axes.barh(self.position, 100.0, align='edge', height=self.height, color='gray') 
             self.name = str(int(ratio)) + '%'

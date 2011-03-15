@@ -70,7 +70,6 @@ for col_name, col_path in collections.items():
                         count += 1
                         # Making the request #
                         request = {}
-                        request['version'] = '0.1.5'
                         request['gm_encoding'] = 'image/png'
                         request['operation_type'] = 'desc_stat'
                         request['characteristic'] = chara 
