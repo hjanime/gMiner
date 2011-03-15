@@ -246,7 +246,7 @@ class gmManipulation(object):
             scores = [x[2] for x in elements if x[1] > start and x[0] < end]
             if scores:
                 score = sum(scores)*tracks_denom
-                if abs(score) > 1e-10: yield (start, end, score); print start, end, score
+                if abs(score) > 1e-10: yield (start, end, score)#; print start, end, score
             # Iterate over elements #
             for i in xrange(len(tracks)-1, -1, -1):
                 # Change all starts #
