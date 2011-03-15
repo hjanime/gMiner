@@ -26,7 +26,7 @@ Typical usage often looks like this:
     # Create the request #
     req = '''
     [gMiner]
-    version=0.1.5
+    version=0.1.6
     track1=/tmp/a.sql
     track1_name="Test track 1"
     operation_type=genomic_manip 
@@ -47,4 +47,4 @@ Full documentation
 
 The full documentation can be found on our wiki page:
 
-http://bbcf.epfl.ch/view/BBCF/GFeatMiner
+http://bbcf.epfl.ch/twiki/bin/view/BBCF/GFeatMiner

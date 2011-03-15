@@ -11,6 +11,8 @@ class gmRandomTrack(gm_tra.gmTrack):
         self.fields = ['start', 'end', 'name', 'score', 'strand']
         self.name_gen = tempfile._RandomNameSequence()
         self.name = 'Random track'
+        self.attributes = {}
+        self.chrmeta = []
  
     def get_data_qual(self, selection, fields):
         if fields != self.fields: raise gm_err.RunError(0, 'Non standard random track')

@@ -235,3 +235,17 @@ def sentinelize(iterable, sentinel):
     ''' 
     for item in iterable: yield item
     yield sentinel
+
+###############################################################################
+def import_module(name, path):
+    '''
+    Import a module that is not in sys.path
+    given it's relative path
+    ''' 
+    import imp
+    file, pathname, description = imp.find_module(name, [path])
+    try:
+        return imp.load_module(name, file, pathname, description)
+    finally:
+        if file: file.close()
+

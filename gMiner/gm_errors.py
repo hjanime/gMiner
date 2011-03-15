@@ -13,4 +13,4 @@ class gmError(Exception):
         self.origin = origin
 
     def __str__(self):
-        return self.msg + " - HTTP " + self.code
+        return self.msg + " - HTTP " + str(self.code)

@@ -43,7 +43,7 @@ class gmOperation(object):
         gm_par.default_if_none(self.request, 'compare_parents')
         gm_par.convert_to_bool(self.request, 'compare_parents')
         gm_par.assert_is_type(self.request['compare_parents'], bool, 'compare_parents')
-        # gm_encoding #
+        # gm_encoding elf
         gm_par.default_if_none(self.request, 'gm_encoding', 'text/base64')
         gm_par.assert_is_among(self.request['gm_encoding'], ['text/base64','image/png'], 'encoding')
         # Create subtracks #

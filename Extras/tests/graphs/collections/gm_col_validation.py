@@ -1,18 +1,22 @@
-# Modules #
-import gm_convert_tracks as gm_convert
+#gMiner modules #
+import gMiner.gm_common as gm_com
+
+# Special modules #
+gm_convert = gm_com.import_module('gm_convert_tracks', gm_path + '/../Extras/scripts/')
 
 # Collections of track sets: VALIDATION #
 bed_files = [
-qual_path + 'bed/validation1.bed', 
-qual_path + 'bed/validation2.bed', 
-qual_path + 'bed/validation3.bed', 
+    tracks_path + 'qual/bed/validation1.bed', 
+    tracks_path + 'qual/bed/validation2.bed', 
+    tracks_path + 'qual/bed/validation3.bed', 
 ]
 sql_files = [
-sql_path + 'validation1.sql', 
-sql_path + 'validation2.sql', 
-sql_path + 'validation3.sql', 
+    sql_path + 'validation1.sql', 
+    sql_path + 'validation2.sql', 
+    sql_path + 'validation3.sql', 
 ]
 
+# Recreate the SQL files from the BED ones #
 if False:
     for file in sql_files:
         if os.path.exists(file): os.remove(file)
@@ -21,11 +25,11 @@ if False:
 
 # Final variable #
 track_set = {
-    'single': sql_path + 'validation1.sql',
+    'single': sql_files[0],
     'many': {
-        1: sql_path + 'validation1.sql',
-        2: sql_path + 'validation2.sql',
-        3: sql_path + 'validation3.sql',
+        1: sql_files[0],
+        2: sql_files[1],
+        3: sql_files[2],
 }}
 
 # Extra variable #

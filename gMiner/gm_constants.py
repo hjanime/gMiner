@@ -1,7 +1,7 @@
 # Project name #
 gm_project_name = 'gMiner'
-gm_project_version = '0.1.5'
-gm_doc_url = 'http://bbcf.epfl.ch/view/BBCF/GFeatMiner'
+gm_project_version = '0.1.6'
+gm_doc_url = 'http://bbcf.epfl.ch/twiki/bin/view/BBCF/GFeatMiner'
 
 # Current path #
 gm_path = ''
@@ -74,6 +74,11 @@ gm_terminal_colors = {
     'bakcyn': '\033[46m',   # Cyan
     'bakwht': '\033[47m',   # White
 }
+
+# Reloading #
+def recompile():
+    import sys
+    for mod in [mod for mod in sys.modules.values() if mod != None and mod.__name__.startswith('gMiner.gm_')]: reload(mod)
 
 # Debuging #
 def trace(): __import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()

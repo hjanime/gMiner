@@ -42,9 +42,8 @@ class gmTrack(object):
     def determine_format_magic(cls, location):
         try:
             import magic
-        except:
-            print >>sys.stderr, "magic not found. Skipping."
-            return ''
+        except ImportError:
+            raise gm_err.gmError("400", "The format of the track " + location + " cannot be determined", err)
         if os.path.exists('magic'):
             m = magic.Magic('magic')
         else:
@@ -53,7 +52,7 @@ class gmTrack(object):
         try:
             extension = gm_known_extensions[type]
         except KeyError as err:
-            raise gm_err.gmError("400", "The format of the track " + location + " resolves to " + type + ".", err)
+            raise gm_err.gmError("400", "The format of the track " + location + " resolves to " + type + " which is not supported at the moment.", err)
         return extension
 
     @classmethod
