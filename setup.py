@@ -4,7 +4,7 @@ setup(
     name             = 'gMiner',
     version          = '0.1.6',
     packages         = ['gMiner','gMiner.gm_formats', 'gMiner.gm_operations'],
-    license          = 'Kopimi',
+    license          = open('LICENSE.txt').read(),
     description      = "Manuiplations and statistics on genomic data.",
     long_description = open('README.txt').read(),
     url              = 'http://bbcf.epfl.ch/view/BBCF/GFeatMiner',

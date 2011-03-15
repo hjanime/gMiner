@@ -17,21 +17,20 @@ try:
 except NameError:
     gm_constants.gm_path = 'gMiner'
 
-
 ###########################################################################   
-def request(**kwargs):
+def run(**kwargs):
     kwargs['service'] = gm_project_name
     kwargs['version'] = gm_project_version
-    request = gmRequest(kwargs, True)
-    error, result, type = request.prepare()
-    error, result, type = request.run()
+    job = gmJob(kwargs, True)
+    error, result, type = job.prepare()
+    error, result, type = job.run()
     return result
 
 ###########################################################################   
-class gmRequest(object):
-    def __init__(self, request, errors=False):
+class gmJob(object):
+    def __init__(self, kwargs, errors=False):
         self.errors = errors   # Do errors pass sliently or should we raise them ?
-        self.request = request # The request is a dictionary of values
+        self.request = kwargs  # The request is a dictionary of values
 
     def prepare(self):
         try:

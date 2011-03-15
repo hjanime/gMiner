@@ -35,7 +35,7 @@ Typical usage often looks like this:
     '''
 
     # Run it #
-    job = gm.gmRequest(req)
+    job = gm.gmJob(req)
     error, result, type = job.prepare()                                                                                                      
     if error != 200: print error, result; sys.exit()
     error, result, type = job.run()

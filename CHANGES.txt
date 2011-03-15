@@ -3,4 +3,4 @@ v0.1.1, 11.01.2011 -- Small bugfix.
 v0.1.2, 17.01.2011 -- Bugfix in the merge scores algorithm. It was not working correctly in certain cases.
 v0.1.3, 17.01.2011 -- Another small bugfix.
 v0.1.5, 01.03.2011 -- Compatiblity with cherrypy 3.2; Changed directory structure; Added to github.
-v0.1.6, 10.03.2011 -- Lorem ipsum.
+v0.1.6, 15.03.2011 -- The server has changed. The parameters are now URL encoded and the client will recieve a POST request when the job is finished.
