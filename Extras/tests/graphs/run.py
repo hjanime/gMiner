@@ -51,8 +51,9 @@ max_count *= len(collections)
 count = 1
 
 # Main loops #
+print gm_terminal_colors['bakylw'] + "    Writing graphs in: " + result_path + gm_terminal_colors['end']
 for col_name, col_path in collections.items():
-    print "Starting collection: " + col_name
+    print gm_terminal_colors['bldylw'] + "    Starting collection: " + col_name + gm_terminal_colors['end']
     execfile(col_path)
     for b_many in [True, False]:
         for b_sel in [True, False]:
@@ -65,7 +66,7 @@ for col_name, col_path in collections.items():
                         name = name + name_dict[b_comp][b_chr][b_many]
                         name = name + chara_dict[chara]
                         if not b_sel: name += '_NoSel'
-                        print "Graph " + str(count) + " out of " + str(max_count) + "   (" + name + ")"
+                        print gm_terminal_colors['txtylw'] + "Graph " + str(count) + " out of " + str(max_count) + "   (" + name + ")" + gm_terminal_colors['end']
                         count += 1
                         # Making the request #
                         request = {}
@@ -90,9 +91,7 @@ for col_name, col_path in collections.items():
                         if b_comp: 
                             request['compare_parents'] = 'True'
                         # Executing the request #
-                        job = gMiner.run(**request)
-                        error, result, type = job.prepare()
-                        error, result, type = job.run()
+                        result = gMiner.run(**request)
                         # Write the result #
                         result_file = open(result_path + name + '.png', 'w')
                         result_file.write(result)

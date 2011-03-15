@@ -24,11 +24,11 @@ Typical usage often looks like this:
     import gMiner
 
     # Run a request #
-    gMiner.run(track1          = '/tmp/a.sql',
-               track1_name     = 'Test track 1',
-               operation_type  = 'genomic_manip', 
-               manipulation    = 'complement',
-               output_location = '/tmp/result.sql')
+    result = gMiner.run(track1          = '/tmp/a.sql',
+                        track1_name     = 'Test track 1',
+                        operation_type  = 'genomic_manip', 
+                        manipulation    = 'complement',
+                        output_location = '/tmp/result.sql')
 
 Full documentation
 =========
