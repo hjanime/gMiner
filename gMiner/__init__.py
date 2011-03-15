@@ -17,23 +17,25 @@ try:
 except NameError:
     gm_constants.gm_path = 'gMiner'
 
+###########################################################################   
+def run(**kwargs):
+    kwargs['service'] = gm_project_name
+    kwargs['version'] = gm_project_version
+    job = gmJob(kwargs, True)
+    error, result, type = job.prepare()
+    error, result, type = job.run()
+    return result
 
 ###########################################################################   
-class gmRequest(object):
-    def __init__(self, request, errors=False):
-        self. errors = errors
-        if not hasattr(request, "read"):
-            import cStringIO
-            self.request_file = cStringIO.StringIO()
-            self.request_file.write(request)
-            self.request_file.seek(0)
-        else:
-            self.request_file = request
-    
+class gmJob(object):
+    def __init__(self, kwargs, errors=False):
+        self.errors = errors   # Do errors pass sliently or should we raise them ?
+        self.request = kwargs  # The request is a dictionary of values
+
     def prepare(self):
         try:
-            # Parse the ini file #
-            self.request = gm_par.parse_request(self.request_file)
+            # Check the request file #
+            gm_par.check_request(self.request)
             # Check for listing #
             if self.request['operation_type'] == 'list':
                 self.operation = gmListOptions() 

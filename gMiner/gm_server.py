@@ -1,8 +1,10 @@
 # General Modules #
 import cherrypy
+import httplib2
+import urllib
 
 # Modules #
-from . import gmRequest
+from . import gmJob
 from .gm_constants import *
 
 ###########################################################################
@@ -14,28 +16,45 @@ class gmServer(object):
         # Change the server name #
         serverTag = gm_project_name + "/" + str(gm_project_version)
         cherrypy.config.update({'tools.response_headers.on': True, 'tools.response_headers.headers': [('Server', serverTag)]})
-
         # Change the port #
         cherrypy.server.socket_port = self.HTTP_PORT
-        
+        # Add post processing #
+        cherrypy.tools.post_process = cherrypy.Tool('on_end_request', post_process)
         # Start Server #
-        cherrypy.quickstart(CherryRoot(), config={'/': {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}})
-
+        cherrypy.quickstart(CherryRoot(), config={'/': {'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+                                                        'tools.post_process.on': True}})
 
 ###########################################################################
 class CherryRoot(object):
     exposed = True
 
-    def POST(self):
-        request = gmRequest(cherrypy.request.body)
-        error, result, type = request.prepare()
-        if error == 200: error, result, type = request.run()
+    def POST(self, **kwargs):
+        # Run the request #
+        global job
+        job = gmJob(kwargs)
+        error, result, type = job.prepare()
+        # Check if callback #
+        if error == 200 and not job.request.has_key('callback_url'): error, result, type = job.run()
+        # Return result #
         cherrypy.response.headers['Content-Type'] = type
         cherrypy.response.status = error
-        del request
         return result
 
     def GET(self):
         cherrypy.response.status = 301
         cherrypy.response.headers['Location'] = gm_doc_url
         return 'Redirecting to documentation'
+
+###########################################################################
+def post_process(**kwargs):
+    # Run the job #
+    global job
+    if not job.request.has_key('callback_url'): return
+    error, result, type = job.run()
+    # Make an http POST #
+    connection = httplib2.Http()
+    body = urllib.urlencode({'status': error, 'result': result, 'type': type})
+    headers = {'content-type': 'application/x-www-form-urlencoded'}
+    address = job.request['callback_url']
+    # Send it #
+    response, content = connection.request(address, "POST", body=body, headers=headers)

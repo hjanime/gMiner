@@ -4,30 +4,19 @@ from . import gm_constants
 from .gm_constants import *
 
 ###########################################################################
-def parse_request(request_file): 
-    import ConfigParser
-    config = ConfigParser.ConfigParser()
-
-    # Try to read it #
-    try:
-        config.readfp(request_file)
-    except ConfigParser.MissingSectionHeaderError as err:
-        raise gm_err.gmError(400, "The request file does not seem to be valid. It does not start with a proper header.", err)
+def check_request(request): 
+    # Does it have the service field #
+    if not request.has_key('service'): raise gm_err.gmError(400, "The request does not seem to be valid. It does contain a service field.")
 
     # Check for prog name #
-    if not config.has_section(gm_project_name):
-        raise gm_err.gmError(400, "The request file does not seem to be valid. It does not start with [" + gm_project_name + "].")
+    if not request['service'] == 'gMiner': raise gm_err.gmError(400, "The request does not seem to be valid. It does not specify [" + gm_project_name + "] as the target service.")
     
     # Check for version number #
-    for i, num in enumerate(config.get(gm_project_name, "version").split('.')):
+    for i, num in enumerate(request["version"].split('.')):
         if num > gm_project_version.split('.')[i]:
             raise gm_err.gmError(400, "The request file has a version number higher than this current installation of " + gm_project_name + ".")
         if num < gm_project_version.split('.')[i]:
             break
-
-    # Return everything #
-    return dict(config.items(gm_project_name))
-
 
 def parse_tracks(request_dict):
     '''

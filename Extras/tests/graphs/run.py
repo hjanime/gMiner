@@ -69,30 +69,30 @@ for col_name, col_path in collections.items():
                         count += 1
                         # Making the request #
                         request = '[gMiner]'
-                        request += '\n' + 'version=0.1.5'
-                        request += '\n' + 'gm_encoding=image/png'
-                        request += '\n' + 'operation_type=desc_stat'
-                        request += '\n' + 'characteristic=' + chara 
+                        request{'version'} = '0.1.5'
+                        request{'gm_encoding'} = 'image/png'
+                        request{'operation_type'} = 'desc_stat'
+                        request{'characteristic'} =  chara 
                         if b_many:
-                            request += '\n' + 'track1=' + track_set['many'][1] 
-                            request += '\n' + 'track1_name=' + make_track_name(track_set['many'][1])
-                            request += '\n' + 'track2=' + track_set['many'][2] 
-                            request += '\n' + 'track2_name=' + make_track_name(track_set['many'][2]) 
-                            request += '\n' + 'track3=' + track_set['many'][3] 
-                            request += '\n' + 'track3_name=' + make_track_name(track_set['many'][3])
+                            request{'track1'} = track_set['many'][1] 
+                            request{'track1_name'} = make_track_name(track_set['many'][1])
+                            request{'track2'} = track_set['many'][2] 
+                            request{'track2_name'} = make_track_name(track_set['many'][2]) 
+                            request{'track3'} = track_set['many'][3] 
+                            request{'track3_name'} = make_track_name(track_set['many'][3])
                         else:
-                            request += '\n' + 'track1=' + track_set['single'] 
-                            request += '\n' + 'track1_name=' + make_track_name(track_set['single']) 
+                            request{'track1'} = track_set['single'] 
+                            request{'track1_name'} = make_track_name(track_set['single']) 
                         if b_sel:
-                            request += '\n' + 'selected_regions=' + request_selection_string
+                            request{'selected_regions'} = request_selection_string
                         if b_chr: 
-                            request += '\n' + 'per_chromosome=True' 
+                            request{'per_chromosome'} = 'True' 
                         if b_comp: 
-                            request += '\n' + 'compare_parents=True'
+                            request{'compare_parents'} = 'True'
                         # Executing the request #
-                        req = gMiner.gmRequest(request, True)
-                        error, result, type = req.prepare()
-                        error, result, type = req.run()
+                        job = gMiner.gmJob(request, True)
+                        error, result, type = job.prepare()
+                        error, result, type = job.run()
                         # Write the result #
                         result_file = open(result_path + name + '.png', 'w')
                         result_file.write(result)
