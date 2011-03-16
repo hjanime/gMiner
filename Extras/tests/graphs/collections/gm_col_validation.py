@@ -1,3 +1,8 @@
+# gMiner #
+import gMiner
+from gMiner.gm_constants import *
+
+# Track set #
 track_set = {
     'single': gm_track_collections['Validation']['Validation 1'],
     'many': {

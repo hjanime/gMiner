@@ -20,7 +20,7 @@ fields1 = ['start', 'end', 'name', 'score', 'strand']
 fields2 = ['start', 'end', 'score']
 
 # Every collection of tracks #
-gm_track_collections = {
+gMiner.gm_constants.gm_track_collections = {
     'Validation': {
         'Validation 1':             {'orig_path': gm_tracks_path + 'qual/bed/validation1.bed', 'type': 'qualitative', 'fields': fields1},
         'Validation 2':             {'orig_path': gm_tracks_path + 'qual/bed/validation2.bed', 'type': 'qualitative', 'fields': fields1},
@@ -40,7 +40,7 @@ gm_track_collections = {
 
 # Conversion #
 print gm_terminal_colors['bldylw'] + "    Starting test tracks creation:" + gm_terminal_colors['end']
-for _, collection in sorted(gm_track_collections.items()):
+for _, collection in sorted(gMiner.gm_constants.gm_track_collections.items()):
     for track, __ in sorted(collection.items()):
         print gm_terminal_colors['txtylw'] + "Creating track '" + track + "'" + gm_terminal_colors['end']
         # New path #
@@ -61,13 +61,15 @@ for _, collection in sorted(gm_track_collections.items()):
         fields = collection[track]['fields']
         track_obj = gm_tra.gmTrack.Factory({'location': new_path, 'name': track}, 0, True) 
         collection[track]['track'] = track_obj
-        data = list(getattr(track_obj, 'get_data_' + new_type[0:4])({'type':'chr', 'chr':'chr1'}, fields))
-        collection[track]['data'] = data
+        # Data #
+        collection[track]['data'] = {}
+        for chr in track_obj.all_chrs:
+            collection[track]['data'][chr] = list(getattr(track_obj, 'get_data_' + new_type[0:4])({'type':'chr', 'chr':chr}, fields))
         # Name #
         collection[track]['name'] = track
 
 # Extra collections #
-gm_track_collections['Random'] = {}
+gMiner.gm_constants.gm_track_collections['Random'] = {}
 gm_random  = gm_com.import_module('gm_random_track', gm_path + '/../Extras/scripts/')
 for num in [1,2,3,4]:
     new_format = 'sql'
@@ -79,11 +81,11 @@ for num in [1,2,3,4]:
     new_path = gm_tracks_path + 'qual/sql/' + 'random' + str(num) + '.sql'
     if os.path.exists(new_path): os.remove(new_path)
     # Variables #
-    gm_track_collections['Random'][new_name] = {}
-    gm_track_collections['Random'][new_name]['location'] = new_path
-    gm_track_collections['Random'][new_name]['type']     = new_type 
-    gm_track_collections['Random'][new_name]['fields']   = fields1 
+    gMiner.gm_constants.gm_track_collections['Random'][new_name] = {}
+    gMiner.gm_constants.gm_track_collections['Random'][new_name]['location'] = new_path
+    gMiner.gm_constants.gm_track_collections['Random'][new_name]['type']     = new_type 
+    gMiner.gm_constants.gm_track_collections['Random'][new_name]['fields']   = fields1 
     # Conversion #
     gm_tra.gmTrackConverter.convert(old_track, new_path, new_format, new_type, new_name)
     # Name #
-    gm_track_collections['Random'][new_name]['name'] = new_name
+    gMiner.gm_constants.gm_track_collections['Random'][new_name]['name'] = new_name
