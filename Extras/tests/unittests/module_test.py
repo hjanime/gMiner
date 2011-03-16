@@ -62,7 +62,8 @@ class Unittest_gMinerModule(unittest.TestCase):
                            (180, 200, u'Name9', 0.10000000000000001, u'+'),
                            (210, 220, u'Name10', 0.20000000000000001, u'+'),
                            (230, 240, u'Name11', 0.10000000000000001, u'+'),
-                           (250, 260, u'Name12', 0.20000000000000001, u'+')]},
+                           (250, 260, u'Name12', 0.20000000000000001, u'+'),
+                           (270, 280, u'Name13', 0.0, u'+')]},
 
                 {'fn':     gm_manip.gmManipulation.overlap_pieces,
                  'input':  (400,
