@@ -92,7 +92,6 @@ class gmFormat(gm_tra.gmTrack):
     def write_data_qual(self, chr, iterable, fields):
         if chr in [x[0] for x in self.cursor.execute("select name from sqlite_master where type='table'").fetchall()]:
             self.cursor.execute("drop table " + chr)
-        self.cursor.execute('insert into chrNames(name) values (?)', (chr,))
         columns = ','.join([field + ' ' + gm_field_types[field] for field in fields])
         self.cursor.execute('create table "' + chr + '" (' + columns + ')')
         self.cursor.executemany('insert into "' + chr + '" values (' + ','.join(['?' for x in range(len(fields))])+')', iterable)
@@ -104,7 +103,6 @@ class gmFormat(gm_tra.gmTrack):
     def write_data_quan(self, chr, iterable, fields):
         if chr in [x[0] for x in self.cursor.execute("select name from sqlite_master where type='table'").fetchall()]:
             self.cursor.execute("drop table " + chr)
-        self.cursor.execute('insert into chrNames(name) values (?)', (chr,))
         self.cursor.execute('create table "' + chr + '"  (start integer, end integer, score real)')
         self.cursor.executemany('insert into "' + chr + '"  values (?,?,?)', iterable)
         self.connection.commit()

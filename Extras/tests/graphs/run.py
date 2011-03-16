@@ -10,8 +10,12 @@ import gMiner
 from gMiner.gm_constants import *
 
 # Tracks should better be local #
-tracks_path = gm_path + '/../Extras/tracks/'
+if os.environ.has_key('GMINER_TRACKS'):
+    tracks_path = os.environ['GMINER_TRACKS'] 
+else: 
+    tracks_path = gm_path + '/../Extras/tracks/'
 sql_path = tracks_path + 'qual/sql/'
+print sql_path
 
 # A naming convention dictonary #
 name_dict = {
