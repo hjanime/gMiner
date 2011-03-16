@@ -39,8 +39,8 @@ result_path = '/tmp/gMiner/'
 
 # Every collection of data
 collections = {
-    'Yeast':      gm_path + '/../Extras/tests/graphs/collections/gm_col_yeast.py',
     'Validation': gm_path + '/../Extras/tests/graphs/collections/gm_col_validation.py',
+    'Yeast':      gm_path + '/../Extras/tests/graphs/collections/gm_col_yeast.py',
     'Random':     gm_path + '/../Extras/tests/graphs/collections/gm_col_random.py',
 }
 

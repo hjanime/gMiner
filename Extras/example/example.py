@@ -21,12 +21,10 @@ def parse_args(args):
 request = dict([(x[0], x[1]) for x in parse_args(sys.argv[1:])])
 
 # Run it #
-job = gMiner.run(**request)
-error, result, type = job.prepare()
-error, result, type = job.run()
+result = gMiner.run(**request)
 
 # Save result #
 data_file = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
-data_file.write(base64.decodestring(result))
+data_file.write(result)
 print "Result written in:", data_file.name
 data_file.close()

@@ -259,3 +259,21 @@ class gmManipulation(object):
                 if elements[i] == sentinel:
                     tracks.pop(i)
                     elements.pop(i)
+
+
+    #-----------------------------------------------------------------------------#   
+    def mean_score_by_feature_options(func):
+        '''Given a quantitative track A and a qualititive track B
+           computes the mean of scores in A for every feature in B.
+           The output consits of a qualitative track simliar to B but
+           with score values.'''
+        func.num_input = '2'
+        func.chr_fn = gm_com.gmCollapse.by_intersection
+        func.in_fields = ['start', 'end', 'score']
+        func.out_fields = ['start', 'end', 'score']
+        func.out_type = 'qualitative'
+        return func
+    @classmethod 
+    @mean_score_by_feature_options
+    def mean_score_by_feature(cls, stop_val, *iterables):
+        '''Mean scores by features'''

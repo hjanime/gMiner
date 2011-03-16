@@ -20,16 +20,18 @@ As well as access functionality involving genomic manipulations like:
 
 Typical usage often looks like this:
 
-    # Import gFeatMiner #
     import gMiner
-
-    # Run a request #
-    result = gMiner.run(track1          = '/tmp/a.sql',
-                        track1_name     = 'Test track 1',
-                        operation_type  = 'genomic_manip', 
-                        manipulation    = 'complement',
-                        output_location = '/tmp/result.sql')
-
+    result = gMiner.run(
+        track1          = '/scratch/sinclair/Tracks/qual/sql/ribosome_genesis.sql',
+        track1_name     = 'Example track one',
+        operation_type  = 'desc_stat',
+        characteristic  = 'number_of_features',
+        per_chromosome  = 'True',
+        compare_parents = 'False',
+        gm_encoding     = 'image/png'
+    )
+    with open('/tmp/graph.png', 'w') as f: f.write(result)
+    
 Full documentation
 =========
 

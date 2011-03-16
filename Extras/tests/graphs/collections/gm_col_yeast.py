@@ -17,11 +17,10 @@ sql_files = [
 ]
 
 # Recreate the SQL files from the BED ones #
-if False:
-    for file in sql_files:
-        if os.path.exists(file): os.remove(file)
-    for file in bed_files:
-        gm_convert.convert_single_track(file, sql_path)
+for file in sql_files:
+    if os.path.exists(file): os.remove(file)
+for file in bed_files:
+    gm_convert.convert_single_track(file, sql_path)
 
 # Final variable #
 track_set = {
@@ -33,7 +32,7 @@ track_set = {
 }}
 
 # Extra variable #
-request_selection_string = 'chr1:0:50000;chr2:50000:9999999999999'
+request_selection_string = 'chr1:0:50000;chr1:52000:54000;chr1:56000:58000;chr2:50000:9999999999999'
 
 # Make name #
 def make_track_name(path): 

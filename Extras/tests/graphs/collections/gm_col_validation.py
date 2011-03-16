@@ -17,11 +17,10 @@ sql_files = [
 ]
 
 # Recreate the SQL files from the BED ones #
-if False:
-    for file in sql_files:
-        if os.path.exists(file): os.remove(file)
-    for file in bed_files:
-        gm_convert.convert_single_track(file, sql_path)
+for file in sql_files:
+    if os.path.exists(file): os.remove(file)
+for file in bed_files:
+    gm_convert.convert_single_track(file, sql_path)
 
 # Final variable #
 track_set = {
