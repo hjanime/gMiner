@@ -2,7 +2,7 @@
 from . import gm_errors    as gm_err
 from . import gm_parsing   as gm_par
 from . import gm_common    as gm_com
-from . import gm_formats   as formats
+from . import gm_formats
 from .gm_constants import *
 
 # Extra modules #
@@ -17,7 +17,7 @@ class gmTrack(object):
         location = track_dict['location'].rstrip('/')
         location, format = cls.determine_format(location)
         cls.import_format(format)
-        track = getattr(formats, 'gm_' + format).gmFormat(name, location, number, locked)
+        track = getattr(gm_formats, 'gm_' + format).gmFormat(name, location, number, locked)
         if conversion: return gm_convert_track(track) 
         else: return track
 
@@ -57,7 +57,7 @@ class gmTrack(object):
 
     @classmethod
     def import_format(cls, format):
-        if not hasattr(formats, 'gm_' + format):
+        if not hasattr(gm_formats, 'gm_' + format):
             try: __import__('gMiner.gm_formats.gm_' + format)
             except ImportError as err:
                 raise gm_err.gmError("400", "The format " + format + " is not supported at the moment", err)
@@ -89,7 +89,7 @@ class gmTrack(object):
         if os.path.exists(location):
             raise gm_err.gmError("400", "The location " + location + " is already taken")
         cls.import_format(format)
-        getattr(formats, 'gm_' + format).gmFormat.make_new(location, type, name)
+        getattr(gm_formats, 'gm_' + format).gmFormat.make_new(location, type, name)
         return cls.Factory({'location': location, 'name': name}, conversion=False) 
 
     #-----------------------------------------------------------------------------#   

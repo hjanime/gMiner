@@ -412,7 +412,10 @@ class gmBarElement(gmPlotElement):
             self.name = ''
             return 0
         if len(self.subtracks) == 2:
-            ratio = 100.0*[s for s in self.subtracks if s.selection['type'] == 'region'][0].stat / [s for s in self.subtracks if s.selection['type'] != 'region'][0].stat  
+            child_stat = [s for s in self.subtracks if s.selection['type'] == 'region'][0].stat
+            parent_stat = [s for s in self.subtracks if s.selection['type'] != 'region'][0].stat 
+            if parent_stat == 0: ratio = 0
+            else: ratio = 100.0 * child_stat / parent_stat
             big_rect = axes.barh(self.position, 100.0, align='edge', height=self.height, color='gray') 
             self.name = str(int(ratio)) + '%'
             self.rect = axes.barh(self.position, ratio, align='edge', height=self.height, color=self.color)[0]
@@ -486,8 +489,10 @@ class gmBoxElement(gmPlotElement):
    
     def get_max_value(self, elements):
         maxvalue = 3.0 * max([e.DIQ for e in elements])
-        if maxvalue == 0: return max([max(subtrack.stat) for e in elements for subtrack in e.subtracks if subtrack.stat])
-        else: return maxvalue
+        if maxvalue == 0:
+            all_values = [max(subtrack.stat) for e in elements for subtrack in e.subtracks if subtrack.stat]
+            if all_values: return max(all_values)
+        return maxvalue
 
     def cleanup(self):
         del self.DIQ
