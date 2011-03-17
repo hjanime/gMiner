@@ -41,6 +41,7 @@ gm_chromosome_name_dictionary = {
 # Terminal colors #
 gm_terminal_colors = {
     'end':    '\033[0m',    # Text Reset
+    'blink':  '\033[5m',    # Text Reset
     'txtblk': '\033[0;30m', # Black - Regular
     'txtred': '\033[0;31m', # Red
     'txtgrn': '\033[0;32m', # Green
@@ -65,6 +66,14 @@ gm_terminal_colors = {
     'undpur': '\033[4;35m', # Purple
     'undcyn': '\033[4;36m', # Cyan
     'undwht': '\033[4;37m', # White
+    'bnkblk': '\033[5;30m', # Black - Blinking
+    'bnkred': '\033[5;31m', # Red
+    'bnkgrn': '\033[5;32m', # Green
+    'bnkylw': '\033[5;33m', # Yellow
+    'bnkblu': '\033[5;34m', # Blue
+    'bnkpur': '\033[5;35m', # Purple
+    'bnkcyn': '\033[5;36m', # Cyan
+    'bnkwht': '\033[5;37m', # White
     'bakblk': '\033[40m',   # Black - Background
     'bakred': '\033[41m',   # Red
     'badgrn': '\033[42m',   # Green

@@ -54,12 +54,13 @@ class gmJob(object):
                 for track in self.tracks: track.chrs = (set(track.all_chrs) & set(self.request['wanted_chromosomes']))
             else:
                 for track in self.tracks: track.chrs = track.all_chrs
-            # Fork the execution #
+            # Import the correct operation #
             if not hasattr(op, self.request['operation_type']):
                 try:
                     __import__('gMiner.gm_operations.' + self.request['operation_type'])
                 except ImportError as err:
                     raise gm_err.gmError(400, "The operation " + self.request['operation_type'] + " is not supported at the moment.", err)
+            # Find the gmOperation object #
             self.operation = getattr(op, self.request['operation_type']).gmOperation(self.request, self.tracks)
             # Prepare the operation #
             self.operation.prepare()
@@ -93,7 +94,7 @@ class gmJob(object):
     def catch_error(self, err):
         if self.errors:
             if err.origin:
-                print gm_terminal_colors['bakred'] + str(err) + gm_terminal_colors['end']
+                print gm_terminal_colors['bakred'] + gm_terminal_colors['bldwht'] + gm_terminal_colors['bnkwht'] + str(err) + gm_terminal_colors['end']
                 raise err.origin
             else: raise err
         return err.code, err.msg, "text/plain"
