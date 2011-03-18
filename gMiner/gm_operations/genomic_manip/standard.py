@@ -13,8 +13,6 @@ class complement(gmManipulation):
     chr_fn             = gm_com.gmCollapse.by_appending
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_intersection(*args) 
     
-    def nose_test():
-        pass
 
     def run(self, **kwargs):
         '''The result consists of all spaces that were not
@@ -32,7 +30,7 @@ class complement(gmManipulation):
 #-------------------------------------------------------------------------------------------#   
 class overlap_track(gmManipulation):
     '''Overlap by track'''
-    input              = {'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand'], 'num': 1}
+    input              = {'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand'], 'num': 1},
                           'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand'], 'num': 2}}
     input_constraints  = ['ordered']
     input_extras       = []
