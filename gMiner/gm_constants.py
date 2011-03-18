@@ -1,5 +1,6 @@
 # Project name #
 gm_project_name = 'gMiner'
+gm_project_long_name = 'gFeatMiner'
 gm_project_version = '0.1.6'
 gm_doc_url = 'http://bbcf.epfl.ch/twiki/bin/view/BBCF/GFeatMiner'
 

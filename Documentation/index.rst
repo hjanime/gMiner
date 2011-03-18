@@ -10,5 +10,7 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
-* :doc:`intro`
+   
+   intro
+   desc_stat
+   genomic_manip

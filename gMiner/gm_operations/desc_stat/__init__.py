@@ -19,7 +19,7 @@ gm_default_color_parent    = 'blue'
 
 # Functions #
 def list_options():
-    return '\n'.join([f[0]+':'+f[1].__doc__ for f in gmCharacteristic.__dict__.items() if f[0][0] != '_'])
+    return '\n'.join([f[0]+':'+f[1].title for f in gmCharacteristic.__dict__.items() if f[0][0] != '_'])
 
 
 ###########################################################################   
@@ -134,6 +134,7 @@ def gm_get_characteristic(subtrack, chara):
 class gmCharacteristic(object):
 
     def num_of_features_options(func):
+        func.title = '''Number of features'''
         func.fields = ['strand']
         func.shortcutable = True
         func.storable = True
@@ -143,10 +144,11 @@ class gmCharacteristic(object):
     @classmethod 
     @num_of_features_options
     def number_of_features(cls, iterable):
-        '''Number of features'''
+        '''Returns the number of features'''
         return sum(1 for _ in iterable)
 
     def base_coverage_options(func):
+        func.title = '''Base coverage'''
         func.fields = ['start','end']
         func.shortcutable = False
         func.storable = True
@@ -156,7 +158,7 @@ class gmCharacteristic(object):
     @classmethod 
     @base_coverage_options
     def base_coverage(cls, iterable):
-        '''Base coverage'''
+        '''Returns the base coverage'''
         sum = 0 
         position = -1
         for x in iterable:
@@ -167,6 +169,7 @@ class gmCharacteristic(object):
         return sum
 
     def length_options(func):
+        func.title = '''Length distribution'''
         func.fields = ['start','end']
         func.shortcutable = False
         func.storable = False
@@ -176,10 +179,11 @@ class gmCharacteristic(object):
     @classmethod
     @length_options
     def length(cls, iterable):
-        '''Length distribution'''
+        '''Returns the length distribution'''
         return [x[1]-x[0] for x in iterable]
 
     def score_options(func):
+        func.title = '''Score distribution'''
         func.fields = ['score']
         func.shortcutable = False
         func.storable = False
@@ -189,7 +193,7 @@ class gmCharacteristic(object):
     @classmethod
     @score_options
     def score(cls, iterable):
-        '''Score distribution'''
+        '''Returns the score distribution'''
         iterable = list(iterable)
         return [x[0] for x in iterable]
 
