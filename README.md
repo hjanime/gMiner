@@ -36,4 +36,4 @@ Full documentation
 
 The full documentation can be found on our wiki page:
 
-http://bbcf.epfl.ch/gMiner
+[http://bbcf.epfl.ch/gMiner][http://bbcf.epfl.ch/gMiner]

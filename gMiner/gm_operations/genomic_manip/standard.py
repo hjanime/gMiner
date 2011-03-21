@@ -5,16 +5,16 @@ from ... import gm_common as gm_com
 #-------------------------------------------------------------------------------------------#   
 class complement(gmManipulation):
     '''Complement'''
-    input              = {'track': {'type': 'qualitative', 'fields': ['start', 'end']}}
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end']}]
     input_constraints  = []
-    input_extras       = ['stop_val']
-    output             = {'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}}
+    input_other        = []
+    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
-    chr_fn             = gm_com.gmCollapse.by_appending
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_intersection(*args) 
+    output_other       = []
+    def chr_collapse(self, *args): return gm_com.gmCollapse.by_appending(*args) 
     
-
-    def run(self, **kwargs):
+    def generate(self, **kwargs):
         '''The result consists of all spaces that were not
         covered by a feature in the original track'''
         last_end = 0
@@ -30,18 +30,17 @@ class complement(gmManipulation):
 #-------------------------------------------------------------------------------------------#   
 class overlap_track(gmManipulation):
     '''Overlap by track'''
-    input              = {'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand'], 'num': 1},
-                          'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand'], 'num': 2}}
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
+                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     input_constraints  = ['ordered']
+    input_other        = []
     input_extras       = []
-    output             = {'track': {'type': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}}
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
+    output_other       = []
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_intersection(*args) 
    
-    def nose_test():
-        pass
-    
-    def run(self, **kwargs):
+    def generate(self, **kwargs):
         '''Computes the overlap of the first track against the second track
            returning only complete features from the first track'''
         sentinel = [sys.maxint, sys.maxint]
