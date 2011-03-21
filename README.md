@@ -1,4 +1,3 @@
-==========
 gFeatMiner
 ==========
 
@@ -19,7 +18,6 @@ As well as access functionality involving genomic manipulations like:
 * Create a track that is the complement of another track.
 
 Typical usage often looks like this:
-.. code-block:: python
 
     import gMiner
     result = gMiner.run(
@@ -33,7 +31,6 @@ Typical usage often looks like this:
     )
     with open('/tmp/graph.png', 'w') as f: f.write(result)
     
-==================
 Full documentation
 ==================
 
