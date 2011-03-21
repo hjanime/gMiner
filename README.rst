@@ -1,6 +1,6 @@
-===========
+==========
 gFeatMiner
-===========
+==========
 
 gFeatMiner is a Python module and can be seen as a framework for dealing with genomic data using a request based system. Typically the user has in his posession a few files containing genomic data. These files, refered to as tracks, contain genomic interval type information (.bed, .gff) or genomic score type information (.wig). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistices like:
 
@@ -20,6 +20,7 @@ As well as access functionality involving genomic manipulations like:
 
 Typical usage often looks like this:
 
+``
     import gMiner
     result = gMiner.run(
         track1          = '/scratch/sinclair/Tracks/qual/sql/ribosome_genesis.sql',
@@ -31,9 +32,11 @@ Typical usage often looks like this:
         gm_encoding     = 'image/png'
     )
     with open('/tmp/graph.png', 'w') as f: f.write(result)
+``
     
+==================
 Full documentation
-=========
+==================
 
 The full documentation can be found on our wiki page:
 
