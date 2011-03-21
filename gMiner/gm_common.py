@@ -44,7 +44,22 @@ def wrap_string(s, width):
     wrapper = textwrap.TextWrapper()
     wrapper.width = width
     return '\n'.join(wrapper.wrap(s))
+
+###############################################################################   
+def andify_strings(list_of_strings):
+    '''
+    Given a list of strings will join them with commas
+    and a final "and" word.
+
+    >>> andify_strings(['Apples', 'Oranges', 'Mangos'])
+    'Apples, Oranges and Mangos'
+    '''
     
+    result = ', '.join(list_of_strings)
+    comma_index = result.rfind(',')        
+    if comma_index > -1: result = result[:comma_index] + ' and' + result[comma_index+1:]
+    return result
+
 ###############################################################################   
 def natural_sort(item):
     '''
@@ -79,42 +94,29 @@ def sort_table(table, cols):
         table = sorted(table, key=operator.itemgetter(col))
     return table
 
-
-###############################################################################   
-def number_to_color(num=0):
+###############################################################################
+def sentinelize(iterable, sentinel):
     '''
-    Takes a number, returns a color
-
-    >>> number_to_color(7)
-    'pink'
-    '''
+    Add an item to the end of an iterable
     
-    num = int(num) % 8
-    return {
-        0: 'blue',
-        1: 'green',
-        2: 'red',
-        3: 'cyan',
-        4: 'magenta',
-        5: 'orange',
-        6: 'black',
-        7: 'pink'
-    }[num]
+    >>> list(sentinelize(range(4), 99))
+    [0, 1, 2, 3, 99]
+    ''' 
+    for item in iterable: yield item
+    yield sentinel
 
-
-def number_to_color_light(num=0):
-    num = int(num) % 8
-    return {
-        0: '#87CEFA', #'lightblue',
-        1: '#90EE90', #'lightgreen',
-        2: '#FFB6C1', #'lightpink',
-        3: '#48D1CC', #'mediumturquoise',
-        4: '#EE82EE', #'violet',
-        5: '#FFD700', #'gold',
-        6: '#C0C0C0', #'silver',
-        7: '#FFFAF0', #'floralwhite'
-    }[num]
-
+###############################################################################
+def import_module(name, path):
+    '''
+    Import a module that is not in sys.path
+    given it's relative path
+    ''' 
+    import imp
+    file, pathname, description = imp.find_module(name, [path])
+    try:
+        return imp.load_module(name, file, pathname, description)
+    finally:
+        if file: file.close()
 
 ###############################################################################   
 class gmCollapse(object):
@@ -224,28 +226,37 @@ def make_latex_string(string):
     string = re.sub(' ', '\ ', string)
     return string
 
-
-###############################################################################
-def sentinelize(iterable, sentinel):
+###############################################################################   
+def number_to_color(num=0):
     '''
-    Add an item to the end of an iterable
+    Takes a number, returns a color
+
+    >>> number_to_color(7)
+    'pink'
+    '''
     
-    >>> list(sentinelize(range(4), 99))
-    [0, 1, 2, 3, 99]
-    ''' 
-    for item in iterable: yield item
-    yield sentinel
+    num = int(num) % 8
+    return {
+        0: 'blue',
+        1: 'green',
+        2: 'red',
+        3: 'cyan',
+        4: 'magenta',
+        5: 'orange',
+        6: 'black',
+        7: 'pink'
+    }[num]
 
-###############################################################################
-def import_module(name, path):
-    '''
-    Import a module that is not in sys.path
-    given it's relative path
-    ''' 
-    import imp
-    file, pathname, description = imp.find_module(name, [path])
-    try:
-        return imp.load_module(name, file, pathname, description)
-    finally:
-        if file: file.close()
 
+def number_to_color_light(num=0):
+    num = int(num) % 8
+    return {
+        0: '#87CEFA', #'lightblue',
+        1: '#90EE90', #'lightgreen',
+        2: '#FFB6C1', #'lightpink',
+        3: '#48D1CC', #'mediumturquoise',
+        4: '#EE82EE', #'violet',
+        5: '#FFD700', #'gold',
+        6: '#C0C0C0', #'silver',
+        7: '#FFFAF0', #'floralwhite'
+    }[num]

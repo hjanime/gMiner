@@ -63,13 +63,14 @@ class gmJob(object):
             # Find the gmOperation object #
             self.operation = getattr(op, self.request['operation_type']).gmOperation(self.request, self.tracks)
             # Prepare the operation #
-            self.operation.prepare()
+            if not self.errors: self.operation.prepare()
          
         # Catch errors #  
         except gm_err.gmError as err:
             self.prepare_passed = False
             return self.catch_error(err)
-            
+        if self.errors: self.operation.prepare()
+
         # Report success #
         self.prepare_passed = True
         return 200, 'Method prepare() done', 'text/plain'
@@ -84,12 +85,13 @@ class gmJob(object):
                 raise gm_err.gmError(400, "You tried to run a request that hasn't yet passed the prepare phase")
            
              # Run it #
-            return self.operation.run()
+            if not self.errors: return self.operation.run()
 
         # Catch errors #  
         except gm_err.gmError as err:
             self.run_passed = False
             return self.catch_error(err)
+        if self.errors: return self.operation.run()
 
     def catch_error(self, err):
         if self.errors:

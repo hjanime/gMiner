@@ -5,7 +5,7 @@ from ... import gm_common as gm_com
 #-------------------------------------------------------------------------------------------#   
 class merge_scores(gmManipulation):
     '''Merge scores'''
-    input_tracks       = [{'type': 'list of tracks', 'name': 'tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
+    input_tracks       = [{'type': 'list of tracks', 'name': 'tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
     input_other        = []
     input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]

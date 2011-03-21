@@ -1,10 +1,10 @@
 # General modules #
-import sys
+import sys, os
 
 # Modules #
 from ... import gm_parsing   as gm_par
 from ... import gm_errors    as gm_err
-from ... import gm_self.tracks    as gm_tra
+from ... import gm_tracks    as gm_tra
 from ... import gm_common    as gm_com
 from ...gm_constants import *
 
@@ -16,44 +16,55 @@ class gmManipulation(object):
 
     def check(self):
         # Location specified #
-        if not gm_par.exists_in_dict(self.request, 'output_location'):
-            raise gm_err.gmError(400, "There does not seem to be an output location specified in the request")
+        if len(self.output_tracks) > 0:
+            if not gm_par.exists_in_dict(self.request, 'output_location'):
+                raise gm_err.gmError(400, "There does not seem to be an output location specified in the request")
+        # Location is a directory #
+        self.output_dir = self.request['output_location'].rstrip('/')
+        if not os.path.isdir(self.output_dir):
+            raise gm_err.gmError(400, "The output location specified is not a directory")
 
-    def input_tracks(self):
+    def make_input_tracks(self):
         # Number of tracks #
-        if len([key for key in self.mani_fn.input if key=='track']) and self.mani_fn.num_input != len(selftracks):
-            raise gm_err.gmError(400, "The number of tracks inputed does not suit the manipulation requested")
+        if not 'list of tracks' in [t['type'] for t in self.input_tracks]:
+            if len(self.input_tracks) != len(self.req_tracks):
+                raise gm_err.gmError(400, "The number of tracks inputed does not suit the manipulation requested")
+        # Find tracks #
+        for t in self.input_tracks:
+            if t['type'] == 'list of tracks':
+                for req_t in self.req_tracks:
+                    if track_matches_desc(req_t, t):
+                        t['obj'].append(req_t)
+                        self.req_tracks.remove(req_t)
+            else: 
+                for req_t in self.req_tracks:
+                    if track_matches_desc(req_t, t):
+                        t['obj'] = req_t
+                        self.req_tracks.remove(req_t)
+            if not t.has_key('obj'): raise gm_err.gmError(400, "A required track for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
 
-    def input_extras(self):
-        pass
+    def make_output_chromosomes(self):
+        self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
 
-    def output_chromosomes(self):
-        self.chrs = self.manip.chr_collapse([track.chrs for track in self.tracks])
+    def make_output_metadata(self):
+        self.chrmeta = []
+        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for m in t['obj'].chrmeta if m['length'] and m['name'] == chr for t in self.input_tracks])})
+        self.out.write_chr_meta(self.chrmeta)
 
-    def output_metadata(self):
-        pass
-    
-    def output_names(self):
-        pass
+    def make_output_tracks(self):
+        for t in self.output_tracks:
+            t['name']     = self.__doc__ + ' on ' + gm_com.andify_strings([track['obj'].name for track in self.input_tracks])
+            t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql' 
+            t['obj']      = gm_tra.gmTrack.new(t['location'], 'sql', t['kind'], t['name'])
+            t['obj'].write_meta_data({'name': t['name']})
 
-    def output_fields(self):
-        self.in_fields  = self.mani_fn.in_fields 
-        self.out_fields = self.mani_fn.out_fields 
-        self.out_type   = self.mani_fn.out_type 
-
-    def output_tracks(self):
-        pass
-
-    def chr_collapse(self, *args):
-        return gm_com.gmCollapse.by_appending(*args)
-
-    def get_special_parameter_stop_val(self, chr)
-        return max([m['length'] for m in t['obj'].chrmeta if m['length'] and m['name'] == chr in m for t in self.input_tracks])
-        self.chrmeta.append({'name': chr, 'length': self.stop_vals[chr]})
+    def get_special_parameter_stop_val(self, chr_name):
+        for chr in self.chrmeta:
+            if chr['name'] == chr_name: return chr['length']
 
     def execute(self):
         # Several outputs #
-        if len(self.output_tracks) > 1: return 1/0
+        if len(self.output_tracks) > 1: raise NotImplementedError
         # Only one output track #
         for chr in self.chrs:
             kwargs = {}
@@ -62,12 +73,20 @@ class gmManipulation(object):
             for t in self.input_extras:
                 kwargs[t['name']] = getattr(self, 'get_special_parameter_' + t['type'])(chr)
             for t in self.input_other:
-                kwargs[t['name']] = return 1/0    
+                raise NotImplementedError
             getattr(output_tracks[0]['obj'], 'write_' + output_tracks[0]['type'][:4])(chr, self.generate(*kwargs), output_tracks[0]['obj'])
 
-#############################################################################################
-def track_matches_desc(track, description):
-    pass
+    def finalize(self):
+        self.output_tracks[0]['obj'].unload()
+
+    def chr_collapse(self, *args):
+        return gm_com.gmCollapse.by_appending(*args)
+
+#-------------------------------------------------------------------------------------------#   
+def track_matches_desc(track, dict):
+    if track.type        != dict['kind']:       return False
+    if set(track.fields) < set(dict['fields']): return False
+    return True
 
 #############################################################################################
 # Submodules #
@@ -98,16 +117,14 @@ class gmOperation(object):
         self.manip = globals()[self.request['manipulation']](self.request, self.tracks)
         # Call manip methods #
         self.manip.check()
-        self.manip.input_tracks()
-        self.manip.input_extras()
-        self.manip.output_chromosomes()
-        self.manip.output_names()
-        self.manip.output_fields()
-        self.manip.output_tracks()
+        self.manip.make_input_tracks()
+        self.manip.make_output_chromosomes()
+        self.manip.make_output_tracks()
+        self.manip.make_output_metadata()
     
     def run(self):
         # Call manip methods #
         self.manip.execute()
-        self.manip.output_metadata()
+        self.manip.finalize()
         # Report success # 
         return 200, "Manipulation succeded", "text/plain"
