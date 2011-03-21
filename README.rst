@@ -19,8 +19,8 @@ As well as access functionality involving genomic manipulations like:
 * Create a track that is the complement of another track.
 
 Typical usage often looks like this:
+.. code-block:: python
 
-``
     import gMiner
     result = gMiner.run(
         track1          = '/scratch/sinclair/Tracks/qual/sql/ribosome_genesis.sql',
@@ -32,7 +32,6 @@ Typical usage often looks like this:
         gm_encoding     = 'image/png'
     )
     with open('/tmp/graph.png', 'w') as f: f.write(result)
-``
     
 ==================
 Full documentation
@@ -40,4 +39,4 @@ Full documentation
 
 The full documentation can be found on our wiki page:
 
-http://bbcf.epfl.ch/twiki/bin/view/BBCF/GFeatMiner
+http://bbcf.epfl.ch/gMiner
