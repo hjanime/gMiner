@@ -1,4 +1,5 @@
 # gMiner Modules #
+from ...gm_constants import *
 from .. import desc_stat as gm_stat
 from ... import gm_tests
 
@@ -30,4 +31,4 @@ class Unittest_test(unittest.TestCase):
                 ]
 
         for t in tests:
-            self.assertEqual(t['fn'](t['input']), t['output'])
+            self.assertEqual(t['fn']([[d[gm_qualitative_fields.index(f)] for f in t['fn'].fields] for d in t['input']]), t['output'])

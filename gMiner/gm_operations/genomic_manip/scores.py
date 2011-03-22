@@ -70,3 +70,4 @@ class mean_score_by_feature(gmManipulation):
            computes the mean of scores in X for every feature in Y.
            The output consits of a qualitative track simliar to Y but
            with added score values.'''
+        pass

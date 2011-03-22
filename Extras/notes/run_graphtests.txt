@@ -1,0 +1,4 @@
+To run the automated graph tests, you can simply enter ipython and type the two following commands:
+
+    [1] import gMiner.gm_tests.gm_graphs as g
+    [2] g.generate_graphs()

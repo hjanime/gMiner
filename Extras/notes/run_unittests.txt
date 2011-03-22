@@ -1,0 +1,3 @@
+To run all the unitests we have, you can simply use the nosetests discovery tool. Change directory to the folder where the setup.py script is found and run the following command:
+
+    nosetests --with-doctest

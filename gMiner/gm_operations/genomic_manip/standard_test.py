@@ -11,6 +11,8 @@ except ImportError:
 ################################################################################### 
 class Unittest_test(unittest.TestCase):
     def runTest(self):
+        self.maxDiff=None
+
         tests  = [
                 {'fn':     gm_manip.standard.complement().generate,
                  'input':  {'stop_val': 200,
@@ -36,6 +38,26 @@ class Unittest_test(unittest.TestCase):
                             (230, 240, u'Name11', 0.1, u'+'),
                             (250, 260, u'Name12', 0.2, u'+'),
                             (270, 280, u'Name13', 0.0, u'+')]}
+                ,
+                {'fn':     gm_manip.standard.overlap_pieces().generate,
+                 'input':  {'stop_val': 400,
+                            'X': gm_tests.gm_track_collections['Validation']['Validation 2']['data']['chr1'],
+                            'Y': gm_tests.gm_track_collections['Validation']['Validation 3']['data']['chr1']},
+                 'output': [(15,  20,  u'NameA with Name1',  0.0, '.'),
+                            (32,  38,  u'NameB with Name2',  0.0, '.'),
+                            (95,  100, u'NameD with Name5',  0.0, '.'),
+                            (110, 115, u'Name6 with NameD',  0.0, '.'),
+                            (130, 135, u'Name7 with NameE',  0.0, '.'),
+                            (140, 145, u'NameF with Name7',  0.0, '.'),
+                            (185, 190, u'NameG with Name8',  0.0, '.'),
+                            (185, 195, u'NameG with Name9',  0.0, '.'),
+                            (210, 215, u'Name10 with NameH', 0.0, '.'),
+                            (215, 220, u'NameI with Name10', 0.0, '.'),
+                            (235, 240, u'NameJ with Name11', 0.0, '.'),
+                            (250, 254, u'Name12 with NameJ', 0.0, '.'),
+                            (252, 258, u'NameK with Name12', 0.0, '.'),
+                            (256, 260, u'NameL with Name12', 0.0, '.'),
+                            (270, 275, u'Name13 with NameL', 0.0, '.')]},
                  ]
 
         for t in tests:
