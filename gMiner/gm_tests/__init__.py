@@ -5,11 +5,11 @@ import os, sys, random, tempfile
 from .. import gm_common as gm_com
 from .. import gm_tracks as gm_tra
 from ..gm_constants import *
+import gm_random_track as gm_random
 
 # Tracks should better be local for speed #
 if os.environ.has_key('GMINER_TRACKS'): gm_tracks_path = os.environ['GMINER_TRACKS'] 
 else:                                   gm_tracks_path = gm_path + '/../Extras/tracks/'
-
 
 # Every collection of tracks #
 gm_track_collections = {
@@ -68,7 +68,7 @@ def generate_tracks(rebuild=False):
 
     # Extra collections #
     gm_track_collections['Random'] = {}
-    gm_random  = gm_com.import_module('gm_random_track', gm_path + '/../Extras/scripts/')
+    #gm_random  = gm_com.import_module('gm_random_track', gm_path + '/../Extras/scripts/')
     for num in [1,2,3,4]:
         new_format = 'sql'
         new_type = 'qualitative'
@@ -89,5 +89,4 @@ def generate_tracks(rebuild=False):
         gm_track_collections['Random'][new_name]['name'] = new_name
 
 #############################################################################################
-
-generate_tracks()
+generate_tracks(rebuild=True)
