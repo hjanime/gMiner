@@ -30,4 +30,4 @@ Typical usage often looks like this:
 Full documentation
 ==================
 
-The full documentation can be found [on our website][http://bbcf.epfl.ch/gMiner].
+The full documentation can be found [on our website](http://bbcf.epfl.ch/gMiner).
