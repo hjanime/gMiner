@@ -1,14 +1,16 @@
+# Modules #
+import tempfile
+
 # gMiner #
-import gMiner
-from gMiner.gm_constants import *
+from ... import gm_tests
 
 # Track set #
 track_set = {
-    'single': gm_track_collections['Random']['Test random track 1'],
+    'single': gm_tests.gm_track_collections['Random']['Test random track 1'],
     'many': {
-        1: gm_track_collections['Random']['Test random track 2'],
-        2: gm_track_collections['Random']['Test random track 3'],
-        3: gm_track_collections['Random']['Test random track 4'],
+        1: gm_tests.gm_track_collections['Random']['Test random track 2'],
+        2: gm_tests.gm_track_collections['Random']['Test random track 3'],
+        3: gm_tests.gm_track_collections['Random']['Test random track 4'],
 }}
 
 # Extra variable #

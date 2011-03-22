@@ -5,7 +5,7 @@ from ... import gm_errors    as gm_err
 from ...gm_constants import *
 
 # Submodules #
-from .graphs import *
+from . import graphs as gra
 
 # Functions #
 def list_options():
@@ -38,7 +38,7 @@ class gmOperation(object):
         # Create subtracks #
         self.subtracks = [subtrack for track in self.tracks for subtrack in self.track_cut_down(track)]
         # Create graph #
-        self.graph = gmGraph(self.request, self.subtracks, self.tracks)
+        self.graph = gra.gmGraph(self.request, self.subtracks, self.tracks)
          
     def track_cut_down(self, track):
         region = self.request['selected_regions']
