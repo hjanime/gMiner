@@ -13,6 +13,10 @@ As well as access functionality involving genomic manipulations like:
 * View the overlapping intervals of two tracks.
 * Create a track that is the complement of another track.
 
+To install it just type:
+
+    $ pip install gMiner 
+
 Typical usage often looks like this:
 
     import gMiner

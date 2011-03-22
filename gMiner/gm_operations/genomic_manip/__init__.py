@@ -43,6 +43,15 @@ class gmManipulation(object):
                         self.req_tracks.remove(req_t)
             if not t.has_key('obj'): raise gm_err.gmError(400, "A required track for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
 
+    def make_input_other(self):
+        for t in self.input_other:
+            if not gm_par.exists_in_dict(self.request, t['key']):
+                raise gm_err.gmError(400, "A required parameter for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a '" + t['key'] + "' paramater that must be of type: " + t['type'].__name__)
+            try:
+                t['value'] = t['type'](self.request[t['key']])
+            except ValueError as err:
+                raise gm_err.gmError(400, "The '" + t['key'] + "' parameter is not of type: " + t['type'].__name__, err)
+
     def make_output_chromosomes(self):
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
 
@@ -75,7 +84,7 @@ class gmManipulation(object):
             for t in self.input_extras:
                 kwargs[t['name']] = getattr(self, 'get_special_parameter_' + t['type'])(chr)
             for t in self.input_other:
-                raise NotImplementedError
+                kwargs[t['name']] = t['value']
             getattr(T['obj'], 'write_' + T['kind'][:4])(chr, self.generate(**kwargs), T['fields'])
 
     def finalize(self):
@@ -120,6 +129,7 @@ class gmOperation(object):
         # Call manip methods #
         self.manip.check()
         self.manip.make_input_tracks()
+        self.manip.make_input_other()
         self.manip.make_output_chromosomes()
         self.manip.make_output_tracks()
         self.manip.make_output_metadata()

@@ -71,3 +71,21 @@ class mean_score_by_feature(gmManipulation):
            The output consits of a qualitative track simliar to Y but
            with added score values.'''
         pass
+
+#-------------------------------------------------------------------------------------------#   
+class window_smoothing(gmManipulation):
+    '''Smooth scores'''
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
+    input_constraints  = []
+    input_other        = [{'type': int, 'key': 'window_size', 'name': 'L'}]
+    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
+    output_constraints = []
+    output_other       = []
+    def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
+    
+    def generate(self, **kwargs):
+        '''Given a quantiative track and a window size in base pairs
+           will output a new quantiative track with, at each position
+           p, the mean scores in the window [p-L, p+L]''' 
+        pass
