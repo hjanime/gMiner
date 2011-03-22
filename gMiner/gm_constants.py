@@ -9,25 +9,29 @@ gm_path = ''
 
 # Convert formats or not #
 gm_convert_dict = {
-    'sql': False,
+    'sql':  False,
     'hdf5': False,
     'json': False,
 }
 
 # File types to extensions #
 gm_known_extensions = {
-    'SQLite 3.x database': 'sql',
-    'SQLite database (Version 3)': 'sql',
+    'SQLite 3.x database':                       'sql',
+    'SQLite database (Version 3)':               'sql',
     'Hierarchical Data Format (version 5) data': 'hdf5',
 }
 
+# Default track fields #
+gm_qualitative_fields  = ['start', 'end', 'name', 'score', 'strand']
+gm_quantitative_fields = ['start', 'end', 'score']
+
 # Field types #
 gm_field_types = {
-    'start': 'integer',
-    'end': 'integer',
-    'score': 'real',
+    'start':  'integer',
+    'end':    'integer',
+    'score':  'real',
     'strand': 'text',
-    'name': 'text',
+    'name':   'text',
 }
 
 # Chromosome names #
@@ -77,7 +81,7 @@ gm_terminal_colors = {
     'bnkwht': '\033[5;37m', # White
     'bakblk': '\033[40m',   # Black - Background
     'bakred': '\033[41m',   # Red
-    'badgrn': '\033[42m',   # Green
+    'bakgrn': '\033[42m',   # Green
     'bakylw': '\033[43m',   # Yellow
     'bakblu': '\033[44m',   # Blue
     'bakpur': '\033[45m',   # Purple

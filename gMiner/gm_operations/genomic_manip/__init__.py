@@ -10,7 +10,7 @@ from ...gm_constants import *
 
 ############################################################################################# 
 class gmManipulation(object):
-    def __init__(self, request, tracks):
+    def __init__(self, request=None, tracks=None):
         self.request = request
         self.req_tracks = tracks
 
@@ -46,17 +46,18 @@ class gmManipulation(object):
     def make_output_chromosomes(self):
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
 
-    def make_output_metadata(self):
-        self.chrmeta = []
-        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for m in t['obj'].chrmeta if m['length'] and m['name'] == chr for t in self.input_tracks])})
-        self.out.write_chr_meta(self.chrmeta)
-
     def make_output_tracks(self):
         for t in self.output_tracks:
             t['name']     = self.__doc__ + ' on ' + gm_com.andify_strings([track['obj'].name for track in self.input_tracks])
             t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql' 
             t['obj']      = gm_tra.gmTrack.new(t['location'], 'sql', t['kind'], t['name'])
             t['obj'].write_meta_data({'name': t['name']})
+
+    def make_output_metadata(self):
+        self.chrmeta = []
+        for t in self.output_tracks:        
+            for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].chrmeta if m['length'] and m['name'] == 'chr1'])})
+            t['obj'].write_chr_meta(self.chrmeta)
 
     def get_special_parameter_stop_val(self, chr_name):
         for chr in self.chrmeta:
@@ -66,15 +67,16 @@ class gmManipulation(object):
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
         # Only one output track #
+        T = self.output_tracks[0] 
         for chr in self.chrs:
             kwargs = {}
             for t in self.input_tracks:
-                kwargs[t['name']] = getattr(t['obj'], 'get_data_' + t['type'][:4])({'type': 'chr','chr': chr}, t['fields'])
+                kwargs[t['name']] = getattr(t['obj'], 'get_data_' + t['kind'][:4])({'type': 'chr','chr': chr}, t['fields'])
             for t in self.input_extras:
                 kwargs[t['name']] = getattr(self, 'get_special_parameter_' + t['type'])(chr)
             for t in self.input_other:
                 raise NotImplementedError
-            getattr(output_tracks[0]['obj'], 'write_' + output_tracks[0]['type'][:4])(chr, self.generate(*kwargs), output_tracks[0]['obj'])
+            getattr(T['obj'], 'write_' + T['kind'][:4])(chr, self.generate(**kwargs), T['fields'])
 
     def finalize(self):
         self.output_tracks[0]['obj'].unload()
@@ -127,4 +129,4 @@ class gmOperation(object):
         self.manip.execute()
         self.manip.finalize()
         # Report success # 
-        return 200, "Manipulation succeded", "text/plain"
+        return 200, "Manipulation succeded. Result written in: " + self.manip.output_tracks[0]['location'] , "text/plain"

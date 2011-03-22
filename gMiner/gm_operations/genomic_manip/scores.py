@@ -1,3 +1,6 @@
+# Modules #
+import sys
+
 # Importing #
 from . import gmManipulation
 from ... import gm_common as gm_com
@@ -5,7 +8,7 @@ from ... import gm_common as gm_com
 #-------------------------------------------------------------------------------------------#   
 class merge_scores(gmManipulation):
     '''Merge scores'''
-    input_tracks       = [{'type': 'list of tracks', 'name': 'tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
+    input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
     input_other        = []
     input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
@@ -14,11 +17,11 @@ class merge_scores(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
     
-    def generate(self, **kwargs):
+    def generate(self, list_of_tracks, stop_val):
         '''Merges N quantitative tracks using the average fucntion'''
         # Get all iterators #
         sentinel = [sys.maxint, sys.maxint, 0.0]
-        tracks = [gm_com.sentinelize(x, sentinel) for x in iterables]
+        tracks = [gm_com.sentinelize(x, sentinel) for x in list_of_tracks]
         elements = [x.next() for x in tracks]
         tracks_denom = 1.0/len(tracks)
         # Check empty #
@@ -52,8 +55,8 @@ class merge_scores(gmManipulation):
 #-------------------------------------------------------------------------------------------#   
 class mean_score_by_feature(gmManipulation):
     '''Mean score by feature'''
-    input_tracks       = [{'type': 'track', 'name': 'A', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
-                          {'type': 'track', 'name': 'B', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
+                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     input_constraints  = []
     input_other        = []
     input_extras       = []
@@ -63,7 +66,7 @@ class mean_score_by_feature(gmManipulation):
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
     
     def generate(self, **kwargs):
-        '''Given a quantitative track "A" and a qualititive track "B"
-           computes the mean of scores in A for every feature in B.
-           The output consits of a qualitative track simliar to B but
+        '''Given a quantitative track "X" and a qualititive track "Y"
+           computes the mean of scores in X for every feature in Y.
+           The output consits of a qualitative track simliar to Y but
            with added score values.'''

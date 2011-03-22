@@ -1,1 +1,1 @@
-nosetests gMiner --with-doctest --failure-detail
+nosetests --with-doctest

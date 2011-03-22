@@ -1,3 +1,6 @@
+# Modules #
+import sys
+
 # Importing #
 from . import gmManipulation
 from ... import gm_common as gm_com
@@ -14,11 +17,11 @@ class complement(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_appending(*args) 
     
-    def generate(self, **kwargs):
+    def generate(self, X, stop_val):
         '''The result consists of all spaces that were not
         covered by a feature in the original track'''
         last_end = 0
-        for x in iterable:
+        for x in X:
             if x[0] > last_end:
                 yield (last_end, x[0], None, None, '.')
                 last_end = x[1]
@@ -40,7 +43,7 @@ class overlap_track(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_intersection(*args) 
    
-    def generate(self, **kwargs):
+    def generate(self, X, Y):
         '''Computes the overlap of the first track against the second track
            returning only complete features from the first track'''
         sentinel = [sys.maxint, sys.maxint]
