@@ -56,7 +56,7 @@ class merge_scores(gmManipulation):
 class mean_score_by_feature(gmManipulation):
     '''Mean score by feature'''
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
-                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start', 'end', 'name', 'score', 'strand']}]
     input_constraints  = []
     input_other        = []
     input_extras       = []
@@ -65,7 +65,7 @@ class mean_score_by_feature(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
     
-    def generate(self, **kwargs):
+    def generate(self, X, Y):
         '''Given a quantitative track "X" and a qualititive track "Y"
            computes the mean of scores in X for every feature in Y.
            The output consits of a qualitative track simliar to Y but
@@ -77,15 +77,56 @@ class window_smoothing(gmManipulation):
     '''Smooth scores'''
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
-    input_other        = [{'type': int, 'key': 'window_size', 'name': 'L'}]
+    input_other        = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
     input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
     output_constraints = []
     output_other       = []
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
     
-    def generate(self, **kwargs):
-        '''Given a quantiative track and a window size in base pairs
+    def generate(self, X, L, stop_val):
+        '''Given a quantiative track and a window size in base pairs,
            will output a new quantiative track with, at each position
-           p, the mean scores in the window [p-L, p+L]''' 
-        pass
+           p, the mean of the scores in the window [p-L, p+L]'''
+        # Sentinel #
+        sentinel = [sys.maxint, sys.maxint, 0.0]
+        X = gm_com.sentinelize(X, sentinel)
+        # Growing and shrinking list of features #
+        F = []
+        # Current position counting on nucleotides #
+        p = -L-2
+        # Position since which the mean hasn't changed #
+        same_since = -L-3 
+        # The window start and end #
+        def s(): return p-L
+        def e(): return p+L+1
+        # The current and next mean #
+        curt_mean = 0
+        next_mean = 0
+        # Multipication factor #
+        f = 1.0 / (2*L+1)
+        # First feature #
+        F.append(X.next())
+        if F == [sentinel]: return
+        # Core loop #
+        from pudb import set_trace; set_trace()
+        while True:
+            #__import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()
+            # Advance one #
+            p += 1                                              ; print "p is " + str(p)
+            # Stop condition #                                  
+            if p == stop_val: break                             ; print "s is " + str(s()) + " e is " + str(e())
+            # Scores entering window # 
+            if F[-1][1] < e(): F.append(X.next())               ; print "appended " + str(F[-1])
+            if F[-1][0] < e(): next_mean += F[-1][2] * f        ; print "adding "   + str(F[-1][2]) 
+            # Scores exiting window # 
+            if F[ 0][1] < s(): F.pop(0)                         ; print "poped last"
+            if F[ 0][0] < s(): next_mean -= F[ 0][2] * f        ; print "removing " + str(F[ 0][2])
+            # Check p is positive #
+            if p < 0: curt_mean = 0
+            # Emit feature #
+            if next_mean != curt_mean:
+                if curt_mean != 0:
+                    yield (same_since, p-1, curt_mean)          ; print "emmited " + str((same_since, p-1, curt_mean))
+                curt_mean  = next_mean
+                same_since = p

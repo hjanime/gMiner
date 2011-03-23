@@ -11,7 +11,7 @@ except ImportError:
 ################################################################################### 
 class Unittest_test(unittest.TestCase):
     def runTest(self):
-        self.maxDiff=None
+        self.maxDiff = None
 
         tests  = [
                 {'fn':     gm_manip.standard.complement().generate,
