@@ -92,4 +92,5 @@ def generate_random_tracks(rebuild=True):
         gm_track_collections['Random'][new_name]['name'] = new_name
 
 #############################################################################################
-generate_tracks()
+#generate_tracks()
+generate_tracks(rebuild=False)

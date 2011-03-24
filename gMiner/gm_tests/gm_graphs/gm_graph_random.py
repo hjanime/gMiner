@@ -5,7 +5,7 @@ import tempfile
 from ... import gm_tests
 
 # Generate them #
-gm_tests.generate_random_tracks()
+gm_tests.generate_random_tracks(rebuild=False)
 
 # Track set #
 track_set = {
