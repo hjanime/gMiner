@@ -15,19 +15,6 @@ class Unittest_test(unittest.TestCase):
         self.maxDiff = None
        
         #--------------------------------------------------------------------------#
-        tests  = [{'fn':   gm_manip.scores.window_smoothing().generate,
-                 'input':  {'stop_val': 9,
-                            'L': 2,
-                            'X': [[0,2,10],
-                                  [2,4,20],
-                                  [6,8,10]]},
-                 'output': [(0,  1,   8.0),
-                            (1,  3,  12.0),
-                            (3,  5,  10.0),
-                            (5,  6,   8.0),
-                            (6,  9,   4.0),]}
-                 ]
-       
         def smooth_signal(data, L):
             import numpy
             window = L*2+1
@@ -64,12 +51,12 @@ class Unittest_test(unittest.TestCase):
         check_both_methods()
 
         #--------------------------------------------------------------------------#
-        tests  = [{'fn':   gm_manip.scores.merge_scores().generate,
+        tests = [{'fn':    gm_manip.scores.merge_scores().generate,
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [[],[]]},
                  'output': []},
                  
-                 {'fn':   gm_manip.scores.merge_scores().generate,
+                 {'fn':    gm_manip.scores.merge_scores().generate,
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [gm_tests.gm_track_collections['Scores']['Scores 1']['data']['chr1'],
                                                gm_tests.gm_track_collections['Scores']['Scores 2']['data']['chr1'],
@@ -89,5 +76,26 @@ class Unittest_test(unittest.TestCase):
 
         for t in tests:
             self.assertEqual(list(t['fn'](**t['input'])), t['output'])
-
         #--------------------------------------------------------------------------#
+
+        tests  = [{'fn':   gm_manip.scores.mean_score_by_feature().generate,
+                 'input':  {'X': gm_tests.gm_track_collections['Scores'    ]['Scores 4'    ]['data']['chr1'],
+                            'Y': gm_tests.gm_track_collections['Validation']['Validation 2']['data']['chr1']},
+                 'output': [(10,  20,  u'Name1',  15.0, u'+'),
+                            (30,  40,  u'Name2',  50.0, u'+'),
+                            (50,  60,  u'Name3',  30.0, u'+'),
+                            (70,  80,  u'Name4',  25.0, u'+'),
+                            (90,  100, u'Name5',   8.0, u'+'),
+                            (110, 120, u'Name6',   0.0, u'+'),
+                            (130, 150, u'Name7',   1.0, u'+'),
+                            (180, 190, u'Name8',   5.0, u'+'),
+                            (180, 200, u'Name9',   8.0, u'+'),
+                            (210, 220, u'Name10',  0.0, u'+'),
+                            (230, 240, u'Name11',  0.0, u'+'),
+                            (250, 260, u'Name12',  0.0, u'+'),
+                            (270, 280, u'Name13',  0.0, u'+'),
+                            (290, 300, u'Name14',  0.0, u'+')]}
+                 ]
+
+        for t in tests:
+            self.assertEqual(list(t['fn'](**t['input'])), t['output'])

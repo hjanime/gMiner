@@ -4,6 +4,9 @@ import tempfile
 # gMiner #
 from ... import gm_tests
 
+# Generate them #
+gm_tests.generate_random_tracks()
+
 # Track set #
 track_set = {
     'single': gm_tests.gm_track_collections['Random']['Test random track 1'],

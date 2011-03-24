@@ -96,3 +96,4 @@ def recompile():
 
 # Debuging #
 def trace(): __import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()
+def pudb():  __import__('pudb').set_trace()

@@ -27,11 +27,12 @@ gm_track_collections = {
         'Scores 1': {'orig_path': gm_tracks_path + 'quan/wig/scores1.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
         'Scores 2': {'orig_path': gm_tracks_path + 'quan/wig/scores2.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
         'Scores 3': {'orig_path': gm_tracks_path + 'quan/wig/scores3.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
+        'Scores 4': {'orig_path': gm_tracks_path + 'quan/wig/scores4.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
     },
 }
 
 #############################################################################################
-def generate_tracks(rebuild=False):
+def generate_tracks(rebuild=True):
     '''
     This function will generate a few collections of tracks usefull for testing and validation. 
     '''
@@ -66,6 +67,8 @@ def generate_tracks(rebuild=False):
             # Name #
             collection[track]['name'] = track
 
+#############################################################################################
+def generate_random_tracks(rebuild=True):
     # Extra collections #
     gm_track_collections['Random'] = {}
     #gm_random  = gm_com.import_module('gm_random_track', gm_path + '/../Extras/scripts/')
@@ -89,4 +92,4 @@ def generate_tracks(rebuild=False):
         gm_track_collections['Random'][new_name]['name'] = new_name
 
 #############################################################################################
-generate_tracks(rebuild=True)
+generate_tracks()
