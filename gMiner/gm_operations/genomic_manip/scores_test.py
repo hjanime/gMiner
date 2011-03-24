@@ -67,7 +67,24 @@ class Unittest_test(unittest.TestCase):
         tests  = [{'fn':   gm_manip.scores.merge_scores().generate,
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [[],[]]},
-                 'output': []}
+                 'output': []},
+                 
+                 {'fn':   gm_manip.scores.merge_scores().generate,
+                 'input':  {'stop_val': 200,
+                            'list_of_tracks': [gm_tests.gm_track_collections['Scores']['Scores 1']['data']['chr1'],
+                                               gm_tests.gm_track_collections['Scores']['Scores 2']['data']['chr1'],
+                                               gm_tests.gm_track_collections['Scores']['Scores 3']['data']['chr1']]},
+                 'output': [(0,    5,    2.0 + 0.6666666666666666),
+                            (5,   10,    4.0),
+                            (20,  30,   10.0),
+                            (30,  40,   30.0),
+                            (40,  50,   26.0 + 0.666666666666666),
+                            (50,  60,  120.0),
+                            (60,  68,  100.0),
+                            (68,  70,  200.0),
+                            (70,  80,  100.0),
+                            (90,  110,   3.0),
+                            (120, 130,  10.)]}
                  ]
 
         for t in tests:
