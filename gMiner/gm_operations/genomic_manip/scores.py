@@ -70,7 +70,7 @@ class mean_score_by_feature(gmManipulation):
            computes the mean of scores in X for every feature in Y.
            The output consits of a qualitative track simliar to Y but
            with added score values.'''
-        pass
+        pass #TODO
 
 #-------------------------------------------------------------------------------------------#   
 class window_smoothing(gmManipulation):
@@ -87,7 +87,8 @@ class window_smoothing(gmManipulation):
     def generate(self, X, L, stop_val):
         '''Given a quantiative track and a window size in base pairs,
            will output a new quantiative track with, at each position
-           p, the mean of the scores in the window [p-L, p+L]'''
+           p, the mean of the scores in the window [p-L, p+L].
+           Border cases are handled by signal zero padding.'''
         # Sentinel #
         sentinel = [sys.maxint, sys.maxint, 0.0]
         X = gm_com.sentinelize(X, sentinel)
@@ -97,10 +98,7 @@ class window_smoothing(gmManipulation):
         p = -L-2
         # Position since which the mean hasn't changed #
         same_since = -L-3 
-        # The window start and end #
-        def s(): return p-L
-        def e(): return p+L+1
-        # The current and next mean #
+        # The current mean and next mean #
         curt_mean = 0
         next_mean = 0
         # Multipication factor #
@@ -109,24 +107,29 @@ class window_smoothing(gmManipulation):
         F.append(X.next())
         if F == [sentinel]: return
         # Core loop #
-        from pudb import set_trace; set_trace()
         while True:
-            #__import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()
             # Advance one #
-            p += 1                                              ; print "p is " + str(p)
-            # Stop condition #                                  
-            if p == stop_val: break                             ; print "s is " + str(s()) + " e is " + str(e())
+            p += 1                                            #; print "p is " + str(p)
+            # Window start and stop #
+            s = p-L                                           #; print "s is " + str(s)
+            e = p+L+1                                         #; print "e is " + str(e)
             # Scores entering window # 
-            if F[-1][1] < e(): F.append(X.next())               ; print "appended " + str(F[-1])
-            if F[-1][0] < e(): next_mean += F[-1][2] * f        ; print "adding "   + str(F[-1][2]) 
+            if F[-1][1] < e: F.append(X.next())               #; print "appended " + str(F[-1])
+            if F[-1][0] < e: next_mean += F[-1][2] * f        #; print "adding "   + str(F[-1][2]) 
             # Scores exiting window # 
-            if F[ 0][1] < s(): F.pop(0)                         ; print "poped last"
-            if F[ 0][0] < s(): next_mean -= F[ 0][2] * f        ; print "removing " + str(F[ 0][2])
-            # Check p is positive #
-            if p < 0: curt_mean = 0
+            if F[ 0][1] < s: F.pop(0)                         #; print "poped last"
+            if F[ 0][0] < s: next_mean -= F[ 0][2] * f        #; print "removing " + str(F[ 0][2])
+            # Border condition left #
+            if p < 0:
+                curt_mean = 0
+                same_since = p
+                continue
+            # Border condition right #                                  
+            if p == stop_val:
+                if curt_mean != 0: yield (same_since, p, curt_mean)
+                break
             # Emit feature #
             if next_mean != curt_mean:
-                if curt_mean != 0:
-                    yield (same_since, p-1, curt_mean)          ; print "emmited " + str((same_since, p-1, curt_mean))
+                if curt_mean != 0: yield (same_since, p, curt_mean)
                 curt_mean  = next_mean
                 same_since = p
