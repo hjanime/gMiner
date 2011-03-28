@@ -1,6 +1,6 @@
 The version number needs to be incremented in the documentation and in the following files:
 
 /CHANGES.txt
-/README.txt
 /setup.py
 /gMiner/gm_constants.py
+/Extras/tests/webservice/send.py

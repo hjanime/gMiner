@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = 'gMiner',
-    version          = '0.1.6',
+    version          = '1.0.0',
     packages         = ['gMiner','gMiner.gm_formats', 'gMiner.gm_operations'],
     license          = open('LICENSE.txt').read(),
     description      = "Manuiplations and statistics on genomic data.",
