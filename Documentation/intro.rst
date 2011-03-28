@@ -5,7 +5,7 @@ Introduction
 What is gFeatMiner?
 -------------------
 
-gFeatMiner is a Python module and can be seen as a framework for dealing with genomic data using a request based system. Typically the user has in his posession a few files containing genomic data. These files, refered to as tracks, contain genomic interval type information (.bed, .gff) or genomic score type information (.wig). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistices like:
+gFeatMiner is a Python module that can be seen as a framework for dealing with genomic data using a request based system. Typically the user has in his posession a few files containing genomic data. These files, refered to as tracks, contain genomic interval type information (.bed, .gff) or genomic score type information (.wig). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistices like:
 
 * What is the length distribution of the features inside the selection I made?
 * What is the score distribution of the features inside these three tracks?
@@ -30,11 +30,11 @@ gFeatMiner is now installed on your computer. You can jump to the "How do I use 
 
 Requirements
 """"""""""""
-gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the three following packages: ``matplotlib, cherrypy, python-magic``. These package dependencies will be automatically resolved if you use the ``pip`` command.
+gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the three following packages: ``matplotlib, cherrypy, python-magic``. These package dependencies will automatically be resolved if you use the ``pip`` command.
 
 Source code
 """""""""""
-Downloading the source code is optional, but if you are interested, all of the files and testing material are stored in a git repository on github. You can explore the repository with a web browser here:
+Downloading the source code is optional but, if you are interested, all of the files and testing material are stored in a git repository on github. You can explore the repository with a web browser here:
 
 https://github.com/bbcf/gMiner
 
@@ -44,7 +44,7 @@ To download a copy of the gFeatMiner code to your computer, simply use the follo
 
 Developement copy
 """""""""""""""""
-Executing the previous command enables you to play with a second copy of gFeatMiner while leaving the one installed with the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory the git repository root::
+Executing the previous command enables you to play with a second copy of gFeatMiner while leaving the one installed in the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory the git repository root::
 
     $ cd gMiner
     $ python -c "import gMiner; print gMiner.__file__"
@@ -55,8 +55,8 @@ Once gFeatMiner is installed, you use it in a python script by importing it and 
      
     import gMiner
     result = gMiner.run(
-        track1          = '/scratch/genomic/tracks/ribosome_proteins.sql',
-        track1_name     = 'RP genes',
+        track1          = '/scratch/genomic/tracks/all_yeast_genes.sql',
+        track1_name     = 'S. cer. genes (SGD)',
         operation_type  = 'desc_stat',
         characteristic  = 'number_of_features',
         per_chromosome  = 'True',
@@ -68,24 +68,38 @@ The ``result`` varaible now contains the requested graph in PNG format, suitable
 
     with open('/tmp/graph.png', 'w') as file: file.write(result)
 
+Other types of job will not return any result but will create a file in the location you sepcify. Here is an exemple that creates a new genomic track in the temporary directory::
 
-gFeatMiner is capable, 
+    import gMiner
+    gMiner.run(
+       track1          : '/scratch/genomic/tracks/refseq_ucsc.sql',
+       track1_name     : 'hg19 refSeq genome-wide from UCSC',
+       track2          : '/scratch/genomic/tracks/hiv_bushman.sql',
+       track2_name     : 'hg19 HIV integration sites from liftOver',
+       operation_type  : 'genomic_manip',
+       manipulation    : 'overlap_track',
+       output_location : '/tmp/',
+    )
 
+gFeatMiner is capable of numerous operations on genomic data. Currently, two modules are included:
+
+* :doc:`desc_stat`
+* :doc:`genomic_manip`
 
 Starting a server
 """""""""""""""""
-gFeatMiner is also designed to be accessed from other programs via the HTTP protocol. You can launch the gFeatMiner server by typing::
+gFeatMiner is also designed to be accessed from other programs via the HTTP protocol. You can launch the gFeatMiner server by typing the following in a terminal::
 
     $ python -c "import gMiner.gm_server as srv; srv.gmServer(port=7520).serve()"
 
-A server is now running locally. The default port is 7520 but this can be changed by specifying another value in the line above. Sending a POST request to ``http://localhost:7520/`` should work. However, extra configuration may be necessary on your server (Apache etc).
+A server is now running locally. The default port is 7520 but this can be changed by specifying another value in the line above. Sending a POST request to ``http://localhost:7520/`` should now work. However, extra configuration may be necessary on your server (Apache etc).
 
-To understand how to correctly form and send a POST request, as well as how to recieve the response, you can check out the files in ``Extras/test/webservice/``
+To understand how to correctly form and send a POST request, as well as how to recieve the response, you can check out the files in `Extras/test/webservice/ <https://github.com/bbcf/gMiner/tree/master/Extras/tests/webservice>`_
 
 Reporting bugs
---------------
-The github repository provides an issue tracking system in which you are welcome to open a new ticket if you think you have found a bug in gFeatMiner:
+""""""""""""""
+The github repository provides an issue tracking system. You are welcome to open a new ticket in it if you think you have found a bug in gFeatMiner:
 
 https://github.com/bbcf/gMiner/issues
 
-You will however need to create a github account to create a ticket, sorry.
+You will however need to create a github account to open a new issue, sorry.

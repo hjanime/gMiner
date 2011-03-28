@@ -1,8 +1,59 @@
+.. automodule:: gMiner.gm_operations.genomic_manip
+
 =====================
 Genomic Manipulations
 =====================
 
-Definition
+Another functionality provided by gFeatMiner is the ability to manipulate genomic data and craete new tracks from existing ones. To access this functionality you must specify ``operation_type=genomic_manip`` in the job request as seen in this exemple, in addition to a few other parameters that are detailed below::
+
+    import gMiner
+    result = gMiner.run(
+        track1          : '/scratch/genomic/tracks/refseq_ucsc.sql',
+        track1_name     : 'hg19 refSeq genome-wide from UCSC',
+        track2          : '/scratch/genomic/tracks/hiv_bushman.sql',
+        track2_name     : 'hg19 HIV integration sites from liftOver',
+        operation_type  : 'genomic_manip',
+        manipulation    : 'overlap_track',
+        output_location : '/tmp/gMiner/',
+    )
+
+After executing these two statements, a new track will be created in the ``/tmp/gMiner/`` directory.
+
+Parameters
 ----------
 
-Lorem ipsum
+Here are described all the paramaters that can or should be passed to gFeatMiner's run function.
+
+======================== =====
+Key                      Value   
+======================== =====
+**track_1**              This specifies the location of the first track file. At least one genomic file must be inputted to compute a statistic. Of course, an undefined number of supplementary tracks can be specified. The order in which they are given may or may not influence the output depending on the operation requested.
+
+**track_1_name**         This field is also required. Every track must have a name
+
+**track_2**              The location of the second track file. This field is optional, for instance, if the operation only requires one genomic file
+
+**track_2_name**         The name of the second track.
+
+*[More tracks ...]*      Following tracks are specified according to the standard ``track_N`` and ``track_N_name``
+
+**operation_type**       This field must be specified in the request and must take the value of ``genomic_manip`` if one wishes to perform genomic manipulation operations on the tracks provided.
+
+**manipulation**         Can take any of the values described in the next section, "Manipulations".
+
+**output_location**      Specifies the location at which the newly created track will be written.
+
+*[Extra parameters ...]* Depending on the manipulation requested, you may need to provide extra parameters like a window size or a threashold value. Refer to the manipulation documentation for more details.
+======================== =====
+
+Manipulations
+-------------
+Standard
+""""""""
+.. automodule:: gMiner.gm_operations.genomic_manip.standard
+    :members:
+
+Scores
+""""""
+.. automodule:: gMiner.gm_operations.genomic_manip.scores
+   :members:
