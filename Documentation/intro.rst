@@ -39,10 +39,14 @@ Requirements
 """"""""""""
 gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the three following packages: ``matplotlib, cherrypy, python-magic``. These package dependencies will automatically be resolved if you use the ``pip`` command.
 
-If you get strange errors when installing matplotlib (because of the ft2font extension for instance), just type one of the following commands::
+If you get strange errors when ``pip`` tries to install matplotlib (because of the ft2font extension for instance), just type one of the following commands::
 
      $ sudo apt-get install python-matplotlib
      $ sudo yum install python-matplotlib
+
+When upgrading to the latest version of gFeatMiner, to avoid also upgrading the dependencies, you can use::
+
+    $ sudo pip install --upgrade --no-deps gMiner
 
 Source code
 """""""""""
