@@ -22,8 +22,8 @@ def run(**kwargs):
     kwargs['service'] = gm_project_name
     kwargs['version'] = gm_project_version
     job = gmJob(kwargs, True)
-    error, result, type = job.prepare()
-    error, result, type = job.run()
+    error, result, type = job.prepare_with_errors()
+    error, result, type = job.run_with_errors()
     return result
 
 ###########################################################################   
@@ -31,75 +31,50 @@ class gmJob(object):
     def __init__(self, kwargs, errors=False):
         self.errors = errors   # Do errors pass sliently or should we raise them ?
         self.request = kwargs  # The request is a dictionary of values
-
-    def prepare(self):
-        try:
-            # Check the request file #
-            gm_par.check_request(self.request)
-            # Check for listing #
-            if self.request['operation_type'] == 'list':
-                self.operation = gmListOptions() 
-                return 200, 'Listing', 'text/plain'
-            # Parse the track list # 
-            self.track_dict = gm_par.parse_tracks(self.request)
-            # Make track objects #
-            self.tracks = [gm_tra.gmTrack.Factory(track, i, True) for i, track in enumerate(self.track_dict)]
-            # Standard request variables #
-            gm_par.default_if_none(self.request, 'selected_regions', '')
-            gm_par.parse_regions(self.request)
-            gm_par.default_if_none(self.request, 'wanted_chromosomes', '')
-            gm_par.parse_chrlist(self.request)
-            # Determine final chromosome list #
-            if self.request['wanted_chromosomes']:
-                for track in self.tracks: track.chrs = (set(track.all_chrs) & set(self.request['wanted_chromosomes']))
-            else:
-                for track in self.tracks: track.chrs = track.all_chrs
-            # Import the correct operation #
-            if not hasattr(op, self.request['operation_type']):
-                try:
-                    __import__('gMiner.gm_operations.' + self.request['operation_type'])
-                except ImportError as err:
-                    raise gm_err.gmError(400, "The operation " + self.request['operation_type'] + " is not supported at the moment.", err)
-            # Find the gmOperation object #
-            self.operation = getattr(op, self.request['operation_type']).gmOperation(self.request, self.tracks)
-            # Prepare the operation #
-            if not self.errors: self.operation.prepare()
-         
-        # Catch errors #  
-        except gm_err.gmError as err:
-            self.prepare_passed = False
-            return self.catch_error(err)
-        if self.errors: self.operation.prepare()
-
+        self.prepare_passed = False
+    
+    @gm_err.catch_errors
+    def prepare(self):             return self.prepare_code()
+    def prepare_with_errors(self): return self.prepare_code() 
+    def prepare_code(self):
+        # Check the request file #
+        gm_par.check_request(self.request)
+        # Check for listing #
+        if self.request['operation_type'] == 'list':
+            self.operation = gmListOptions() 
+            return 200, 'Listing', 'text/plain'
+        # Parse the track list # 
+        self.track_dict = gm_par.parse_tracks(self.request)
+        # Make track objects #
+        self.tracks = [gm_tra.gmTrack.Factory(track, i, True) for i, track in enumerate(self.track_dict)]
+        # Standard request variables #
+        gm_par.default_if_none(self.request, 'selected_regions', '')
+        gm_par.parse_regions(self.request)
+        gm_par.default_if_none(self.request, 'wanted_chromosomes', '')
+        gm_par.parse_chrlist(self.request)
+        # Determine final chromosome list #
+        if self.request['wanted_chromosomes']:
+            for track in self.tracks: track.chrs = (set(track.all_chrs) & set(self.request['wanted_chromosomes']))
+        else:
+            for track in self.tracks: track.chrs = track.all_chrs
+        # Import the correct operation #
+        if not hasattr(op, self.request['operation_type']):
+            try:
+                __import__('gMiner.gm_operations.' + self.request['operation_type'])
+            except ImportError as err:
+                raise gm_err.gmError(400, "The operation " + self.request['operation_type'] + " is not supported at the moment.", err)
+        # Find the gmOperation object #
+        self.operation = getattr(op, self.request['operation_type']).gmOperation(self.request, self.tracks)
+        # Prepare the operation #
+        self.operation.prepare()
         # Report success #
         self.prepare_passed = True
         return 200, 'Method prepare() done', 'text/plain'
 
-    def run(self):
-        try:
-            # Check that the request was prepared #
-            try:
-                if not self.prepare_passed:
-                    raise gm_err.gmError(400, "You tried to run a request that didn't pass the prepare phase")
-            except NameError as err:
-                raise gm_err.gmError(400, "You tried to run a request that hasn't yet passed the prepare phase")
-           
-             # Run it #
-            if not self.errors: return self.operation.run()
-
-        # Catch errors #  
-        except gm_err.gmError as err:
-            self.run_passed = False
-            return self.catch_error(err)
-        if self.errors: return self.operation.run()
-
-    def catch_error(self, err):
-        if self.errors:
-            if err.origin:
-                print gm_terminal_colors['bakred'] + gm_terminal_colors['bldwht'] + gm_terminal_colors['bnkwht'] + str(err) + gm_terminal_colors['end']
-                raise err.origin
-            else: raise err
-        return err.code, err.msg, "text/plain"
+    @gm_err.catch_errors
+    def run(self):             return self.run_code()
+    def run_with_errors(self): return self.run_code()
+    def run_code(self):        return self.operation.run()
 
 ###########################################################################
 class gmListOptions(object):

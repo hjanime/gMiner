@@ -24,13 +24,25 @@ The ``pip`` utility is most probably already installed on your machine. If such 
 
      $ sudo pip install gMiner
 
-gFeatMiner is now installed on your computer. You can jump to the "How do I use it ?" section. If you are missing the ``pip`` utility just enter this on your command prompt::
+gFeatMiner is now installed on your computer. You can jump to the "How do I use it ?" section.
+
+If you are missing the ``pip`` utility just enter this on your command prompt::
 
      $ sudo easy_install pip
+
+If you are missing the ``easy_install`` utility just enter one of the following commands::
+
+     $ sudo apt-get install python-setuptools
+     $ sudo yum install python-setuptools
 
 Requirements
 """"""""""""
 gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the three following packages: ``matplotlib, cherrypy, python-magic``. These package dependencies will automatically be resolved if you use the ``pip`` command.
+
+If you get strange errors when installing matplotlib (because of the ft2font extension for instance), just type one of the following commands::
+
+     $ sudo apt-get install python-matplotlib
+     $ sudo yum install python-matplotlib
 
 Source code
 """""""""""
@@ -61,7 +73,7 @@ Once gFeatMiner is installed, you use it in a python script by importing it and 
         characteristic  = 'number_of_features',
         per_chromosome  = 'True',
         compare_parents = 'False',
-        gm_encoding     = 'image/png'
+        gm_encoding     = 'image/png',
     )
 
 The ``result`` varaible now contains the requested graph in PNG format, suitable for displaying or writing to a file like so::
@@ -72,13 +84,13 @@ Other types of job will not return any result but will create a file in the loca
 
     import gMiner
     gMiner.run(
-       track1          : '/scratch/genomic/tracks/refseq_ucsc.sql',
-       track1_name     : 'hg19 refSeq genome-wide from UCSC',
-       track2          : '/scratch/genomic/tracks/hiv_bushman.sql',
-       track2_name     : 'hg19 HIV integration sites from liftOver',
-       operation_type  : 'genomic_manip',
-       manipulation    : 'overlap_track',
-       output_location : '/tmp/',
+       track1          = '/scratch/genomic/tracks/refseq_ucsc.sql',
+       track1_name     = 'hg19 refSeq genome-wide from UCSC',
+       track2          = '/scratch/genomic/tracks/hiv_bushman.sql',
+       track2_name     = 'hg19 HIV integration sites from liftOver',
+       operation_type  = 'genomic_manip',
+       manipulation    = 'overlap_track',
+       output_location = '/tmp/',
     )
 
 gFeatMiner is capable of numerous operations on genomic data. Currently, two modules are included:

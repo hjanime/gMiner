@@ -14,3 +14,12 @@ class gmError(Exception):
 
     def __str__(self):
         return self.msg + " - HTTP " + str(self.code)
+
+###########################################################################
+def catch_errors(fn):
+    def wrapper(*args, **kwargs):
+        try: 
+            return fn(*args, **kwargs)
+        except gm_err.gmError as err:
+            return err.code, err.msg, "text/plain"
+    return wrapper
