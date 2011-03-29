@@ -1,7 +1,7 @@
 # Project name #
 gm_project_name = 'gMiner'
 gm_project_long_name = 'gFeatMiner'
-gm_project_version = '1.0.0'
+gm_project_version = '1.0.1'
 gm_doc_url = 'http://bbcf.epfl.ch/twiki/bin/view/BBCF/GFeatMiner'
 
 # Current path #
@@ -41,6 +41,8 @@ gm_chromosome_name_dictionary = {
     'chrM': 'Q',
     '2-micron': 'R',
     '2micron': 'R',
+    'chrX': 'X',
+    'chrY': 'Y',
 }
 
 # Terminal colors #
