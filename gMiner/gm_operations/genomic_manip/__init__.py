@@ -139,4 +139,4 @@ class gmOperation(object):
         self.manip.execute()
         self.manip.finalize()
         # Report success # 
-        return 200, "Manipulation succeded. Result written in: " + self.manip.output_tracks[0]['location'] , "text/plain"
+        return 200, [t['location'] for t in self.manip.output_tracks] , "text/plain"

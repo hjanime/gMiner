@@ -21,22 +21,20 @@ except NameError:
 def run(**kwargs):
     kwargs['service'] = gm_project_name
     kwargs['version'] = gm_project_version
-    job = gmJob(kwargs, True)
+    job = gmJob(kwargs)
     error, result, type = job.prepare_with_errors()
     error, result, type = job.run_with_errors()
     return result
 
 ###########################################################################   
 class gmJob(object):
-    def __init__(self, kwargs, errors=False):
-        self.errors = errors   # Do errors pass sliently or should we raise them ?
-        self.request = kwargs  # The request is a dictionary of values
-        self.prepare_passed = False
+    def __init__(self, kwargs):
+        self.request = kwargs
     
     @gm_err.catch_errors
-    def prepare(self):             return self.prepare_code()
-    def prepare_with_errors(self): return self.prepare_code() 
-    def prepare_code(self):
+    def prepare_catch_errors(self): return self.prepare()
+    def prepare_with_errors(self):  return self.prepare() 
+    def prepare(self):
         # Check the request file #
         gm_par.check_request(self.request)
         # Check for listing #
@@ -68,23 +66,8 @@ class gmJob(object):
         # Prepare the operation #
         self.operation.prepare()
         # Report success #
-        self.prepare_passed = True
         return 200, 'Method prepare() done', 'text/plain'
 
     @gm_err.catch_errors
-    def run(self):             return self.run_code()
-    def run_with_errors(self): return self.run_code()
-    def run_code(self):        return self.operation.run()
-
-###########################################################################
-class gmListOptions(object):
-    def run(self):
-        return_string = ''
-        module_list = ['desc_stat', 'genomic_manip']
-        for module_name in module_list:
-            return_string.append(module_name)
-            module = __import__('gm_operations.' + module_name)
-            return_string.append(module_name + "\n")
-            return_string.append(module.list_options())
-            return_string.append("\n\n\n")
-        return 200, return_string, "text/plain"
+    def run_catch_errors(self): return self.operation.run()
+    def run_with_errors(self):  return self.operation.run()

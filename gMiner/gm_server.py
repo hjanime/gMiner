@@ -32,13 +32,13 @@ class CherryRoot(object):
         # Run the request #
         global job
         job = gmJob(kwargs)
-        error, result, type = job.prepare()
+        error, result, type = job.prepare_catch_errors()
         # Check if callback or errors #
         if error != 200:
             del job
         else:
             if not job.request.has_key('callback_url'):
-                error, result, type = job.run()
+                error, result, type = job.run_catch_errors()
                 del job
         # Return result #
         cherrypy.response.headers['Content-Type'] = type
@@ -57,13 +57,13 @@ def post_process(**kwargs):
     if not job: return
     if not job.request.has_key('callback_url'): return
     # Run the job #
-    error, result, type = job.run()
+    error, result, type = job.run_catch_errors()
     # Get the id #
     if job.request.has_key('id'):
         id = job.request['id']
-        body = urllib.urlencode({'id': id, 'status': error, 'result': result, 'type': type})
+        body = urllib.urlencode({'id': id, 'status': error, 'result': str(result), 'type': type})
     else:
-        body = urllib.urlencode({          'status': error, 'result': result, 'type': type})
+        body = urllib.urlencode({          'status': error, 'result': str(result), 'type': type})
     # Make an HTTP POST #
     connection = httplib2.Http()
     headers = {'content-type': 'application/x-www-form-urlencoded'}

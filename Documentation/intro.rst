@@ -112,6 +112,8 @@ A server is now running locally. The default port is 7520 but this can be change
 
 To understand how to correctly form and send a POST request, as well as how to recieve the response, you can check out the files in `Extras/test/webservice/ <https://github.com/bbcf/gMiner/tree/master/Extras/tests/webservice>`_
 
+Essentially, the urlencoded parameters of the POST body get directly passed as keyword arguments to the run function. The return value is sent back to the application requesting the operation by another POST request, this time to the url specified in the ``callback_url`` parameter.
+
 Reporting bugs
 """"""""""""""
 The github repository provides an issue tracking system. You are welcome to open a new ticket in it if you think you have found a bug in gFeatMiner:

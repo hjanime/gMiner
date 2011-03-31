@@ -48,6 +48,8 @@ Key                      Value
 
 Manipulations
 -------------
+Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifiing ``manipulation=`` followed by one of the values in bold below:
+
 Standard
 """"""""
 .. automodule:: gMiner.gm_operations.genomic_manip.standard
