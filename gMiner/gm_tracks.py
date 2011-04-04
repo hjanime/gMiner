@@ -144,3 +144,16 @@ class gmTrackConverter(object):
         for chr in old_track.all_chrs: getattr(new_track, 'write_' + new_track.type[0:4])(chr, getattr(old_track, 'get_data_'+old_track.type[0:4])({'type':'chr', 'chr':chr}, old_track.fields), old_track.fields) 
         # Close it #
         new_track.unload()
+
+
+###########################################################################   
+class gmTrackCollection(object):
+    def __init__(self, tracks):
+        self.tracks = tracks
+        self.name = 'Collection of ' + str(len(tracks)) + ' track' + ((len(tracks) > 1) and 's' or '')
+        self.chrs = gm_com.gmCollapse.by_intersection([t.chrs for t in tracks])
+        self.chrmeta = []
+        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in tracks for m in n.chrmeta if m['length'] and m['name'] == chr])})
+ 
+    def get_data_quan(self, selection, fields): return [t.get_data_quan(selection, fields) for t in self.tracks]
+    def get_data_qual(self, selection, fields): return [t.get_data_qual(selection, fields) for t in self.tracks]

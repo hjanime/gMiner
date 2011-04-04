@@ -32,16 +32,21 @@ class gmManipulation(object):
         # Find tracks #
         for t in self.input_tracks:
             if t['type'] == 'list of tracks':
-                for req_t in self.req_tracks:
-                    if track_matches_desc(req_t, t):
-                        t['obj'].append(req_t)
-                        self.req_tracks.remove(req_t)
+                tracks = []
+                for i in xrange(len(self.req_tracks) - 1, -1, -1):
+                    if track_matches_desc(self.req_tracks[i], t):
+                        tracks.append(self.req_tracks[i])
+                        self.req_tracks.pop(i)
+                if tracks: t['obj'] = gm_tra.gmTrackCollection(tracks)
             else: 
                 for req_t in self.req_tracks:
                     if track_matches_desc(req_t, t):
                         t['obj'] = req_t
                         self.req_tracks.remove(req_t)
+                        break
             if not t.has_key('obj'): raise gm_err.gmError(400, "A required track for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
+        # Check all used #
+        if not self.req_tracks == []: raise gm_err.gmError(400, "You provided too many tracks for the manipulation " + self.request['manipulation'] + ". The track '" + self.req_tracks[0].name + "' was not used.")
 
     def make_input_other(self):
         for t in self.input_other:
@@ -64,9 +69,8 @@ class gmManipulation(object):
 
     def make_output_metadata(self):
         self.chrmeta = []
-        for t in self.output_tracks:        
-            for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].chrmeta if m['length'] and m['name'] == 'chr1'])})
-            t['obj'].write_chr_meta(self.chrmeta)
+        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].chrmeta if m['length'] and m['name'] == chr])})
+        for t in self.output_tracks: t['obj'].write_chr_meta(self.chrmeta)
 
     def get_special_parameter_stop_val(self, chr_name):
         for chr in self.chrmeta:

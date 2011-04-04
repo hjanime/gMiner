@@ -24,10 +24,10 @@ gm_track_collections = {
         'RP genes':                 {'orig_path': gm_tracks_path + 'qual/gff/ribosome_proteins.gff', 'type': 'qualitative', 'fields': gm_qualitative_fields},
     },
     'Scores': {
-        'Scores 1': {'orig_path': gm_tracks_path + 'quan/wig/scores1.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
-        'Scores 2': {'orig_path': gm_tracks_path + 'quan/wig/scores2.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
-        'Scores 3': {'orig_path': gm_tracks_path + 'quan/wig/scores3.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
-        'Scores 4': {'orig_path': gm_tracks_path + 'quan/wig/scores4.wig', 'type': 'qualitative', 'fields': gm_quantitative_fields},
+        'Scores 1': {'orig_path': gm_tracks_path + 'quan/wig/scores1.wig', 'type': 'quantitative', 'fields': gm_quantitative_fields},
+        'Scores 2': {'orig_path': gm_tracks_path + 'quan/wig/scores2.wig', 'type': 'quantitative', 'fields': gm_quantitative_fields},
+        'Scores 3': {'orig_path': gm_tracks_path + 'quan/wig/scores3.wig', 'type': 'quantitative', 'fields': gm_quantitative_fields},
+        'Scores 4': {'orig_path': gm_tracks_path + 'quan/wig/scores4.wig', 'type': 'quantitative', 'fields': gm_quantitative_fields},
     },
 }
 
@@ -38,7 +38,7 @@ def generate_tracks(rebuild=True):
     '''
 
     # Conversion #
-    if rebuild: print gm_terminal_colors['bldylw'] + "    Starting test tracks creation:" + gm_terminal_colors['end']
+    if rebuild: print gm_terminal_colors['bldylw'] + "    Starting test tracks creation in " + gm_tracks_path + gm_terminal_colors['end']
     for _, collection in sorted(gm_track_collections.items()):
         for track, __ in sorted(collection.items()):
             if rebuild: print gm_terminal_colors['txtylw'] + "Creating track '" + track + "'" + gm_terminal_colors['end']

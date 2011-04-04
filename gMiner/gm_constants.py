@@ -41,8 +41,6 @@ gm_chromosome_name_dictionary = {
     'chrM':     'Q',
     '2-micron': 'R',
     '2micron':  'R',
-    'chrX':     'X',
-    'chrY':     'Y',
 }
 
 # Terminal colors #

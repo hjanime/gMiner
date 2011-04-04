@@ -7,4 +7,4 @@ v0.1.6, 15.03.2011 -- The server has changed. The parameters are now URL encoded
 v1.0.0, 28.03.2011 -- The genomic_manip module has been rewritten and new manipulations are now included. 
 v1.0.1, 29.03.2011 -- Changed error handeling and updated documentation.
 v1.0.2, 31.03.2011 -- A genomic manipulation now returns the list of files created.
-v1.0.3, 01.04.2011 -- Lorem ipsum.
+v1.0.3, 01.04.2011 -- Fixed a bug that would affect manipulations taking as input an undefined number of tracks.

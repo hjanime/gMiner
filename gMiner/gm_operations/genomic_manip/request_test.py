@@ -19,10 +19,10 @@ class Unittest_test(unittest.TestCase):
         files = gMiner.run(
            track1          = gm_tests.gm_track_collections['Scores']['Scores 1']['location'],
            track1_name     = 'Validation score track 1',
-           track2          = gm_tests.gm_track_collections['Scores']['Scores 1']['location'],
-           track2_name     = 'Validation score track 1',
-           track3          = gm_tests.gm_track_collections['Scores']['Scores 1']['location'],
-           track3_name     = 'Validation score track 1',
+           track2          = gm_tests.gm_track_collections['Scores']['Scores 2']['location'],
+           track2_name     = 'Validation score track 2',
+           track3          = gm_tests.gm_track_collections['Scores']['Scores 3']['location'],
+           track3_name     = 'Validation score track 3',
            operation_type  = 'genomic_manip',
            manipulation    = 'merge_scores',
            output_location = outdir,
@@ -32,6 +32,7 @@ class Unittest_test(unittest.TestCase):
         outtrack = gm_tra.gmTrack.Factory({'name':'Validation merge scores', 'location':outfile})
         outdata = list(outtrack.get_data_quan({'type':'chr','chr':'chr1'}))
         outtrack.unload()
+        os.remove(outfile)
         os.removedirs(outdir)
 
         expected = [(0,    5,    2.0 + 0.6666666666666666),
