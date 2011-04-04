@@ -7,7 +7,7 @@ Genomic Manipulations
 Another functionality provided by gFeatMiner is the ability to manipulate genomic data and craete new tracks from existing ones. To access this functionality you must specify ``operation_type=genomic_manip`` in the job request as seen in this exemple, in addition to a few other parameters that are detailed below::
 
     import gMiner
-    result = gMiner.run(
+    files = gMiner.run(
         track1          = '/scratch/genomic/tracks/refseq_ucsc.sql',
         track1_name     = 'hg19 refSeq genome-wide from UCSC',
         track2          = '/scratch/genomic/tracks/hiv_bushman.sql',
@@ -17,7 +17,7 @@ Another functionality provided by gFeatMiner is the ability to manipulate genomi
         output_location = '/tmp/',
     )
 
-After executing these two statements, a new track will be created in the ``/tmp/gMiner/`` directory.
+After executing these two statements, a new track will be created in the ``/tmp/gMiner/`` directory and its path returned to you.
 
 Parameters
 ----------

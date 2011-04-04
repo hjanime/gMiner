@@ -44,6 +44,8 @@ If you get strange errors when ``pip`` tries to install matplotlib (because of t
      $ sudo apt-get install python-matplotlib
      $ sudo yum install python-matplotlib
 
+Upgrading
+"""""""""
 When upgrading to the latest version of gFeatMiner, to avoid also upgrading the dependencies, you can use::
 
     $ sudo pip install --upgrade --no-deps gMiner
@@ -84,10 +86,10 @@ The ``result`` varaible now contains the requested graph in PNG format, suitable
 
     with open('/tmp/graph.png', 'w') as file: file.write(result)
 
-Other types of job will not return any result but will create a file in the location you sepcify. Here is an exemple that creates a new genomic track in the temporary directory::
+Other types of job, for instance, might return a list of file paths. Here is an exemple that creates a new genomic track in the temporary directory::
 
     import gMiner
-    gMiner.run(
+    files = gMiner.run(
        track1          = '/scratch/genomic/tracks/refseq_ucsc.sql',
        track1_name     = 'hg19 refSeq genome-wide from UCSC',
        track2          = '/scratch/genomic/tracks/hiv_bushman.sql',
