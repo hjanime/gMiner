@@ -9,9 +9,9 @@ gm_path = ''
 
 # Convert formats or not #
 gm_convert_dict = {
-    'sql':  False,
-    'hdf5': False,
-    'json': False,
+    'bed': 'sql',
+    'gff': 'sql',
+    'wig': 'sql',
 }
 
 # File types to extensions #
