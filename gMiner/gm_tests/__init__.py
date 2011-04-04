@@ -51,7 +51,7 @@ def generate_tracks(rebuild=True):
             collection[track]['location'] = new_path        
             if rebuild and os.path.exists(new_path): os.remove(new_path)
             # Conversion #
-            old_track  = gm_tra.gmTrack.Factory({'location': old_path, 'name': track})
+            old_track  = gm_tra.gmTrack.Factory({'location': old_path, 'name': track}, conversion=False)
             new_format = 'sql'
             new_name   = track
             new_type   = collection[track]['type']

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = 'gMiner',
-    version          = '1.0.2',
+    version          = '1.0.3',
     packages         = ['gMiner','gMiner.gm_formats', 'gMiner.gm_operations', 'gMiner.gm_tests',
                         'gMiner.gm_operations.dummy', 'gMiner.gm_tests.gm_graphs',
                         'gMiner.gm_operations.desc_stat', 'gMiner.gm_operations.genomic_manip'],
