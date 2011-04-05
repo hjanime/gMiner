@@ -4,7 +4,7 @@ import sys, httplib2, urllib
 # All parameters #
 args = {
        'service'         : 'gMiner',
-       'version'         : '1.0.3',
+       'version'         : '1.1.0',
        'track1'          : '/scratch/sinclair/Tracks/qual/sql/ribosome_genesis.sql',
        'track1_name'     : 'Fake client track one',
        'track2'          : '/scratch/sinclair/Tracks/qual/sql/ribosome_proteins.sql',

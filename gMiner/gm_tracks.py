@@ -107,11 +107,12 @@ class gmTrack(object):
     def write_stored(*args):    pass
     def commit(*args):          pass
     def stat_shortcut(*args):   return False
-    def unload(*args):          del self.data
+    def unload(self, *args):    del self.data
 
     #---------------------------------------------------------------------------#   
     def get_data_quan(self, *args): return self.get_data_qual(*args)
     def get_data_qual(self, selection, fields):
+        if not self.data: self.load()
         def get_chr(chr):
             for feat in self.data[chr]: yield [feat[self.fields.index(field)] for field in fields]
         def get_span(span):
@@ -141,11 +142,13 @@ class gmTrackConverter(object):
     @classmethod
     def convert(self, old_track, new_location, new_format, new_type, new_name):
         new_track = gmTrack.new(new_location, new_format, new_type, new_name)
-        # Special conversion #
-        if hasattr(old_track,  'convert_to_' + new_format):
-            getattr(old_track, 'convert_to_' + new_format)(new_track)
+        # Special conversions #
+        if   hasattr(old_track, 'convert_to_'   + new_format):
+             getattr(old_track, 'convert_to_'   + new_format)(new_track)
+        elif hasattr(new_track, 'convert_from_' + old_track.format):
+             getattr(new_track, 'convert_from_' + old_track.format)(old_track)
         else:
-            # Copy meta data #
+            # Normal conversions #
             new_track.write_meta_data(old_track.attributes)
             new_track.write_chr_meta(old_track.chrmeta)
             # Copy raw data #

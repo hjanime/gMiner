@@ -3,9 +3,9 @@ from ... import gm_tests
 
 # Track set #
 track_set = {
-    'single': gm_tests.gm_track_collections['Yeast']['All S. cer. genes (UCSC)'],
+    'single': gm_tests.gm_track_collections['Yeast']['All genes'],
     'many': {
-        1: gm_tests.gm_track_collections['Yeast']['All S. cer. genes (UCSC)'],
+        1: gm_tests.gm_track_collections['Yeast']['All genes'],
         2: gm_tests.gm_track_collections['Yeast']['Ribi genes'],
         3: gm_tests.gm_track_collections['Yeast']['RP genes'],
 }}

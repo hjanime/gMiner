@@ -1,13 +1,13 @@
-# General modules #
-import sys
-
 # Modules #
 from .. import gm_tracks    as gm_tra
 from .. import gm_common    as gm_com
 from .. import gm_errors    as gm_err
 from ..gm_constants import *
 
+# General modules #
+import sys
 
+###########################################################################   
 class gmFormat(gm_tra.gmTrack):
     def initialize(self):
         self.format = "bed"

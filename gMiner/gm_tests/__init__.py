@@ -57,9 +57,9 @@ def generate_tracks(rebuild=True):
             new_format = 'sql'
             new_name   = track
             new_type   = collection[track]['type']
+            fields     = collection[track]['fields']
             if rebuild: gm_tra.gmTrackConverter.convert(old_track, new_path, new_format, new_type, new_name)
             # Loading #
-            fields = collection[track]['fields']
             track_obj = gm_tra.gmTrack.Factory({'location': new_path, 'name': track}, 0, True) 
             collection[track]['track'] = track_obj
             # Data #

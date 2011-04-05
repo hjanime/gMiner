@@ -4,15 +4,32 @@ from .. import gm_errors    as gm_err
 from ..gm_constants import *
 
 # General Modules #
-import os
+import os, time
+
+# Constants #
+all_fields_possible = ['start', 'end', 'name', 'score', 'strand', 'thick_start', 'thick_end',
+                       'item_rgb', 'block_count', 'block_sizes', 'block_starts']
 
 ###########################################################################   
 class gmFormat(gm_tra.gmTrack):
     def initialize(self):
-        self.format = "bed"
-        self.type   = 'qualitative'
+        self.format   = "bed"
+        self.type     = 'qualitative'
+        self.data     = {}
         self.all_chrs = []
    
+    @classmethod
+    def make_new(cls, location, type, name):
+        open(location, 'w').close()
+
+    def load(self):
+        self.get_chr_meta()
+        self.get_meta_data()
+        self.get_chr_fields()
+        for chr, iterator in self.iter_over_chrs():
+            data[chr] = list(iterator)
+    
+    #-----------------------------------------------------------------------------#   
     def get_chr_meta(self):
         if not self.chr_file:
             raise gm_err.gmError("400", "The bed track " + self.name + " does not have a chromosome file associated.")
@@ -42,7 +59,8 @@ class gmFormat(gm_tra.gmTrack):
         self.all_chrs = [x['name'] for x in self.chrmeta]
  
     def get_meta_data(self):
-        self.file.seek(0)    
+        self.file.seek(0)
+        self.attributes = {}    
         for line in self.file:
             line = line.strip("\n")
             if len(line) == 0:              continue
@@ -57,8 +75,6 @@ class gmFormat(gm_tra.gmTrack):
             break
 
     def get_chr_fields(self):
-        all_fields = ['start', 'end', 'name', 'score', 'strand', 'thick_start', 'thick_end',
-                      'item_rgb', 'block_count', 'block_sizes', 'block_starts']
         self.file.seek(0)    
         while True:
             line = self.file.readline().strip("\n")
@@ -91,7 +107,7 @@ class gmFormat(gm_tra.gmTrack):
                 if line.startswith("track "):
                     raise gm_err.gmError("400", "The file " + self.location + " contains a second 'track' directive. This is not supported.")
                 if line.startswith("browser "):
-                    raise gm_err.gmError("400", "The file " + self.location + " contains a second 'browser' directive. This is not supported.")
+                    raise gm_err.gmError("400", "The file " + self.location + " contains a 'browser' directive. This is not supported.")
                 line = line.split(self.seperator)
                 if len(line) != self.num_columns:
                     raise gm_err.gmError("400", "The track " + self.location + " has a varying number of columns and is hence not a valid.")
@@ -113,15 +129,45 @@ class gmFormat(gm_tra.gmTrack):
             seen_chr.append(chr)
             yield chr, iter_until_different_chr()
 
-    #-----------------------------------------------------------------------------#   
     def convert_to_sql(self, new_track):
         with open(self.location, 'r') as self.file:
             # Various info #
             self.get_chr_meta()
             self.get_meta_data()
             self.get_chr_fields()
+            # Add info #
+            self.attributes['converted_by']   = gm_project_name
+            self.attributes['converted_from'] = self.location
+            self.attributes['converted_at']   = time.time()
             # Copy meta data #
-            pass
+            new_track.write_chr_meta(self.chrmeta)
+            new_track.write_meta_data(self.attributes)
             # Read the whole file #
             for chr, iterator in self.iter_over_chrs():
                 new_track.write_data_qual(chr, iterator, self.fields)
+
+    #-----------------------------------------------------------------------------#
+    def convert_from_sql(self, old_track):
+        # Add info #
+        self.attributes = old_track.attributes
+        self.attributes['name']           = old_track.name
+        self.attributes['type']           = 'bed'
+        self.attributes['converted_by']   = gm_project_name
+        self.attributes['converted_from'] = old_track.location
+        self.attributes['converted_at']   = time.asctime()        
+        # Make first line #
+        line = "track " + ' '.join([key + '="' + value + '"' for key, value in self.attributes.items()]) + '\n'
+        # Get fields #
+        self.fields = ['start', 'end'] 
+        for f in all_fields_possible[2:]:
+            if f in old_track.fields: self.fields.append(f)
+            else: break
+        # Wrapper function #
+        def stringify(chr, iterator):
+            for i in iterator:
+                yield chr + '\t' + '\t'.join(str(i)) + '\n' 
+        # Write everything #
+        with open(self.location, 'w') as self.file:
+            self.file.write(line)
+            for chr in old_track.all_chrs:
+                self.file.writelines(stringify(chr, old_track.get_data_qual({'type':'chr', 'chr':chr}, self.fields)))
