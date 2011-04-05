@@ -43,7 +43,6 @@ class gmJob(object):
             return 200, 'Listing', 'text/plain'
         # Parse the track list # 
         self.track_dict = gm_par.parse_tracks(self.request)
-        # Make track objects #
         self.tracks = [gm_tra.gmTrack.Factory(track, i, True) for i, track in enumerate(self.track_dict)]
         # Standard request variables #
         gm_par.default_if_none(self.request, 'selected_regions', '')

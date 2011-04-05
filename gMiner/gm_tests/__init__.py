@@ -19,9 +19,9 @@ gm_track_collections = {
         'Validation 3': {'orig_path': gm_tracks_path + 'qual/bed/validation3.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields},
     },
     'Yeast': {
-        'All S. cer. genes (UCSC)': {'orig_path': gm_tracks_path + 'qual/bed/all_yeast_genes.bed',   'type': 'qualitative', 'fields': gm_qualitative_fields},
-        'Ribi genes':               {'orig_path': gm_tracks_path + 'qual/gff/ribosome_genesis.gff',  'type': 'qualitative', 'fields': gm_qualitative_fields},
-        'RP genes':                 {'orig_path': gm_tracks_path + 'qual/gff/ribosome_proteins.gff', 'type': 'qualitative', 'fields': gm_qualitative_fields},
+        'All genes':  {'orig_path': gm_tracks_path + 'qual/bed/all_yeast_genes.bed',   'type': 'qualitative', 'fields': gm_qualitative_fields},
+        'Ribi genes': {'orig_path': gm_tracks_path + 'qual/gff/ribosome_genesis.gff',  'type': 'qualitative', 'fields': gm_qualitative_fields},
+        'RP genes':   {'orig_path': gm_tracks_path + 'qual/gff/ribosome_proteins.gff', 'type': 'qualitative', 'fields': gm_qualitative_fields},
     },
     'Scores': {
         'Scores 1': {'orig_path': gm_tracks_path + 'quan/wig/scores1.wig', 'type': 'quantitative', 'fields': gm_quantitative_fields},
@@ -31,6 +31,8 @@ gm_track_collections = {
     },
 }
 
+yeast_chr_file = gm_tracks_path + 'chr/yeast.chr'
+ 
 #############################################################################################
 def generate_tracks(rebuild=True):
     '''
@@ -51,7 +53,7 @@ def generate_tracks(rebuild=True):
             collection[track]['location'] = new_path        
             if rebuild and os.path.exists(new_path): os.remove(new_path)
             # Conversion #
-            old_track  = gm_tra.gmTrack.Factory({'location': old_path, 'name': track}, conversion=False)
+            old_track  = gm_tra.gmTrack.Factory({'location': old_path, 'name': track, 'chrs': yeast_chr_file}, conversion=False)
             new_format = 'sql'
             new_name   = track
             new_type   = collection[track]['type']

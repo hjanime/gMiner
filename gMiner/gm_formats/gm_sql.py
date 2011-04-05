@@ -6,6 +6,7 @@ from .. import gm_tracks    as gm_tra
 from .. import gm_errors    as gm_err
 from ..gm_constants import *
 
+###########################################################################   
 class gmFormat(gm_tra.gmTrack):
     '''
     Essential variables:
@@ -30,7 +31,7 @@ class gmFormat(gm_tra.gmTrack):
             self.cursor.execute("select name from chrNames")
             self.all_chrs  = [x[0].encode('ascii') for x in self.cursor.fetchall()]
             # Chr fields #
-            if self.all_chrs: self.fields =  [x[1] for x in self.cursor.execute('pragma table_info("'+self.all_chrs[0]+'")').fetchall()]
+            self.get_chr_fields()
             # Chr metadata #
             self.get_chr_meta()    
             # General Attributes #
@@ -52,6 +53,9 @@ class gmFormat(gm_tra.gmTrack):
         self.cursor.execute("select * from chrNames")
         self.chrmeta = [dict([(k, e[i]) for i, k in enumerate(chrkeys)]) for e in self.cursor.fetchall()]
 
+    def get_chr_fields(self):
+        if self.all_chrs: self.fields = [x[1] for x in self.cursor.execute('pragma table_info("'+self.all_chrs[0]+'")').fetchall()]
+    
     #-----------------------------------------------------------------------------#   
     @classmethod
     def make_new(cls, location, type, name):

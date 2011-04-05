@@ -27,11 +27,17 @@ gm_quantitative_fields = ['start', 'end', 'score']
 
 # Field types #
 gm_field_types = {
-    'start':  'integer',
-    'end':    'integer',
-    'score':  'real',
-    'strand': 'text',
-    'name':   'text',
+    'start':        'integer',
+    'end':          'integer',
+    'score':        'real',
+    'strand':       'text',
+    'name':         'text',
+    'thick_start':  'integer',
+    'thick_end':    'integer',
+    'item_rgb':     'text',
+    'block_count':  'integer',
+    'block_sizes':  'text',
+    'block_starts': 'text',
 }
 
 # Chromosome names #

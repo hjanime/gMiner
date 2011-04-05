@@ -8,18 +8,20 @@ from .gm_constants import *
 # Extra modules #
 import os, re, sys
 
-
 ###########################################################################   
 class gmTrack(object):
     @classmethod
     def Factory(cls, track_dict, number=None, locked=False, conversion=True):
-        name = track_dict['name']
+        name     = track_dict['name']
         location = track_dict['location'].rstrip('/')
-        location, format = cls.determine_format(location)
+        chr_file = track_dict.get('chrs')
+        # Get format # 
+        format = cls.determine_format(location)
         cls.import_format(format)
-        track = getattr(gm_formats, 'gm_' + format).gmFormat(name, location, number, locked)
+        track = getattr(gm_formats, 'gm_' + format).gmFormat(name, location, number, locked, chr_file)
+        # Conversions #
         if conversion: return gm_convert_track(track) 
-        else: return track
+        else:          return track
 
     @classmethod
     def determine_format(cls, location):
@@ -36,7 +38,7 @@ class gmTrack(object):
         # Synonyms #
         if extension == 'db': extension = 'sql'
         # General case #
-        return location, extension
+        return extension
     
     @classmethod
     def determine_format_magic(cls, location):
@@ -44,6 +46,7 @@ class gmTrack(object):
             import magic
         except ImportError:
             raise gm_err.gmError("400", "The format of the track " + location + " cannot be determined", err)
+        # Let the user customize magic #
         if os.path.exists('magic'):
             m = magic.Magic('magic')
         else:
@@ -62,11 +65,12 @@ class gmTrack(object):
             except ImportError as err:
                 raise gm_err.gmError("400", "The format " + format + " is not supported at the moment", err)
 
-    def __init__(self, name, location, number, locked):
-        self.name = name
-        self.location = location
-        self.locked = locked
-        self.number = number
+    def __init__(self, name, location, number, locked, chr_file):
+        self.name      = name
+        self.location  = location
+        self.number    = number
+        self.locked    = locked
+        self.chr_file  = chr_file
         self.initialize()
         self.check()
 
@@ -94,16 +98,16 @@ class gmTrack(object):
 
     #-----------------------------------------------------------------------------#   
     @classmethod
-    def make_new(*args): pass
-    def get_stored(*args): return False
+    def make_new(*args):        pass
+    def get_stored(*args):      return False
     def write_data_qual(*args): pass
     def write_data_quan(*args): pass
     def write_meta_data(*args): pass
-    def write_chr_meta(*args): pass
-    def write_stored(*args): pass
-    def commit(*args): pass
-    def stat_shortcut(*args): return False
-    def unload(*args): del self.data
+    def write_chr_meta(*args):  pass
+    def write_stored(*args):    pass
+    def commit(*args):          pass
+    def stat_shortcut(*args):   return False
+    def unload(*args):          del self.data
 
     #---------------------------------------------------------------------------#   
     def get_data_quan(self, *args): return self.get_data_qual(*args)
@@ -137,11 +141,15 @@ class gmTrackConverter(object):
     @classmethod
     def convert(self, old_track, new_location, new_format, new_type, new_name):
         new_track = gmTrack.new(new_location, new_format, new_type, new_name)
-        # Copy meta data #
-        new_track.write_meta_data(old_track.attributes)
-        new_track.write_chr_meta(old_track.chrmeta)
-        # Copy raw data #
-        for chr in old_track.all_chrs: getattr(new_track, 'write_' + new_track.type[0:4])(chr, getattr(old_track, 'get_data_'+old_track.type[0:4])({'type':'chr', 'chr':chr}, old_track.fields), old_track.fields) 
+        # Special conversion #
+        if hasattr(old_track,  'convert_to_' + new_format):
+            getattr(old_track, 'convert_to_' + new_format)(new_track)
+        else:
+            # Copy meta data #
+            new_track.write_meta_data(old_track.attributes)
+            new_track.write_chr_meta(old_track.chrmeta)
+            # Copy raw data #
+            for chr in old_track.all_chrs: getattr(new_track, 'write_' + new_track.type[0:4])(chr, getattr(old_track, 'get_data_'+old_track.type[0:4])({'type':'chr', 'chr':chr}, old_track.fields), old_track.fields) 
         # Close it #
         new_track.unload()
 

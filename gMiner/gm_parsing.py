@@ -7,16 +7,12 @@ from .gm_constants import *
 def check_request(request): 
     # Does it have the service field #
     if not request.has_key('service'): raise gm_err.gmError(400, "The request does not seem to be valid. It does contain a service field.")
-
     # Check for prog name #
     if not request['service'] == 'gMiner': raise gm_err.gmError(400, "The request does not seem to be valid. It does not specify [" + gm_project_name + "] as the target service.")
-    
     # Check for version number #
     for i, num in enumerate(request["version"].split('.')):
-        if num > gm_project_version.split('.')[i]:
-            raise gm_err.gmError(400, "The request file has a version number higher than this current installation of " + gm_project_name + ".")
-        if num < gm_project_version.split('.')[i]:
-            break
+        if num > gm_project_version.split('.')[i]: raise gm_err.gmError(400, "The request file has a version number higher than this current installation of " + gm_project_name + ".")
+        if num < gm_project_version.split('.')[i]: break
 
 def parse_tracks(request_dict):
     '''
@@ -30,12 +26,16 @@ def parse_tracks(request_dict):
     number_of_tracks_sent = 1
     while request_dict.has_key("track" + str(number_of_tracks_sent + 1)):
         number_of_tracks_sent += 1
-
     # Make a dictionary #
     try:
-        return [dict([['location',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
+        tracks = [dict([['location',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
     except KeyError as err: 
         raise gm_err.gmError(400, "Every track specified must have a name associated", err)
+    # Chromosome info #
+    for i, track in enumerate(tracks):
+        if request_dict.has_key("track" + str(i+1) + '_chrs'):
+            track['chrs'] = request_dict["track" + str(i+1) + '_chrs']
+    return tracks
 
 ###########################################################################
 def parse_regions(request):
@@ -87,5 +87,3 @@ def assert_has_method(object, attribute):
 def assert_is_among(var, list, name):
     if var not in list:
         raise gm_err.gmError(400, "The '" + name + "' variable does not seem to be any of the following possibilites: " + str(list) + ".")
-        
-
