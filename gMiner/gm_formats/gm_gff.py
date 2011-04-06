@@ -10,7 +10,7 @@ import sys
 ###########################################################################   
 class gmFormat(gm_tra.gmTrack):
     def initialize(self):
-        self.format = "bed"
+        self.format = "gff"
         self.type = 'qualitative'
         self.attributes = {}
         self.parse()

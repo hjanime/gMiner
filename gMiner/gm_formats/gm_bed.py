@@ -23,11 +23,12 @@ class gmFormat(gm_tra.gmTrack):
         open(location, 'w').close()
 
     def load(self):
-        self.get_chr_meta()
-        self.get_meta_data()
-        self.get_chr_fields()
-        for chr, iterator in self.iter_over_chrs():
-            data[chr] = list(iterator)
+        with open(self.location, 'r') as self.file:
+            self.get_chr_meta()
+            self.get_meta_data()
+            self.get_chr_fields()
+            for chr, iterator in self.iter_over_chrs():
+                self.data[chr] = list(iterator)
     
     #-----------------------------------------------------------------------------#   
     def get_chr_meta(self):
@@ -71,7 +72,7 @@ class gmFormat(gm_tra.gmTrack):
                 try:
                     self.attributes = dict([p.split('=',1) for p in shlex.split(line[6:])])
                 except ValueError as err:
-                    raise gm_err.gmError("400", "The 'track' header line for the file " + self.location + " seams to be invalid", err)
+                    raise gm_err.gmError("400", "The <track> header line for the file " + self.location + " seams to be invalid", err)
             break
 
     def get_chr_fields(self):
@@ -86,12 +87,12 @@ class gmFormat(gm_tra.gmTrack):
                 if '\t' in line: self.seperator = '\t'
                 else:            self.seperator = ' '
                 line = line.split(self.seperator)
-            self.num_columns = len(line)
-            if self.num_columns < 3:
+            self.num_fields = len(line) - 1
+            if self.num_fields < 2:
                 raise gm_err.gmError("400", "The track " + self.location + " has less than three columns and is hence not a valid BED file.")
-            if self.num_columns > len(all_fields) + 1:
+            if self.num_fields > len(all_fields_possible):
                 raise gm_err.gmError("400", "The track " + self.location + " has too many columns and is hence not a valid BED file.")
-            self.fields = all_fields[0:self.num_columns]
+            self.fields = all_fields_possible[0:self.num_fields]
             break
 
     def iter_over_chrs(self):
@@ -109,7 +110,7 @@ class gmFormat(gm_tra.gmTrack):
                 if line.startswith("browser "):
                     raise gm_err.gmError("400", "The file " + self.location + " contains a 'browser' directive. This is not supported.")
                 line = line.split(self.seperator)
-                if len(line) != self.num_columns:
+                if len(line) != self.num_fields + 1:
                     raise gm_err.gmError("400", "The track " + self.location + " has a varying number of columns and is hence not a valid.")
                 break
         def iter_until_different_chr():

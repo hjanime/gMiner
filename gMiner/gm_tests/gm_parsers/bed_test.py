@@ -38,5 +38,7 @@ class Unittest_test(unittest.TestCase):
         b = open(bed_path,           'r')
         a.next()
         b.next()
-        while True:
-            self.assertEqual(a.next(), b.next())
+        while True: self.assertEqual(a.next(), b.next())
+        # Clean up #
+        os.remove(sql_path)
+        os.remove(bed_path)
