@@ -20,7 +20,7 @@ def message(path, name, status, expected, extra=None):
     if extra: extra = re.sub(' - HTTP 400', '', extra)
     s = name.ljust(26)
     if status==expected:
-        s += '\033[1;37m\033[42m passed the test \033[0m'
+        s += '\033[0;37m\033[42m passed the test \033[0m'
     else:
         s += '\033[1;37m\033[41m\033[5;37m failed the test \033[0m'
     if extra:

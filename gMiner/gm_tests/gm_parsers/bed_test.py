@@ -42,3 +42,5 @@ class Unittest_test(unittest.TestCase):
         # Clean up #
         os.remove(sql_path)
         os.remove(bed_path)
+
+Unittest_test().runTest() 
