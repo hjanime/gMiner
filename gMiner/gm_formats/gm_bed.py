@@ -63,7 +63,7 @@ class gmFormat(gm_tra.gmTrack):
         self.file.seek(0)
         self.attributes = {}    
         for line in self.file:
-            line = line.strip("\n")
+            line = line.strip("\n").lstrip()
             if len(line) == 0:              continue
             if line.startswith("#"):        continue
             if line.startswith("browser "): continue
@@ -78,7 +78,7 @@ class gmFormat(gm_tra.gmTrack):
     def get_chr_fields(self):
         self.file.seek(0)    
         while True:
-            line = self.file.readline().strip("\n")
+            line = self.file.readline().strip("\n").lstrip()
             if len(line) == 0:              continue
             if line.startswith("#"):        continue
             if line.startswith("track "):   continue
@@ -96,22 +96,32 @@ class gmFormat(gm_tra.gmTrack):
             break
 
     def iter_over_chrs(self):
-        global line
+        global line, chr
         line = ''
         chr  = ''
+        seen_chr = []
         def get_next_line():
-            global line
+            global line, chr
             while True:
-                line = self.file.next()
+                line = self.file.next().strip("\n").lstrip()
                 if len(line) == 0:              continue
                 if line.startswith("#"):        continue
                 if line.startswith("track "):
+                    if not chr: continue
                     raise gm_err.gmError("400", "The file " + self.location + " contains a second 'track' directive. This is not supported.")
                 if line.startswith("browser "):
+                    if not chr: continue
                     raise gm_err.gmError("400", "The file " + self.location + " contains a 'browser' directive. This is not supported.")
                 line = line.split(self.seperator)
                 if len(line) != self.num_fields + 1:
-                    raise gm_err.gmError("400", "The track " + self.location + " has a varying number of columns and is hence not a valid.")
+                    raise gm_err.gmError("400", "The track " + self.location + " has a varying number of columns. This is not supported.")
+                try:
+                    line[1] = int(line[1])
+                    line[2] = int(line[2])
+                except ValueError:
+                    raise gm_err.gmError("400", "The track " + self.location + " has non integers as interval bounds and is hence not valid.")
+                if line[2] <= line[1]:
+                    raise gm_err.gmError("400", "The track " + self.location + " has negative or null intervals and is hence not valid.")
                 break
         def iter_until_different_chr():
             global line
@@ -119,7 +129,6 @@ class gmFormat(gm_tra.gmTrack):
                 if line[0] != chr: break
                 yield line[1:]
                 get_next_line()
-        seen_chr = []
         self.file.seek(0)
         get_next_line()
         while True:
