@@ -1,0 +1,3 @@
+To run the BED parser evaluator on gFeatMiner's module, you can run this script in ipython: 
+
+    [1] execfile('Extras/tests/bed_files/run_tests.py)

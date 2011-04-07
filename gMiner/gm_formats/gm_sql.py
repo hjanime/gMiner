@@ -120,6 +120,7 @@ class gmFormat(gm_tra.gmTrack):
         #         {u'length': 121843856, u'name': u'chr11'},
         #         {u'length': 121257530, u'name': u'chr12'}]
         for x in data: self.cursor.execute('insert into chrNames (' + ','.join(x.keys()) + ') values (' + ','.join(['?' for y in range(len(x.keys()))])+')', tuple([x[k] for k in x.keys()]))
+        self.connection.commit()
 
     def write_stored(self, type, subtype, selection, result):
         pass #TODO

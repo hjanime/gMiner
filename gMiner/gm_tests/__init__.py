@@ -20,8 +20,8 @@ gm_track_collections = {
     },
     'Yeast': {
         'All genes':  {'orig_path': gm_tracks_path + 'qual/bed/all_yeast_genes.bed',   'type': 'qualitative', 'fields': gm_qualitative_fields},
-        'Ribi genes': {'orig_path': gm_tracks_path + 'qual/gff/ribosome_genesis.gff',  'type': 'qualitative', 'fields': gm_qualitative_fields},
-        'RP genes':   {'orig_path': gm_tracks_path + 'qual/gff/ribosome_proteins.gff', 'type': 'qualitative', 'fields': gm_qualitative_fields},
+        'Ribi genes': {'orig_path': gm_tracks_path + 'qual/bed/ribosome_genesis.bed',  'type': 'qualitative', 'fields': gm_qualitative_fields},
+        'RP genes':   {'orig_path': gm_tracks_path + 'qual/bed/ribosome_proteins.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields},
     },
     'Scores': {
         'Scores 1': {'orig_path': gm_tracks_path + 'quan/wig/scores1.wig', 'type': 'quantitative', 'fields': gm_quantitative_fields},
@@ -52,8 +52,10 @@ def generate_tracks(rebuild=True):
             new_path = new_dir + new_name
             collection[track]['location'] = new_path        
             if rebuild and os.path.exists(new_path): os.remove(new_path)
-            # Conversion #
+            # Old track #
             old_track  = gm_tra.gmTrack.Factory({'location': old_path, 'name': track, 'chrs': yeast_chr_file}, conversion=False)
+            collection[track]['old_track'] = old_track
+            # Conversion #
             new_format = 'sql'
             new_name   = track
             new_type   = collection[track]['type']

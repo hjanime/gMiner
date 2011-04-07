@@ -16,7 +16,7 @@ tests += [(this_dir+'/should_fail/'+bed, False) for bed in os.listdir(this_dir+'
 
 # Output #
 def message(path, name, status, expected, extra=None):
-    if extra: extra = re.sub(path + ' ', '', extra)
+    if extra: extra = re.sub(' ' + path, '', extra)
     if extra: extra = re.sub(' - HTTP 400', '', extra)
     s = name.ljust(26)
     if status==expected:

@@ -17,30 +17,25 @@ class Unittest_test(unittest.TestCase):
         # Chose track to test #
         name = 'All genes'
         track = gm_tests.gm_track_collections['Yeast'][name]
-        # Intermediate file #
-        temp_file = tempfile.NamedTemporaryFile(suffix='.sql', delete=False)
-        sql_path = temp_file.name
-        temp_file.close()
-        os.remove(sql_path)
         # Conversion #
-        gm_tra.gmTrackConverter.convert(track['track'], sql_path, 'sql', 'qualitative', name)
-        # Open it #
-        sql_track = gm_tra.gmTrack.Factory({'location': sql_path, 'name': name})
+        if os.path.exists(track['location']): os.remove(track['location'])
+        gm_tra.gmTrackConverter.convert(track['old_track'], track['location'], 'sql', 'qualitative', name)
+        track['track'] = gm_tra.gmTrack.Factory({'location': track['location'], 'name': name})
         # Final file #
         temp_file = tempfile.NamedTemporaryFile(suffix='.bed', delete=False)
         bed_path = temp_file.name
         temp_file.close()
         os.remove(bed_path)
         # Conversion again #
-        gm_tra.gmTrackConverter.convert(sql_track, bed_path, 'bed', 'qualitative', name)
+        gm_tra.gmTrackConverter.convert(track['track'], bed_path, 'bed', 'qualitative', name)
         # Comparison #
         a = open(track['orig_path'], 'r')
         b = open(bed_path,           'r')
         a.next()
         b.next()
-        while True: self.assertEqual(a.next(), b.next())
+        for A in a:
+            self.assertEqual(A, b.next())
         # Clean up #
-        os.remove(sql_path)
         os.remove(bed_path)
 
 Unittest_test().runTest() 
