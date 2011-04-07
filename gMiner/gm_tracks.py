@@ -124,7 +124,50 @@ class gmTrack(object):
             return get_span(selection['span'])
         if selection['type'] == 'chr':
             return get_chr(selection['chr'])
-
+    
+    def get_chr_meta(self):
+        if not self.chr_file:
+            raise gm_err.gmError("400", "The bed track " + self.name + " does not have a chromosome file associated.")
+        if not os.path.exists(self.chr_file):
+            raise gm_err.gmError("400", "The file " + self.chr_file + " cannot be found")
+        if os.path.isdir(self.chr_file):
+            raise gm_err.gmError("400", "The location " + self.chr_file + " is a directory (a file was expected).")
+        self.chrmeta = []
+        with open(self.chr_file, 'r') as f:
+            for line in f:
+                line = line.strip('\n')            
+                if len(line) == 0:       continue
+                if line.startswith("#"): continue
+                if '\t' in line: seperator = '\t'
+                else:            seperator = ' '
+                line = line.split(seperator)
+                if len(line) != 2:
+                    raise gm_err.gmError("400", "The file " + self.chr_file + " does not seam to be a valid chromosome file.")
+                name = line[0]
+                try:
+                    length = int(line[1])
+                except ValueError as err:
+                    raise gm_err.gmError("400", "The file " + self.chr_file + " has invalid values.", err)
+                self.chrmeta.append(dict([('name', name),('length', length)]))
+        if not self.chrmeta:
+            raise gm_err.gmError("400", "The file " + self.chr_file + " does not seam to contain any information.", err)
+        self.all_chrs = [x['name'] for x in self.chrmeta]
+ 
+    def get_meta_data(self):
+        self.file.seek(0)
+        self.attributes = {}    
+        for line in self.file:
+            line = line.strip("\n").lstrip()
+            if len(line) == 0:              continue
+            if line.startswith("#"):        continue
+            if line.startswith("browser "): continue
+            if line.startswith("track "):
+                import shlex
+                try:
+                    self.attributes = dict([p.split('=',1) for p in shlex.split(line[6:])])
+                except ValueError as err:
+                    raise gm_err.gmError("400", "The <track> header line for the file " + self.location + " seams to be invalid", err)
+            break
 
 ###########################################################################   
 def gm_convert_track(old_track):
