@@ -1,0 +1,4 @@
+To run the BED/WIG parser evaluator on gFeatMiner's module, you can run this script in ipython: 
+
+    [1] import gMiner.gm_tests.gm_parsers as p
+    [2] p.parse_challange()

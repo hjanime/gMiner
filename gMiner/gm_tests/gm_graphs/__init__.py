@@ -7,6 +7,7 @@ import os, sys
 
 # gMiner #
 import gMiner
+from ... import gm_errors as gm_err
 from ...gm_constants import *
 
 # Every collection of data #
@@ -40,11 +41,10 @@ chara_dict = {
     'score': '_Score',
 }
 
-# Where are the files written to ? #
-result_path = '/tmp/gMiner/'
-
 # Main loops #
-def generate_graphs():
+def generate_graphs(result_path='/tmp/gMiner/'):
+    if not os.path.isdir(result_path):
+        raise gm_err.gmError(400, "The result location specified is not a directory")
     max_count = 2*2*2*2*4
     max_count -= max_count/4 
     max_count *= len(collections) 
