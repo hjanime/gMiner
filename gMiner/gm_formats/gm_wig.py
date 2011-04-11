@@ -26,7 +26,7 @@ class gmFormat(gm_tra.gmTrack):
     def iter_over_chrs(self):
         global line, prv_chr, cur_chr, seen_chr
         line = ''
-        prv_chr  = ''
+        prv_chr  = None
         cur_chr  = ''
         seen_chr = []
         def get_next_line():
@@ -42,21 +42,9 @@ class gmFormat(gm_tra.gmTrack):
                     if not cur_chr: continue
                     raise gm_err.gmError("400", "The file " + self.location + " contains a 'browser' directive. This is not supported.")
                 line = line.split()
-                if len(line) != self.num_fields + 1:
-                    raise gm_err.gmError("400", "The track " + self.location + " has a varying number of columns. This is not supported.")
                 try:
-                    line[1] = int(line[1])
-                    line[2] = int(line[2])
                 except ValueError:
-                    raise gm_err.gmError("400", "The track " + self.location + " has non integers as interval bounds and is hence not valid.")
-                if line[2] <= line[1]:
-                    raise gm_err.gmError("400", "The track " + self.location + " has negative or null intervals and is hence not valid.")
-                if len(line) > 3:
-                    if line[4] == '.': line[4] = 0.0
-                    try:
-                        line[4] = float(line[4])
-                    except ValueError:
-                        raise gm_err.gmError("400", "The track " + self.location + " has non floats as score values and is hence not valid.")
+                    raise gm_err.gmError("400", "The track " + self.location + " has non floats as score values and is hence not valid.")
                 break
         def iter_until_different_chr():
             global line

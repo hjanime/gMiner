@@ -33,9 +33,6 @@ class Unittest_test(unittest.TestCase):
         b = open(bed_path,           'r')
         a.next()
         b.next()
-        for A in a:
-            self.assertEqual(A, b.next())
+        for A in a: self.assertEqual(A, b.next())
         # Clean up #
         os.remove(bed_path)
-
-Unittest_test().runTest() 
