@@ -37,8 +37,8 @@ yeast_chr_file = gm_tracks_path + 'chr/yeast.chr'
 # The parser test files #
 gm_parser_tests  = [(path + b, True)  for path in [gm_tracks_path + 'qual/bed/should_pass/'] for b in os.listdir(path) if b.endswith(".bed")]
 gm_parser_tests += [(path + b, False) for path in [gm_tracks_path + 'qual/bed/should_fail/'] for b in os.listdir(path) if b.endswith(".bed")]
-gm_parser_tests += [(path + w, True)  for path in [gm_tracks_path + 'qual/wig/should_pass/'] for w in os.listdir(path) if w.endswith(".wig")]
-gm_parser_tests += [(path + w, False) for path in [gm_tracks_path + 'qual/wig/should_fail/'] for w in os.listdir(path) if w.endswith(".wig")]
+gm_parser_tests += [(path + w, True)  for path in [gm_tracks_path + 'quan/wig/should_pass/'] for w in os.listdir(path) if w.endswith(".wig")]
+gm_parser_tests += [(path + w, False) for path in [gm_tracks_path + 'quan/wig/should_fail/'] for w in os.listdir(path) if w.endswith(".wig")]
 
 
 #############################################################################################

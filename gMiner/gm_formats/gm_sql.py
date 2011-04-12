@@ -107,7 +107,7 @@ class gmFormat(gm_tra.gmTrack):
     def write_data_quan(self, chr, iterable, fields):
         if chr in [x[0] for x in self.cursor.execute("select name from sqlite_master where type='table'").fetchall()]:
             self.cursor.execute("drop table " + chr)
-        self.cursor.execute('create table "' + chr + '"  (start integer, end integer, score real)')
+        self.cursor.execute('create table "' + chr + '" (start integer, end integer, score real)')
         self.cursor.executemany('insert into "' + chr + '"  values (?,?,?)', iterable)
         self.connection.commit()
 

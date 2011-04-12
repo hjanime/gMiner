@@ -138,6 +138,8 @@ class gmTrack(object):
                 line = line.strip('\n')            
                 if len(line) == 0:       continue
                 if line.startswith("#"): continue
+                if line.endswith(" \\"):
+                    raise gm_err.gmError("400", "The file " + self.location + " includes linebreaks ('\\') which are not supported.")
                 if '\t' in line: seperator = '\t'
                 else:            seperator = ' '
                 line = line.split(seperator)
@@ -160,6 +162,8 @@ class gmTrack(object):
             line = line.strip("\n").lstrip()
             if len(line) == 0:              continue
             if line.startswith("#"):        continue
+            if line.endswith(" \\"):
+                raise gm_err.gmError("400", "The track " + self.location + " includes linebreaks ('\\') which are not supported.")
             if line.startswith("browser "): continue
             if line.startswith("track "):
                 import shlex

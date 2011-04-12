@@ -5,7 +5,7 @@ from .. import gm_common    as gm_com
 from ..gm_constants import *
 
 # General Modules #
-import sys, os, time
+import sys, os, time, shlex
 
 ###########################################################################   
 class gmFormat(gm_tra.gmTrack):
@@ -25,10 +25,6 @@ class gmFormat(gm_tra.gmTrack):
 
 #-----------------------------------------------------------------------------#
     def iter_over_chrs(self):
-        global chr, entry, seen_chr 
-        chr      = ''
-        seen_chr = []
-
         def all_features():
             params = {}
             for line in self.file:
@@ -37,17 +33,30 @@ class gmFormat(gm_tra.gmTrack):
                 if line.startswith("#"):        continue
                 if line.startswith("track "):   continue
                 if line.startswith("browser "): continue
+                if line.endswith(" \\"):
+                    raise gm_err.gmError("400", "The track " + self.location + " includes linebreaks ('\\') which are not supported.")
                 if line.startswith("variableStep ") or line.startswith("fixedStep "):
                     params = dict([p.split('=',1) for p in shlex.split('mode=' + line)])
                     if not 'chrom' in params:
                         raise gm_err.gmError("400", "The track " + self.location + " does not specify a chromosome and is hence not valid.")
-                    params['span'] = params.get('span',1)
+                    try:
+                        params['span'] = int(params.get('span',1))
+                    except ValueError:
+                        raise gm_err.gmError("400", "The track " + self.location + " has a non integer as span value.")
                     if line.startswith("fixedStep "):
                         if not 'start' in params:
                             raise gm_err.gmError("400", "The track " + self.location + " has a fixedStep directive without a start.")
-                        params['step'] = params.get('step',1)
+                        try:
+                            params['start'] = int(params['start'])
+                        except ValueError:
+                            raise gm_err.gmError("400", "The track " + self.location + " has a non integer as start value.")
+                        try:
+                            params['step'] = int(params.get('step',1))
+                        except ValueError:
+                            raise gm_err.gmError("400", "The track " + self.location + " has a non integer as step value.")
                         if params['span'] > params['step']:
                             raise gm_err.gmError("400", "The track " + self.location + " has a span bigger than its step.")
+                        params['count'] = 0
                     continue
                 if not params:
                     raise gm_err.gmError("400", "The track " + self.location + " is missing a fixedStep or variableStep directive.")
@@ -56,7 +65,8 @@ class gmFormat(gm_tra.gmTrack):
                         line = float(line)
                     except ValueError:
                         raise gm_err.gmError("400", "The track " + self.location + " has non floats as score values and is hence not valid.")
-                    yield (params['chrom'], params['start'], params['start'] + params['step'], line)
+                    yield (params['chrom'], params['start'] + params['count'] * params['step'], params['start'] + params['span'], line)
+                    params['count'] += 1
                 if params['mode'] == 'variableStep':
                     line = line.split()
                     try:
@@ -64,7 +74,7 @@ class gmFormat(gm_tra.gmTrack):
                         line[1] = float(line[1])
                     except ValueError:
                         raise gm_err.gmError("400", "The track " + self.location + " has invalid values.")
-                    yield (params['chrom'], line[0], line[0] + params['step'], line[1])
+                    yield (params['chrom'], line[0], line[0] + params['span'], line[1])
         def all_entries():
             sentinel = ('', sys.maxint, sys.maxint, 0.0)
             X = gm_com.sentinelize(all_features(), sentinel)
@@ -78,30 +88,35 @@ class gmFormat(gm_tra.gmTrack):
                     yield x
                     break
                 if x_next[1] < x[2]:
-                    raise gm_err.gmError("400", "The track " + self.location + " has a span larger than its variable step size.") 
+                    raise gm_err.gmError("400", "The track " + self.location + " has a start larger than its end or a span larger than its step.") 
                 if x[0] == x_next[0] and x[2] != x[1] and x[3] == x[3]:
                     x[2] = x_next[2]
                     continue
                 yield x
                 x = x_next 
 
+        global chr, entry, generator, seen_chr 
+        chr       = ''
+        seen_chr  = []
+        entry     = ['', '', '', '']
+        generator = all_entries()
         def get_next_entry():
             global entry, generator
             entry = generator.next()    
         def iter_until_different_chr():
-            global chr, entry, generator, seen_chr 
+            global chr, entry
             while True:
                 if entry[0] != chr: break
                 yield entry[1:]
                 get_next_entry()
-        entry     = ['', '', '', '']
-        generator = all_entries()
         get_next_entry()
         while True:
             if entry[0] == chr: break
             chr = entry[0]
             if chr in seen_chr:
                 raise gm_err.gmError("400", "The track " + self.location + " is not sorted by chromosomes (" + chr + ").")
+            if not chr in self.all_chrs:
+                raise gm_err.gmError("400", "The track " + self.location + " has a value (" + chr + ") not specified in the chromosome file.")
             seen_chr.append(chr)
             yield chr, iter_until_different_chr()
 
@@ -111,7 +126,7 @@ class gmFormat(gm_tra.gmTrack):
             self.get_chr_meta()
             self.get_meta_data()
             # Add info #
-            self.attributes['converted_by']   = gm_project_name
+            self.attributes['converted_by']   = gm_project_long_name
             self.attributes['converted_from'] = self.location
             self.attributes['converted_at']   = time.asctime()
             new_track.write_meta_data(self.attributes)
@@ -125,24 +140,4 @@ class gmFormat(gm_tra.gmTrack):
 
     #-----------------------------------------------------------------------------#
     def convert_from_sql(self, old_track):
-        # Add info #
-        self.attributes = old_track.attributes
-        self.attributes['name']           = old_track.name
-        self.attributes['type']           = 'bed'
-        self.attributes['converted_by']   = gm_project_name
-        self.attributes['converted_from'] = old_track.location
-        self.attributes['converted_at']   = time.asctime()        
-        # Make first line #
-        line = "track " + ' '.join([key + '="' + value + '"' for key, value in self.attributes.items()]) + '\n'
-        # Get fields #
         pass
-        # Wrapper function #
-        def stringify(chr, iterator):
-            for line in iterator:
-                yield chr + '\t' + '\t'.join([str(f) for f in line]) + '\n' 
-        # Write everything #
-        with open(self.location, 'w') as self.file:
-            self.file.write(line)
-            for chr in old_track.all_chrs:
-                self.file.writelines(stringify(chr, old_track.get_data_quan({'type':'chr', 'chr':chr}, self.fields)))
- 

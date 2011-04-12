@@ -37,6 +37,8 @@ class gmFormat(gm_tra.gmTrack):
             line = self.file.readline().strip("\n").lstrip()
             if len(line) == 0:              continue
             if line.startswith("#"):        continue
+            if line.endswith(" \\"):
+                raise gm_err.gmError("400", "The track " + self.location + " includes linebreaks ('\\') which are not supported.")
             if line.startswith("track "):   continue
             if line.startswith("browser "): continue
             else:
@@ -62,6 +64,8 @@ class gmFormat(gm_tra.gmTrack):
                 line = self.file.next().strip("\n").lstrip()
                 if len(line) == 0:              continue
                 if line.startswith("#"):        continue
+                if line.endswith(" \\"):
+                    raise gm_err.gmError("400", "The track " + self.location + " includes linebreaks ('\\') which is not supported.")
                 if line.startswith("track "):
                     if not chr: continue
                     raise gm_err.gmError("400", "The file " + self.location + " contains a second 'track' directive. This is not supported.")
@@ -98,6 +102,8 @@ class gmFormat(gm_tra.gmTrack):
             chr = line[0]
             if chr in seen_chr:
                 raise gm_err.gmError("400", "The track " + self.location + " is not sorted by chromosomes (" + chr + ").")
+            if not chr in self.all_chrs:
+                raise gm_err.gmError("400", "The track " + self.location + " has a value (" + chr + ") not specified in the chromosome file.")
             seen_chr.append(chr)
             yield chr, iter_until_different_chr()
 
@@ -108,7 +114,7 @@ class gmFormat(gm_tra.gmTrack):
             self.get_meta_data()
             self.get_chr_fields()
             # Add info #
-            self.attributes['converted_by']   = gm_project_name
+            self.attributes['converted_by']   = gm_project_long_name
             self.attributes['converted_from'] = self.location
             self.attributes['converted_at']   = time.asctime()
             new_track.write_meta_data(self.attributes)
@@ -125,7 +131,7 @@ class gmFormat(gm_tra.gmTrack):
         self.attributes = old_track.attributes
         self.attributes['name']           = old_track.name
         self.attributes['type']           = 'bed'
-        self.attributes['converted_by']   = gm_project_name
+        self.attributes['converted_by']   = gm_project_long_name
         self.attributes['converted_from'] = old_track.location
         self.attributes['converted_at']   = time.asctime()        
         # Make first line #

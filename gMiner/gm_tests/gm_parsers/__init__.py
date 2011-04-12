@@ -11,7 +11,8 @@ def parse_challange():
     def message(path, name, status, expected, extra=None):
         if extra: extra = re.sub(' ' + path, '', extra)
         if extra: extra = re.sub(' - HTTP 400', '', extra)
-        s = name.ljust(26)
+        title, extension = name.split('.')
+        s = (extension + ': ' + title).ljust(30)
         if status==expected:
             s += '\033[0;37m\033[42m passed the test \033[0m'
         else:
@@ -23,14 +24,13 @@ def parse_challange():
     for path, expected in gm_tests.gm_parser_tests:
         name = path.split('/')[-1]
         dir  = '/'.join(path.split('/')[:-1]) + '/'
-        dest = dir + name.split('.')[0] + '.sql' 
+        dest = dir + name.split('.')[0] + '.sql'
+        if os.exists(dest): os.remove(dest) 
         try:
             track = gm_tra.gmTrack.Factory({'name': name, 'location': path, 'chrs': gm_tests.yeast_chr_file}, conversion=False)
             gm_tra.gmTrackConverter.convert(track, dest , 'sql', 'qualitative', name)
         except Exception as err:
             message(path, name, False, expected, str(err))
+            os.remove(dest)
             continue
-        finally:
-            pass
-            #os.remove(dest)
         message(path, name, True, expected)
