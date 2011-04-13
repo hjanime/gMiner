@@ -35,14 +35,16 @@ class gmFormat(gm_tra.gmTrack):
                 if line.startswith("browser "): continue
                 if line.endswith(" \\"):
                     raise gm_err.gmError("400", "The track " + self.location + " includes linebreaks ('\\') which are not supported.")
-                if line.startswith("variableStep ") or line.startswith("fixedStep "):
+                if line.startswith("variableStep") or line.startswith("fixedStep"):
                     params = dict([p.split('=',1) for p in shlex.split('mode=' + line)])
-                    if not 'chrom' in params:
+                    if not params.get('chrom',False):
                         raise gm_err.gmError("400", "The track " + self.location + " does not specify a chromosome and is hence not valid.")
                     try:
                         params['span'] = int(params.get('span',1))
                     except ValueError:
                         raise gm_err.gmError("400", "The track " + self.location + " has a non integer as span value.")
+                    if params['span'] < 1:
+                        raise gm_err.gmError("400", "The track " + self.location + " has a negative or null span value.")
                     if line.startswith("fixedStep "):
                         if not 'start' in params:
                             raise gm_err.gmError("400", "The track " + self.location + " has a fixedStep directive without a start.")
@@ -54,8 +56,8 @@ class gmFormat(gm_tra.gmTrack):
                             params['step'] = int(params.get('step',1))
                         except ValueError:
                             raise gm_err.gmError("400", "The track " + self.location + " has a non integer as step value.")
-                        if params['span'] > params['step']:
-                            raise gm_err.gmError("400", "The track " + self.location + " has a span bigger than its step.")
+                        if params['step'] < 1:
+                            raise gm_err.gmError("400", "The track " + self.location + " has a negative or null step value.")
                         params['count'] = 0
                     continue
                 if not params:
@@ -65,16 +67,19 @@ class gmFormat(gm_tra.gmTrack):
                         line = float(line)
                     except ValueError:
                         raise gm_err.gmError("400", "The track " + self.location + " has non floats as score values and is hence not valid.")
-                    yield (params['chrom'], params['start'] + params['count'] * params['step'], params['start'] + params['span'], line)
+                    base = params['start'] + params['count'] * params['step'] 
+                    yield [params['chrom'], base, base + params['span'], line]
                     params['count'] += 1
                 if params['mode'] == 'variableStep':
                     line = line.split()
                     try:
-                        line[0] = float(int[0])
+                        line[0] = int(line[0])
                         line[1] = float(line[1])
                     except ValueError:
                         raise gm_err.gmError("400", "The track " + self.location + " has invalid values.")
-                    yield (params['chrom'], line[0], line[0] + params['span'], line[1])
+                    except IndexError:
+                        raise gm_err.gmError("400", "The track " + self.location + " has missing values.")
+                    yield [params['chrom'], line[0], line[0] + params['span'], line[1]]
         def all_entries():
             sentinel = ('', sys.maxint, sys.maxint, 0.0)
             X = gm_com.sentinelize(all_features(), sentinel)
@@ -85,14 +90,15 @@ class gmFormat(gm_tra.gmTrack):
             while True:
                 x_next = X.next()
                 if x_next == sentinel:
-                    yield x
+                    if x[3] != 0.0: yield tuple(x)
                     break
-                if x_next[1] < x[2]:
-                    raise gm_err.gmError("400", "The track " + self.location + " has a start larger than its end or a span larger than its step.") 
-                if x[0] == x_next[0] and x[2] != x[1] and x[3] == x[3]:
-                    x[2] = x_next[2]
-                    continue
-                yield x
+                if x[0] == x_next[0]:
+                    if x[2] > x_next[1]:
+                        raise gm_err.gmError("400", "The track " + self.location + " has a start larger than its end or a span larger than its step.") 
+                    if x[2] == x_next[1] and x[3] == x_next[3]:
+                        x[2] = x_next[2]
+                        continue
+                if x[3] != 0.0: yield tuple(x)
                 x = x_next 
 
         global chr, entry, generator, seen_chr 

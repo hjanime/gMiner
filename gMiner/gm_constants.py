@@ -52,7 +52,7 @@ gm_chromosome_name_dictionary = {
 # Terminal colors #
 gm_terminal_colors = {
     'end':    '\033[0m',    # Text Reset
-    'blink':  '\033[5m',    # Text Reset
+    'blink':  '\033[5m',    # Blink
     'txtblk': '\033[0;30m', # Black - Regular
     'txtred': '\033[0;31m', # Red
     'txtgrn': '\033[0;32m', # Green
