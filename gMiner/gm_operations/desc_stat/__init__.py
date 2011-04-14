@@ -124,7 +124,7 @@ class gmCharacteristic(object):
 
     def num_of_features_options(func):
         func.title = '''Number of features'''
-        func.fields = ['strand']
+        func.fields = ['start']
         func.shortcutable = True
         func.storable = True
         func.units = 'Count'

@@ -15,8 +15,8 @@ else:                                   gm_tracks_path = gm_path + '/../Extras/t
 gm_track_collections = {
     'Validation': {
         'Validation 1': {'orig_path': gm_tracks_path + 'qual/bed/validation1.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields[:4]},
-        'Validation 2': {'orig_path': gm_tracks_path + 'qual/bed/validation2.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields[:4]},
-        'Validation 3': {'orig_path': gm_tracks_path + 'qual/bed/validation3.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields[:4]},
+        'Validation 2': {'orig_path': gm_tracks_path + 'qual/bed/validation2.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields},
+        'Validation 3': {'orig_path': gm_tracks_path + 'qual/bed/validation3.bed', 'type': 'qualitative', 'fields': gm_qualitative_fields},
     },
     'Yeast': {
         'All genes':  {'orig_path': gm_tracks_path + 'qual/bed/all_yeast_genes.bed',   'type': 'qualitative', 'fields': gm_qualitative_fields},
