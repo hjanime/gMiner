@@ -112,7 +112,7 @@ gFeatMiner is also designed to be accessed from other programs via the HTTP prot
 
 A server is now running locally. The default port is 7520 but this can be changed by specifying another value in the line above. Sending a POST request to ``http://localhost:7520/`` should now work. However, extra configuration may be necessary on your server (Apache etc).
 
-To understand how to correctly form and send a POST request, as well as how to recieve the response, you can check out the files in `Extras/test/webservice/ <https://github.com/bbcf/gMiner/tree/master/Extras/tests/webservice>`_
+To understand how to correctly form and send a POST request, as well as how to recieve the response, you can check out the files in `Extras/test_scripts/webservice/ <https://github.com/bbcf/gMiner/tree/master/Extras/test_scripts/webservice>`_
 
 Essentially, the urlencoded parameters of the POST body get directly passed as keyword arguments to the run function. The return value is sent back to the application requesting the operation by another POST request, this time to the url specified in the ``callback_url`` parameter.
 
@@ -122,4 +122,4 @@ The github repository provides an issue tracking system. You are welcome to open
 
 https://github.com/bbcf/gMiner/issues
 
-You will however need to create a github account to open a new issue, sorry.
+You will however need to create a github account if you don't already have one to open a new issue, sorry.
