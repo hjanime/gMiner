@@ -100,9 +100,6 @@ class gmFormat(gm_tra.gmTrack):
         self.cursor.execute('create table "' + chr + '" (' + columns + ')')
         self.cursor.executemany('insert into "' + chr + '" values (' + ','.join(['?' for x in range(len(fields))])+')', iterable)
         self.connection.commit()
-        #for f in iterable:
-        #    values = ','.join(map(lambda x: type(x)==str and "'" + str(x) + "'" or str(x), f)) 
-        #    self.cursor.execute('insert into ' + chr + ' values (' + values + ')')
 
     def write_data_quan(self, chr, iterable, fields):
         if chr in [x[0] for x in self.cursor.execute("select name from sqlite_master where type='table'").fetchall()]:
@@ -116,9 +113,7 @@ class gmFormat(gm_tra.gmTrack):
 
     def write_chr_meta(self, data):
         # data = [{u'length': 197195432, u'name': u'chr1'},
-        #         {u'length': 129993255, u'name': u'chr10'},
-        #         {u'length': 121843856, u'name': u'chr11'},
-        #         {u'length': 121257530, u'name': u'chr12'}]
+        #         {u'length': 129993255, u'name': u'chr2'}]
         for x in data: self.cursor.execute('insert into chrNames (' + ','.join(x.keys()) + ') values (' + ','.join(['?' for y in range(len(x.keys()))])+')', tuple([x[k] for k in x.keys()]))
         self.connection.commit()
 

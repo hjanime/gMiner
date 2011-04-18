@@ -18,7 +18,7 @@ class complement(gmManipulation):
     def chr_collapse(self, *args): return gm_com.gmCollapse.by_appending(*args) 
     
     def generate(self, X, stop_val):
-        '''The result consists of all spaces that were not
+        '''The result consists of all intervals that were not
            covered by a feature in the original track'''
         last_end = 0
         for x in X:
