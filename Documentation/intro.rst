@@ -123,3 +123,6 @@ The github repository provides an issue tracking system. You are welcome to open
 https://github.com/bbcf/gMiner/issues
 
 You will however need to create a github account if you don't already have one to open a new issue, sorry.
+
+.. image:: /images/kopimi_small.png
+   :width: 1px

@@ -49,7 +49,11 @@ master_doc = 'index'
 
 # General information about the project.
 project = gMiner.gm_constants.gm_project_long_name
-copyright = u''
+
+# HTML footer
+copyright = u'Kopimi'
+html_show_copyright = False
+html_show_sphinx = False
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
