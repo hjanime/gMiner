@@ -23,12 +23,12 @@ class complement(gmManipulation):
         last_end = 0
         for x in X:
             if x[0] > last_end:
-                yield (last_end, x[0], None, None, '.')
+                yield (last_end, x[0], None, None, 0)
                 last_end = x[1]
             else:
                 last_end = max(x[1], last_end)
         if last_end < stop_val:
-            yield (last_end, stop_val, None, None, '.')
+            yield (last_end, stop_val, None, None, 0)
 
 #-------------------------------------------------------------------------------------------# 
 class internal_merge(gmManipulation):
@@ -58,7 +58,7 @@ class internal_merge(gmManipulation):
                     x[1] = max(x[1], x_next[1])
                     x[2] = x[2] + ' + ' + x_next[2]
                     x[3] = x[3] + x_next[3]
-                    x[4] = x[4] == x_next[4] and x[4] or '.' 
+                    x[4] = x[4] == x_next[4] and x[4] or 0
                 else:
                     yield tuple(x) 
                     x = x_next
@@ -129,7 +129,7 @@ class overlap_pieces(gmManipulation):
                 else:
                     g_index += 1
                     if overlaps(g_current, f):
-                        yield (max(f[0],g_current[0]), min(f[1],g_current[1]), f[2] + " with " + g_current[2], 0.0, ".")
+                        yield (max(f[0],g_current[0]), min(f[1],g_current[1]), f[2] + " with " + g_current[2], 0.0, 0)
             if not left_of(f, g):
                 Wf.append(f)
         def left_of(a, b):

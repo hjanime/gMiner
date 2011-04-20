@@ -30,7 +30,7 @@ gm_field_types = {
     'start':        'integer',
     'end':          'integer',
     'score':        'real',
-    'strand':       'text',
+    'strand':       'integer',
     'name':         'text',
     'thick_start':  'integer',
     'thick_end':    'integer',

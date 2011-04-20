@@ -60,6 +60,10 @@ class gmFormat(gm_tra.gmTrack):
         seen_chr = []
         def get_next_line():
             global line, chr
+            def strand_to_int(strand):
+                if strand == '+': return 1
+                if strand == '-': return -1
+                return 0
             while True:
                 line = self.file.next().strip("\n").lstrip()
                 if len(line) == 0:              continue
@@ -82,12 +86,24 @@ class gmFormat(gm_tra.gmTrack):
                     raise gm_err.gmError("400", "The track " + self.location + " has non integers as interval bounds and is hence not valid.")
                 if line[2] <= line[1]:
                     raise gm_err.gmError("400", "The track " + self.location + " has negative or null intervals and is hence not valid.")
-                if len(line) > 3:
+                if len(line) > 4:
                     if line[4] == '.': line[4] = 0.0
                     try:
                         line[4] = float(line[4])
                     except ValueError:
                         raise gm_err.gmError("400", "The track " + self.location + " has non floats as score values and is hence not valid.")
+                if len(line) > 5:
+                    line[5] = strand_to_int(line[5])
+                if len(line) > 6:
+                    try:
+                        line[6] = float(line[6])
+                    except ValueError:
+                        raise gm_err.gmError("400", "The track " + self.location + " has non integers as thick starts and is hence not valid.")
+                if len(line) > 7:
+                    try:
+                        line[7] = float(line[7])
+                    except ValueError:
+                        raise gm_err.gmError("400", "The track " + self.location + " has non integers as thick ends and is hence not valid.")
                 break
         def iter_until_different_chr():
             global line
