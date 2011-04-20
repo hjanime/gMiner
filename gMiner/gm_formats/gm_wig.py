@@ -134,7 +134,7 @@ class gmFormat(gm_tra.gmTrack):
             # Add info #
             self.attributes['converted_by']   = gm_project_long_name
             self.attributes['converted_from'] = self.location
-            self.attributes['converted_at']   = time.asctime()
+            #self.attributes['converted_at']   = time.asctime()
             new_track.write_meta_data(self.attributes)
             # Read the whole file #
             self.file.seek(0)
