@@ -15,4 +15,5 @@ setup(
     author           = 'Lucas Sinclair',
     author_email     = 'lucas.sinclair@epfl.ch',
     install_requires = ['python-magic', 'cherrypy', 'matplotlib'],
+    classifiers      = ['Topic :: Scientific/Engineering :: Bio-Informatics']
 )
