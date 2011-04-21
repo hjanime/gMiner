@@ -74,18 +74,17 @@ class gmFormat(gm_tra.gmTrack):
 
     #-----------------------------------------------------------------------------#   
     def get_data_qual(self, selection, fields):
-        def get_chr(chr):
-            if chr not in self.all_tables: return []
-            return self.cursor.execute("select " + ','.join(fields) + " from '" + chr +"'")
-        def get_span(span):
-            chr = span['chr']
-            if chr not in self.all_tables: return []
-            condition = "start < " + str(span['end']) + " and " + "end > " + str(span['start'])
-            return self.cursor.execute("select " + ','.join(fields) + " from '" + chr + "' where " + condition)
-        if selection['type'] == 'span':
-            return get_span(selection['span'])
         if selection['type'] == 'chr':
-            return get_chr(selection['chr'])
+            chr = selection['chr']
+            if chr not in self.all_tables: return ()
+            cmd = "select " + ','.join(fields) + " from '" + chr + "'"
+        if selection['type'] == 'span':
+            span = selection['span']
+            chr = span['chr']
+            if chr not in self.all_tables: return ()
+            condition = "start < " + str(span['end']) + " and " + "end > " + str(span['start'])
+            cmd = "select " + ','.join(fields) + " from '" + chr + "' where " + condition
+        return self.cursor.execute(cmd + ' order by start,end') 
 
     def get_data_quan(self, selection, fields = ['start', 'end', 'score']):
         return self.get_data_qual(selection, fields)
