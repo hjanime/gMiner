@@ -10,6 +10,16 @@ import os, time
 all_fields_possible = ['start', 'end', 'name', 'score', 'strand', 'thick_start', 'thick_end',
                        'item_rgb', 'block_count', 'block_sizes', 'block_starts']
 
+# Maps #
+def strand_to_int(strand):
+    if strand == '+': return 1
+    if strand == '-': return -1
+    return 0
+def int_to_strand(num):
+    if num == 1: return  '+'
+    if num == -1: return '-'
+    return '.'
+
 ###########################################################################   
 class gmFormat(gm_tra.gmTrack):
     def initialize(self):
@@ -60,10 +70,6 @@ class gmFormat(gm_tra.gmTrack):
         seen_chr = []
         def get_next_line():
             global line, chr
-            def strand_to_int(strand):
-                if strand == '+': return 1
-                if strand == '-': return -1
-                return 0
             while True:
                 line = self.file.next().strip("\n").lstrip()
                 if len(line) == 0:              continue
@@ -158,11 +164,22 @@ class gmFormat(gm_tra.gmTrack):
             if f in old_track.fields: self.fields.append(f)
             else: break
         # Wrapper function #
-        def stringify(chr, iterator):
+        def string_and_transform(chr, iterator):
             for line in iterator:
+                
+                try:
+                    line[4] = int_to_strand(line[4])
+                except IndexError:
+                    pass
                 yield chr + '\t' + '\t'.join([str(f) for f in line]) + '\n' 
         # Write everything #
         with open(self.location, 'w') as self.file:
             self.file.write(line)
             for chr in old_track.all_chrs:
-                self.file.writelines(stringify(chr, old_track.get_data_qual({'type':'chr', 'chr':chr}, self.fields)))
+                for line in old_track.get_data_qual({'type':'chr', 'chr':chr}, self.fields):
+                    elems = list(line)
+                    try:
+                        elems[4] = int_to_strand(line[4])
+                    except IndexError:
+                        pass
+                    self.file.writelines(chr + '\t' + '\t'.join([str(f) for f in elems]) + '\n')

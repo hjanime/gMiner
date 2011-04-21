@@ -33,6 +33,6 @@ class Unittest_test(unittest.TestCase):
         b = open(bed_path,           'r')
         a.next()
         b.next()
-        for A in a: self.assertEqual(A, b.next())
+        for A,B in zip(a,b): self.assertEqual(A.split(), B.split())
         # Clean up #
         os.remove(bed_path)
