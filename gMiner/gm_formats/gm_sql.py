@@ -122,7 +122,17 @@ class gmFormat(gm_tra.gmTrack):
     def commit(self):
         self.connection.commit()
 
+    def make_indexes(self):
+        for chr in [x for x in self.all_tables if x != 'attributes' and x != 'chrNames']:
+            self.cursor.execute(    "create index '" + chr + "_range_idx' on '" + chr + "' (start,end)")
+            if 'score' in self.fields:
+                self.cursor.execute("create index '" + chr + "_score_idx' on '" + chr + "' (score)")
+            if 'name' in self.fields:
+                self.cursor.execute("create index '" + chr + "_name_idx' on '" +  chr + "' (name)")
+        self.connection.commit()
+                
     def unload(self):
+        self.make_indexes()
         self.cursor.close()
         self.connection.close()
 
