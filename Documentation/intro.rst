@@ -104,18 +104,6 @@ gFeatMiner is capable of numerous operations on genomic data. Currently, two mod
 * :doc:`desc_stat`
 * :doc:`genomic_manip`
 
-Starting a server
-"""""""""""""""""
-gFeatMiner is also designed to be accessed from other programs via the HTTP protocol. You can launch the gFeatMiner server by typing the following in a terminal::
-
-    $ python -c "import gMiner.gm_server as srv; srv.gmServer(port=7520).serve()"
-
-A server is now running locally. The default port is 7520 but this can be changed by specifying another value in the line above. Sending a POST request to ``http://localhost:7520/`` should now work. However, extra configuration may be necessary on your server (Apache etc).
-
-To understand how to correctly form and send a POST request, as well as how to recieve the response, you can check out the files in `Extras/test_scripts/webservice/ <https://github.com/bbcf/gMiner/tree/master/Extras/test_scripts/webservice>`_
-
-Essentially, the urlencoded parameters of the POST body get directly passed as keyword arguments to the run function. The return value is sent back to the application requesting the operation by another POST request, this time to the url specified in the ``callback_url`` parameter.
-
 Reporting bugs
 """"""""""""""
 The github repository provides an issue tracking system. You are welcome to open a new ticket in it if you think you have found a bug in gFeatMiner:
