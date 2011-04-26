@@ -11,3 +11,8 @@ def flatten_score(start, stop, X):
         if i >= x[1]: x = X.next()
         if i >= x[0]: yield x[2]
         else: yield 0.0
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

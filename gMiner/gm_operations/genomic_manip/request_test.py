@@ -48,3 +48,8 @@ class Unittest_test(unittest.TestCase):
                     (120, 130,  10.)]
 
         self.assertEqual(outdata, expected)
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

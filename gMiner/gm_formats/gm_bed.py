@@ -183,3 +183,8 @@ class gmFormat(gm_tra.gmTrack):
                     except IndexError:
                         pass
                     self.file.writelines(chr + '\t' + '\t'.join([str(f) for f in elems]) + '\n')
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

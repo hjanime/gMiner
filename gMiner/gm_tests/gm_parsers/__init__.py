@@ -38,3 +38,8 @@ def parse_challange():
             os.remove(dest)
             continue
         message(path, name, True, expected)
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

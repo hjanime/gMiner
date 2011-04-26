@@ -70,3 +70,8 @@ class gmJob(object):
     @gm_err.catch_errors
     def run_catch_errors(self): return self.operation.run()
     def run_with_errors(self):  return self.operation.run()
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

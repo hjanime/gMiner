@@ -32,3 +32,8 @@ class Unittest_test(unittest.TestCase):
 
         for t in tests:
             self.assertEqual(t['fn']([[d[gm_qualitative_fields.index(f)] for f in t['fn'].fields] for d in t['input']]), t['expected'])
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

@@ -36,3 +36,8 @@ class Unittest_test(unittest.TestCase):
         for A,B in zip(a,b): self.assertEqual(A.split(), B.split())
         # Clean up #
         os.remove(bed_path)
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

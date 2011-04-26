@@ -25,3 +25,8 @@ request_selection_string =';'.join([chrsuffix + r for r in request_selection_reg
 def make_track_name(path): 
     name_gen = tempfile._RandomNameSequence()
     return ' '.join([name_gen.next() for x in range(10)]) + ' ' + path.split('/')[-1] 
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

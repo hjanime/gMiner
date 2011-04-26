@@ -147,3 +147,8 @@ class gmFormat(gm_tra.gmTrack):
     #-----------------------------------------------------------------------------#
     def convert_from_sql(self, old_track):
         pass
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

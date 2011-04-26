@@ -144,3 +144,8 @@ class gmOperation(object):
         self.manip.finalize()
         # Report success # 
         return 200, [t['location'] for t in self.manip.output_tracks] , "text/plain"
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

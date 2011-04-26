@@ -323,4 +323,8 @@ class gmBoxElement(gmPlotElement):
     def cleanup(self):
         del self.DIQ
         super(gmBoxElement, self).cleanup()
- 
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

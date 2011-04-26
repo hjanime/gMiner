@@ -23,3 +23,8 @@ def catch_errors(fn):
         except gmError as err:
             return err.code, err.msg, "text/plain"
     return wrapper
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

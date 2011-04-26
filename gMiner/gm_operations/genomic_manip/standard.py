@@ -152,4 +152,8 @@ class overlap_pieces(gmManipulation):
             else:
                 for z in scan(y, Wy, x, Wx, 1): yield z 
                 y = Y.next()      
- 
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

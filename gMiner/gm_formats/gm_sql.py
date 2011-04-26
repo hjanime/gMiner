@@ -142,3 +142,8 @@ class gmFormat(gm_tra.gmTrack):
     def stat_shortcut(self, chara, chr):
         return False
         return 'select max(rowid) from' + chr
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

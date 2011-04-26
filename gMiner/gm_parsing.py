@@ -87,3 +87,8 @@ def assert_has_method(object, attribute):
 def assert_is_among(var, list, name):
     if var not in list:
         raise gm_err.gmError(400, "The '" + name + "' variable does not seem to be any of the following possibilites: " + str(list) + ".")
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

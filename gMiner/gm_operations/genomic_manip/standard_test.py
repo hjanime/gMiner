@@ -62,3 +62,8 @@ class Unittest_test(unittest.TestCase):
 
         for t in tests:
             self.assertEqual(list(t['fn'](**t['input'])), t['expected'])
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

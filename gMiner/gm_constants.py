@@ -103,3 +103,8 @@ def recompile():
 # Debuging #
 def trace(): __import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()
 def pudb():  __import__('pudb').set_trace()
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

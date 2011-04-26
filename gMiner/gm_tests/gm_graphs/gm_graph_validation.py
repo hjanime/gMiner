@@ -15,4 +15,9 @@ request_selection_string = 'chr1:0:30;chr1:122:126'
 
 # Make name #
 def make_track_name(path): 
-    return path.split('/')[-1] 
+    return path.split('/')[-1]
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------# 

@@ -186,4 +186,7 @@ class gmCharacteristic(object):
         iterable = list(iterable)
         return [x[0] for x in iterable]
 
-###########################################################################   
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

@@ -157,3 +157,8 @@ class window_smoothing(gmManipulation):
                 if curt_mean != 0: yield (same_since, p, curt_mean)
                 curt_mean  = next_mean
                 same_since = p
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

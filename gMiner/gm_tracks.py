@@ -215,3 +215,8 @@ class gmTrackCollection(object):
  
     def get_data_quan(self, selection, fields): return [t.get_data_quan(selection, fields) for t in self.tracks]
     def get_data_qual(self, selection, fields): return [t.get_data_qual(selection, fields) for t in self.tracks]
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

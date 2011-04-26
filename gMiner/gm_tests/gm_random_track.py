@@ -32,3 +32,8 @@ class gmRandomTrack(gm_tra.gmTrack):
             score = random.gammavariate(1, 0.1) * 1000  
             strand = map(lambda x: x==1 and '+' or '-', [random.randint(0,1)])[0]
             yield [start, end, self.name_gen.next(), score, strand]
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

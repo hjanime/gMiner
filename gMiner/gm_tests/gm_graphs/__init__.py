@@ -92,3 +92,7 @@ def generate_graphs(result_path='/tmp/gMiner/'):
                             result_file.write(result)
                             result_file.close()
 
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#
