@@ -64,7 +64,6 @@ class gmOperation(object):
         # Compute characterisitcs #
         for track in self.tracks:
             [gm_get_characteristic(subtrack, self.request['characteristic']) for subtrack in self.subtracks if subtrack.track == track]
-            track.unload() 
         # Generate the graph #
         r1, r2, r3 = self.graph.generate()
         # Free memory #
