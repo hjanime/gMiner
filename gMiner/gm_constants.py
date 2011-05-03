@@ -1,7 +1,7 @@
 # Project name #
 gm_project_name = 'gMiner'
 gm_project_long_name = 'gFeatMiner'
-gm_project_version = '1.1.1'
+gm_project_version = '1.2.0'
 gm_doc_url = 'http://bbcf.epfl.ch/gMiner'
 
 # Current path #

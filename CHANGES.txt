@@ -10,3 +10,4 @@ v1.0.2, 31.03.2011 -- A genomic manipulation now returns the list of files creat
 v1.0.3, 01.04.2011 -- Fixed a bug that would affect manipulations taking as input an undefined number of tracks.
 v1.1.0, 26.04.2011 -- gFeatMiner is now more of a standalone tool: it can take BED and WIG as inputs (it converts them to SQL always).
 v1.1.1, 26.04.2011 -- Small bugfix.
+v1.2.0, 04.05.2011 -- The library has changed. No more server. All of the track functionality has been moved to bbcflib.
