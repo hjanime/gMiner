@@ -1,3 +1,0 @@
-To build and upload the gMiner pacakge to the python package index you just need to change directory to the place where the setup.py script is found and run the following command:
-
-    python setup.py sdist upload

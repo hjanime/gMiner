@@ -1,6 +1,0 @@
-The version number needs to be incremented in the following files:
-
-/setup.py
-/gMiner/gm_constants.py
-/CHANGES.txt
-/Documentation/
