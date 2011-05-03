@@ -12,6 +12,16 @@ def flatten_score(start, stop, X):
         if i >= x[0]: yield x[2]
         else: yield 0.0
 
+def flatten_track(X, stopval):
+    '''Untested'''
+    sentinel = [sys.maxint, sys.maxint, 0.0]
+    X = gm_com.sentinelize(X, sentinel)
+    x = [-2, -1, 0.0]
+    for i in xrange(0, stopval):
+        if i >= x[1]: x = X.next()
+        if i >= x[0]: yield x[2]
+        else: yield 0.0
+
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #
