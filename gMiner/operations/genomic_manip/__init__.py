@@ -69,13 +69,13 @@ class gmManipulation(object):
     def make_output_tracks(self):
         for t in self.output_tracks:
             t['name']     = self.__doc__ + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
-            t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '/'
+            t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
             t['obj']      = new(t['location'], 'sql', t['kind'], t['name'])
             t['obj'].meta_tack = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}
 
     def make_output_meta_chr(self):
         self.chrmeta = []
-        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].chrmeta if m['length'] and m['name'] == chr])})
+        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].meta_chr if m['length'] and m['name'] == chr])})
         for t in self.output_tracks: t['obj'].meta_chr = self.chrmeta
 
     def get_special_parameter_stop_val(self, chr_name):
@@ -95,7 +95,7 @@ class gmManipulation(object):
                 kwargs[t['name']] = getattr(self, 'get_special_parameter_' + t['type'])(chr)
             for t in self.input_other:
                 kwargs[t['name']] = t['value']
-            getattr(T['obj'], 'write_' + T['kind'][:4])(chr, self.generate(**kwargs), T['fields'])
+            T['obj'].write(chr, self.generate(**kwargs), T['fields'])
 
     def finalize(self):
         self.output_tracks[0]['obj'].unload()
@@ -152,8 +152,8 @@ class TrackCollection(object):
         self.tracks = tracks
         self.name = 'Collection of ' + str(len(tracks)) + ' track' + ((len(tracks) > 1) and 's' or '')
         self.chrs = common.collapse.by_intersection([t.chrs for t in tracks])
-        self.chrmeta = []
-        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in tracks for m in n.chrmeta if m['length'] and m['name'] == chr])})
+        self.meta_chr = []
+        for chr in self.chrs: self.meta_chr.append({'name': chr, 'length': max([m['length'] for n in tracks for m in n.meta_chr if m['length'] and m['name'] == chr])})
     def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
 
 #-----------------------------------------#

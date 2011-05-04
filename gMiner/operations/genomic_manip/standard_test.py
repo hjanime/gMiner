@@ -1,6 +1,9 @@
-# gMiner Modules #
-from ..  import genomic_manip as gm_manip
-from ... import gm_tests
+# Other modules #
+from bbcflib.track import Track
+from bbcflib.track.test_variables import track_collections
+
+# Internal modules #
+from .. import genomic_manip
 
 # Unittesting #
 try:
@@ -9,14 +12,14 @@ except ImportError:
     import unittest
 
 ################################################################################### 
-class Unittest_test(unittest.TestCase):
+class Test(unittest.TestCase):
     def runTest(self):
         self.maxDiff = None
 
         tests  = [
-                {'fn':     gm_manip.standard.complement().generate,
-                 'input':  {'stop_val': 200,
-                            'X': gm_tests.gm_track_collections['Validation']['Validation 1']['data']['chr1']},
+                {'fn':     genomic_manip.standard.complement().generate,
+                 'input':  {'stop_val': 200},
+                 'tracks': {'X': track_collections['Validation'][1]['path_sql']},
                  'expected': [(10,  20,  None, None, 0),
                               (30,  40,  None, None, 0),
                               (50,  60,  None, None, 0),
@@ -24,9 +27,9 @@ class Unittest_test(unittest.TestCase):
                               (110, 120, None, None, 0),
                               (135, 200, None, None, 0)]}
                 ,
-                {'fn':     gm_manip.standard.overlap_track().generate,
-                 'input':  {'X': gm_tests.gm_track_collections['Validation']['Validation 2']['data']['chr1'],
-                            'Y': gm_tests.gm_track_collections['Validation']['Validation 3']['data']['chr1']},
+                {'fn':     genomic_manip.standard.overlap_track().generate,
+                 'tracks': {'X': track_collections['Validation'][2]['path_sql'],
+                            'Y': track_collections['Validation'][3]['path_sql']},
                  'expected': [(10,  20,  u'Name1',  0.1, 1),
                               (30,  40,  u'Name2',  0.2, 1),
                               (90,  100, u'Name5',  0.0, 1),
@@ -39,10 +42,10 @@ class Unittest_test(unittest.TestCase):
                               (250, 260, u'Name12', 0.2, 1),
                               (270, 280, u'Name13', 0.0, 1)]}
                 ,
-                {'fn':     gm_manip.standard.overlap_pieces().generate,
-                 'input':  {'stop_val': 400,
-                            'X': gm_tests.gm_track_collections['Validation']['Validation 2']['data']['chr1'],
-                            'Y': gm_tests.gm_track_collections['Validation']['Validation 3']['data']['chr1']},
+                {'fn':     genomic_manip.standard.overlap_pieces().generate,
+                 'input':  {'stop_val': 400},
+                 'tracks': {'X': track_collections['Validation'][2]['path_sql'],
+                            'Y': track_collections['Validation'][3]['path_sql']},
                  'expected': [(15,  20,  'NameA with Name1',  0.0, 0),
                               (32,  38,  'NameB with Name2',  0.0, 0),
                               (95,  100, 'NameD with Name5',  0.0, 0),
@@ -61,7 +64,11 @@ class Unittest_test(unittest.TestCase):
                  ]
 
         for t in tests:
-            self.assertEqual(list(t['fn'](**t['input'])), t['expected'])
+            for k,v in t['tracks'].items():
+                with Track(v) as x: t['tracks'][k] = list(x.read('chr1'))
+            dict = t.get('input', {})
+            dict.update(t['tracks'])
+            self.assertEqual(list(t['fn'](**dict)), t['expected'])
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

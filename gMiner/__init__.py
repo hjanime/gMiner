@@ -24,7 +24,7 @@ def run(**kwargs):
     # Prepare the tracks #
     tracks = []
     for i, track in enumerate(track_dicts):
-        t = Track(path=track['path'], name=track['name'])
+        t = Track(path=track['path'], name=track['name'], chrfile=track.get('chrs'))
         t.number = i
         tracks.append(t)
     # Standard request variables #

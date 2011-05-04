@@ -1,10 +1,12 @@
-# gMiner Modules #
-import gMiner
-from ... import gm_tests
-from ... import gm_tracks as gm_tra
+# General modules #
+import os, tempfile
 
 # Other modules #
-import os, tempfile
+from bbcflib.track import Track
+from bbcflib.track.test_variables import track_collections, yeast_chr_file
+
+# Internal modules #
+import gMiner
 
 # Unittesting #
 try:
@@ -13,26 +15,27 @@ except ImportError:
     import unittest
 
 ################################################################################### 
-class Unittest_test(unittest.TestCase):
+class Test(unittest.TestCase):
     def runTest(self):
         outdir = tempfile.mkdtemp(prefix='gMiner')
         files = gMiner.run(
-           track1          = gm_tests.gm_track_collections['Scores']['Scores 1']['location'],
+           track1          = track_collections['Scores'][1]['path'],
            track1_name     = 'Validation score track 1',
-           track2          = gm_tests.gm_track_collections['Scores']['Scores 2']['location'],
+           track1_chrs     = yeast_chr_file,
+           track2          = track_collections['Scores'][2]['path'],
            track2_name     = 'Validation score track 2',
-           track3          = gm_tests.gm_track_collections['Scores']['Scores 3']['location'],
+           track2_chrs     = yeast_chr_file,
+           track3          = track_collections['Scores'][3]['path'],
            track3_name     = 'Validation score track 3',
+           track3_chrs     = yeast_chr_file,
            operation_type  = 'genomic_manip',
            manipulation    = 'merge_scores',
            output_location = outdir,
         )
         
-        outfile = files[0]
-        outtrack = gm_tra.gmTrack.Factory({'name':'Validation merge scores', 'location':outfile})
-        outdata = list(outtrack.get_data_quan({'type':'chr','chr':'chr1'}))
-        outtrack.unload()
-        os.remove(outfile)
+        with Track(files[0], chrfile=yeast_chr_file) as t:
+            data = list(t.read('chr1'))
+        os.remove(files[0])
         os.removedirs(outdir)
 
         expected = [(0,    5,    2.0 + 0.6666666666666666),
@@ -47,7 +50,9 @@ class Unittest_test(unittest.TestCase):
                     (90,  110,   3.0),
                     (120, 130,  10.)]
 
-        self.assertEqual(outdata, expected)
+        self.assertEqual(data, expected)
+
+Test().runTest()
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

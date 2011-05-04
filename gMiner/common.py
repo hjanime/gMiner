@@ -147,7 +147,7 @@ class collapse(object):
 
     @staticmethod
     def by_union(l):
-        return list(set(cls.by_appending(l)))
+        return list(set(collapse.by_appending(l)))
 
     @staticmethod
     def by_intersection(l):

@@ -1,7 +1,13 @@
-# gMiner Modules #
-from ..  import genomic_manip as gm_manip
-from ... import gm_tests
-from ...gm_tests import gm_scores
+# General modules #
+import sys, numpy
+
+# Other modules #
+from bbcflib.track import Track
+from bbcflib.track.test_variables import track_collections
+
+# Internal modules #
+from ... import common
+from .. import genomic_manip
 
 # Unittesting #
 try:
@@ -9,24 +15,22 @@ try:
 except ImportError:
     import unittest
 
-#--------------------------------------------------------------------------#
-def flatten_score(start, stop, X):
-    sentinel = [sys.maxint, sys.maxint, 0.0]
-    X = gm_com.sentinelize(X, sentinel)
-    x = [start-2, start-1, 0.0]
-    for i in xrange(start, stop):
-        if i >= x[1]: x = X.next()
-        if i >= x[0]: yield x[2]
-        else: yield 0.0
-
 ################################################################################### 
-class Unittest_test(unittest.TestCase):
+class Test(unittest.TestCase):
     def runTest(self):
         self.maxDiff = None
        
         #--------------------------------------------------------------------------#
+        def flatten_score(start, stop, X):
+            sentinel = [sys.maxint, sys.maxint, 0.0]
+            X = common.sentinelize(X, sentinel)
+            x = [start-2, start-1, 0.0]
+            for i in xrange(start, stop):
+                if i >= x[1]: x = X.next()
+                if i >= x[0]: yield x[2]
+                else: yield 0.0
+
         def smooth_signal(data, L):
-            import numpy
             window = L*2+1
             weightings    = numpy.repeat(1.0, window) / window
             extended_data = numpy.hstack([[0] * L, data, [0] * L])
@@ -34,10 +38,10 @@ class Unittest_test(unittest.TestCase):
             return smoothed.tolist()
 
         def check_both_methods():
-            computed_output      = list(gm_manip.scores.window_smoothing().generate(stop_val=stop_val, L=L, X=X))
+            computed_output      = list(genomic_manip.scores.window_smoothing().generate(stop_val=stop_val, L=L, X=X))
             self.assertEqual(computed_output, expected_output)
-            flat_X               = list(gm_scores.flatten_score(0, stop_val, X.__iter__()))
-            flat_expected_output = list(gm_scores.flatten_score(0, stop_val, expected_output.__iter__()))
+            flat_X               = list(flatten_score(0, stop_val, X.__iter__()))
+            flat_expected_output = list(flatten_score(0, stop_val, expected_output.__iter__()))
             flat_computed_output = smooth_signal(flat_X, L) 
             self.assertEqual(flat_computed_output, flat_expected_output)
 
@@ -61,16 +65,20 @@ class Unittest_test(unittest.TestCase):
         check_both_methods()
 
         #--------------------------------------------------------------------------#
-        tests = [{'fn':    gm_manip.scores.merge_scores().generate,
+        tests = [{'fn':    genomic_manip.scores.merge_scores().generate,
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [[],[]]},
-                 'output': []},
+                 'output': []}]
+
+        for t in tests:
+            self.assertEqual(list(t['fn'](**t['input'])), t['output'])
                  
-                 {'fn':    gm_manip.scores.merge_scores().generate,
+        #--------------------------------------------------------------------------#
+        tests = [{'fn':    genomic_manip.scores.merge_scores().generate,
                  'input':  {'stop_val': 200,
-                            'list_of_tracks': [gm_tests.gm_track_collections['Scores']['Scores 1']['data']['chr1'],
-                                               gm_tests.gm_track_collections['Scores']['Scores 2']['data']['chr1'],
-                                               gm_tests.gm_track_collections['Scores']['Scores 3']['data']['chr1']]},
+                            'list_of_tracks': [track_collections['Scores'][1]['path_sql'],
+                                               track_collections['Scores'][2]['path_sql'],
+                                               track_collections['Scores'][3]['path_sql']]},
                  'output': [(0,    5,    2.0 + 0.6666666666666666),
                             (5,   10,    4.0),
                             (20,  30,   10.0),
@@ -85,12 +93,14 @@ class Unittest_test(unittest.TestCase):
                  ]
 
         for t in tests:
+            for i,v in enumerate(t['input']['list_of_tracks']):
+                with Track(v) as x: t['input']['list_of_tracks'][i] = list(x.read('chr1'))
             self.assertEqual(list(t['fn'](**t['input'])), t['output'])
         #--------------------------------------------------------------------------#
 
-        tests  = [{'fn':   gm_manip.scores.mean_score_by_feature().generate,
-                 'input':  {'X': gm_tests.gm_track_collections['Scores'    ]['Scores 4'    ]['data']['chr1'],
-                            'Y': gm_tests.gm_track_collections['Validation']['Validation 2']['data']['chr1']},
+        tests  = [{'fn':   genomic_manip.scores.mean_score_by_feature().generate,
+                 'tracks':  {'X': track_collections['Scores'    ][4]['path_sql'],
+                             'Y': track_collections['Validation'][2]['path_sql']},
                  'output': [(10,  20,  u'Name1',  15.0, 1),
                             (30,  40,  u'Name2',  50.0, 1),
                             (50,  60,  u'Name3',  30.0, 1),
@@ -108,7 +118,9 @@ class Unittest_test(unittest.TestCase):
                  ]
 
         for t in tests:
-            self.assertEqual(list(t['fn'](**t['input'])), t['output'])
+            for k,v in t['tracks'].items():
+                with Track(v) as x: t['tracks'][k] = list(x.read('chr1'))
+            self.assertEqual(list(t['fn'](**t['tracks'])), t['output'])
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
