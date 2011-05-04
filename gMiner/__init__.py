@@ -20,7 +20,6 @@ except NameError:
 def run(**kwargs):
     # Prepare the request #
     request = kwargs
-    check_request(request)
     track_dict = parse_tracks(request)
     tracks = [Track(track, i, True) for i, track in enumerate(track_dict)]
     # Standard request variables #
@@ -45,16 +44,6 @@ def run(**kwargs):
     return operation.run()
 
 ###########################################################################
-def check_request(request): 
-    # Does it have the service field #
-    if not request.has_key('service'): raise Exception("The request does not seem to be valid. It does contain a service field.")
-    # Check for prog name #
-    if not request['service'] == 'gMiner': raise Exception("The request does not seem to be valid. It does not specify [" + gm_project_name + "] as the target service.")
-    # Check for version number #
-    for i, num in enumerate(request["version"].split('.')):
-        if num > gm_project_version.split('.')[i]: raise Exception("The request file has a version number higher than this current installation of " + gm_project_name + ".")
-        if num < gm_project_version.split('.')[i]: break
-
 def parse_tracks(request_dict):
     '''
     >>> parse_tracks({'track1': 'aa', 'track1_name': 'ff'})
