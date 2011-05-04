@@ -92,6 +92,61 @@ def generate_graphs(result_path='/tmp/gMiner/'):
                             result_file.write(result)
                             result_file.close()
 
+#TODO
+########################################################################### 
+# Track set #
+track_set = {
+    'single': gm_tests.gm_track_collections['Random']['Test random track 1'],
+    'many': {
+        1: gm_tests.gm_track_collections['Random']['Test random track 2'],
+        2: gm_tests.gm_track_collections['Random']['Test random track 3'],
+        3: gm_tests.gm_track_collections['Random']['Test random track 4'],
+}}
+
+# Extra variable #
+chrsuffix = 'Awfully super extra long chromosome denomination string '
+request_selection_regions = ['1:0:50000','2:50000:9999999999999']
+request_selection_string =';'.join([chrsuffix + r for r in request_selection_regions])
+ 
+# Make name #
+def make_track_name(path): 
+    name_gen = tempfile._RandomNameSequence()
+    return ' '.join([name_gen.next() for x in range(10)]) + ' ' + path.split('/')[-1] 
+
+########################################################################### 
+# Track set #
+track_set = {
+    'single': gm_tests.gm_track_collections['Validation']['Validation 1'],
+    'many': {
+        1: gm_tests.gm_track_collections['Validation']['Validation 1'],
+        2: gm_tests.gm_track_collections['Validation']['Validation 2'],
+        3: gm_tests.gm_track_collections['Validation']['Validation 3'],
+}}
+
+# Extra variable #
+request_selection_string = 'chr1:0:30;chr1:122:126'
+
+# Make name #
+def make_track_name(path): 
+    return path.split('/')[-1]
+
+########################################################################### 
+# Track set #
+track_set = {
+    'single': gm_tests.gm_track_collections['Yeast']['All genes'],
+    'many': {
+        1: gm_tests.gm_track_collections['Yeast']['All genes'],
+        2: gm_tests.gm_track_collections['Yeast']['Ribi genes'],
+        3: gm_tests.gm_track_collections['Yeast']['RP genes'],
+}}
+
+# Extra variable #
+request_selection_string = 'chr1:0:50000;chr1:52000:54000;chr1:56000:58000;chr2:50000:9999999999999'
+
+# Make name #
+def make_track_name(path): 
+    return path.split('/')[-1]
+
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #
