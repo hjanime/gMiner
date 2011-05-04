@@ -18,12 +18,10 @@ except NameError:
 
 ###########################################################################
 def run(**kwargs):
-    # Get request #
+    # Prepare the request #
     request = kwargs
-    # Check the request #
     check_request(request)
-    # Parse the track list # 
-    track_dict = parse_tracks(self.request)
+    track_dict = parse_tracks(request)
     tracks = [Track(track, i, True) for i, track in enumerate(track_dict)]
     # Standard request variables #
     request['selected_regions'] = resquest.get('selected_regions', '')
@@ -32,15 +30,15 @@ def run(**kwargs):
     parse_chrlist(request)
     # Determine final chromosome list #
     if request['wanted_chromosomes']:
-        for track in tracks: track.chrs = (set(track.all_chrs) & set(self.request['wanted_chromosomes']))
+        for track in tracks: track.chrs = (set(track.all_chrs) & set(request['wanted_chromosomes']))
     else:
         for track in tracks: track.chrs = track.all_chrs
     # Import the correct operation #
     if not hasattr(operations, request['operation_type']):
         try:
             __import__('gMiner.gm_operations.' + request['operation_type'])
-        except ImportError as err:
-            raise gm_err.gmError(400, "The operation " + request['operation_type'] + " is not supported.", err)
+        except ImportError:
+            raise Exception("The operation " + request['operation_type'] + " is not supported.")
     operation = getattr(operations, request['operation_type']).gmOperation(request, tracks)
     # Run it #
     operation.prepare()
@@ -49,12 +47,12 @@ def run(**kwargs):
 ###########################################################################
 def check_request(request): 
     # Does it have the service field #
-    if not request.has_key('service'): raise gm_err.gmError(400, "The request does not seem to be valid. It does contain a service field.")
+    if not request.has_key('service'): raise Exception("The request does not seem to be valid. It does contain a service field.")
     # Check for prog name #
-    if not request['service'] == 'gMiner': raise gm_err.gmError(400, "The request does not seem to be valid. It does not specify [" + gm_project_name + "] as the target service.")
+    if not request['service'] == 'gMiner': raise Exception("The request does not seem to be valid. It does not specify [" + gm_project_name + "] as the target service.")
     # Check for version number #
     for i, num in enumerate(request["version"].split('.')):
-        if num > gm_project_version.split('.')[i]: raise gm_err.gmError(400, "The request file has a version number higher than this current installation of " + gm_project_name + ".")
+        if num > gm_project_version.split('.')[i]: raise Exception("The request file has a version number higher than this current installation of " + gm_project_name + ".")
         if num < gm_project_version.split('.')[i]: break
 
 def parse_tracks(request_dict):
@@ -65,15 +63,15 @@ def parse_tracks(request_dict):
 
     # Number of tracks #
     if 'track1' not in request_dict:
-        raise gm_err.gmError(400, "No tracks have been specified in the request")
+        raise Exception("No tracks have been specified in the request")
     number_of_tracks_sent = 1
     while request_dict.has_key("track" + str(number_of_tracks_sent + 1)):
         number_of_tracks_sent += 1
     # Make a dictionary #
     try:
         tracks = [dict([['location',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
-    except KeyError as err: 
-        raise gm_err.gmError(400, "Every track specified must have a name associated", err)
+    except KeyError:
+        raise Exception("Every track specified must have a name associated")
     # Chromosome info #
     for i, track in enumerate(tracks):
         if request_dict.has_key("track" + str(i+1) + '_chrs'):
@@ -91,10 +89,8 @@ def parse_regions(request):
     if request['selected_regions']:
         try: 
             request['selected_regions'] = [dict([['chr',p[0]],['start',int(p[1])],['end',int(p[2])]]) for p in [r.split(':') for r in request['selected_regions'].split(';')]]
-        except ValueError as err:
-            raise gm_err.gmError(400, "The selected regions are not properly formated.", err)
-        except IndexError as err:
-            raise gm_err.gmError(400, "The selected regions are not properly formated.", err)
+        except ValueError, IndexError:
+            raise Exception("The selected regions are not properly formated.")
         
 def parse_chrlist(request):
     '''

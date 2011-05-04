@@ -1,7 +1,5 @@
 # gMiner Modules #
-from ...gm_constants import *
-from .. import desc_stat as gm_stat
-from ... import gm_tests
+from .. import desc_stat
 
 # Unittesting #
 try:
@@ -13,19 +11,19 @@ except ImportError:
 class Unittest_test(unittest.TestCase):
     def runTest(self):
         tests  = [
-                {'fn':       gm_stat.gmCharacteristic.number_of_features,
+                {'fn':       desc_stat.gmCharacteristic.number_of_features,
                  'input':    gm_tests.gm_track_collections['Validation']['Validation 1']['data']['chr1'],
                  'expected': 12},
 
-                {'fn':       gm_stat.gmCharacteristic.base_coverage,
+                {'fn':       desc_stat.gmCharacteristic.base_coverage,
                  'input':    gm_tests.gm_track_collections['Validation']['Validation 1']['data']['chr1'],
                  'expected': 85},
 
-                {'fn':       gm_stat.gmCharacteristic.length,
+                {'fn':       desc_stat.gmCharacteristic.length,
                  'input':    gm_tests.gm_track_collections['Validation']['Validation 1']['data']['chr1'],
                  'expected': [10, 6, 10, 5, 5, 10, 10, 10, 10, 20, 10, 10]},
 
-                {'fn':       gm_stat.gmCharacteristic.score,
+                {'fn':       desc_stat.gmCharacteristic.score,
                  'input':    gm_tests.gm_track_collections['Validation']['Validation 1']['data']['chr1'],
                  'expected': [10.0, 0.0, 10.0, 0.0, 0.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 5.0]},
                 ]

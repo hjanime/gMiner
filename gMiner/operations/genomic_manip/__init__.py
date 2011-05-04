@@ -2,11 +2,8 @@
 import sys, os
 
 # Modules #
-from ... import gm_parsing   as gm_par
-from ... import gm_errors    as gm_err
-from ... import gm_tracks    as gm_tra
-from ... import gm_common    as gm_com
-from ...gm_constants import *
+from ... import common    as gm_com
+from ...constants import *
 
 ############################################################################################# 
 class gmManipulation(object):
@@ -17,18 +14,18 @@ class gmManipulation(object):
     def check(self):
         # Location specified #
         if len(self.output_tracks) > 0:
-            if not gm_par.exists_in_dict(self.request, 'output_location'):
-                raise gm_err.gmError(400, "There does not seem to be an output location specified in the request")
+            if not self.request.get('output_location'):
+                raise Exception("There does not seem to be an output location specified in the request")
         # Location is a directory #
         self.output_dir = self.request['output_location'].rstrip('/')
         if not os.path.isdir(self.output_dir):
-            raise gm_err.gmError(400, "The output location specified is not a directory")
+            raise Exception("The output location specified is not a directory")
 
     def make_input_tracks(self):
         # Number of tracks #
         if not 'list of tracks' in [t['type'] for t in self.input_tracks]:
             if len(self.input_tracks) != len(self.req_tracks):
-                raise gm_err.gmError(400, "The number of tracks inputed does not suit the manipulation requested")
+                raise Exception("The number of tracks inputed does not suit the manipulation requested")
         # Find tracks #
         for t in self.input_tracks:
             if t['type'] == 'list of tracks':
@@ -44,18 +41,18 @@ class gmManipulation(object):
                         t['obj'] = req_t
                         self.req_tracks.remove(req_t)
                         break
-            if not t.has_key('obj'): raise gm_err.gmError(400, "A required track for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
+            if not t.has_key('obj'): raise Exception("A required track for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
         # Check all used #
-        if not self.req_tracks == []: raise gm_err.gmError(400, "You provided too many tracks for the manipulation " + self.request['manipulation'] + ". The track '" + self.req_tracks[0].name + "' was not used.")
+        if not self.req_tracks == []: raise Exception("You provided too many tracks for the manipulation " + self.request['manipulation'] + ". The track '" + self.req_tracks[0].name + "' was not used.")
 
     def make_input_other(self):
         for t in self.input_other:
-            if not gm_par.exists_in_dict(self.request, t['key']):
-                raise gm_err.gmError(400, "A required parameter for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a '" + t['key'] + "' paramater that must be of type: " + t['type'].__name__)
+            if not self.request.get(t['key']):
+                raise Exception("A required parameter for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a '" + t['key'] + "' paramater that must be of type: " + t['type'].__name__)
             try:
                 t['value'] = t['type'](self.request[t['key']])
             except ValueError as err:
-                raise gm_err.gmError(400, "The '" + t['key'] + "' parameter is not of type: " + t['type'].__name__, err)
+                raise Exception("The '" + t['key'] + "' parameter is not of type: " + t['type'].__name__, err)
 
     def make_output_chromosomes(self):
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
@@ -118,12 +115,12 @@ class gmOperation(object):
     
     def prepare(self):
         # Manipulation specified #
-        if not gm_par.exists_in_dict(self.request, 'manipulation'):
-            raise gm_err.gmError(400, "There does not seem to be a manipulation specified in the request")
+        if not self.request.get('manipulation'):
+            raise Exception("There does not seem to be a manipulation specified in the request")
         # Manipulation is a gmManipulation #
         try:
             if not issubclass(globals()[self.request['manipulation']], gmManipulation):
-                raise gm_err.gmError(400, "The specified manipulation '" + self.request['manipulation'] + "' is not a manipulation.")
+                raise Exception("The specified manipulation '" + self.request['manipulation'] + "' is not a manipulation.")
         except KeyError:
             raise gm_err.gmError(400,     "The specified manipulation '" + self.request['manipulation'] + "' does not exist.")
         except TypeError:

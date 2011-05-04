@@ -3,7 +3,7 @@ import sys
 
 # Importing #
 from . import gmManipulation
-from ... import gm_common as gm_com
+from ... import common
 
 #-------------------------------------------------------------------------------------------#
 class merge_scores(gmManipulation):
@@ -15,13 +15,13 @@ class merge_scores(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_union(*args) 
     
     def generate(self, list_of_tracks, stop_val):
         '''Merges N quantitative tracks using the average fucntion'''
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)
-        tracks = [gm_com.sentinelize(x, sentinel) for x in list_of_tracks]
+        tracks = [common.sentinelize(x, sentinel) for x in list_of_tracks]
         elements = [x.next() for x in tracks]
         tracks_denom = 1.0/len(tracks)
         # Check empty #
@@ -63,7 +63,7 @@ class mean_score_by_feature(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_union(*args) 
     
     def generate(self, X, Y):
         '''Given a quantitative track "X" and a qualititive track "Y"
@@ -72,7 +72,7 @@ class mean_score_by_feature(gmManipulation):
            with a new score value proprety for every feature.'''
         # Sentinel #
         sentinel = (sys.maxint, sys.maxint, 0.0)
-        X = gm_com.sentinelize(X, sentinel)
+        X = common.sentinelize(X, sentinel)
         # Growing and shrinking list of features in X #
         F = [(-sys.maxint, -sys.maxint, 0.0)] 
         # --- Core loop --- #
@@ -105,7 +105,7 @@ class window_smoothing(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_union(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_union(*args) 
     
     def generate(self, X, L, stop_val):
         '''Given a quantiative track and a window size in base pairs,
@@ -115,7 +115,7 @@ class window_smoothing(gmManipulation):
            support is invariant.'''
         # Sentinel #
         sentinel = (sys.maxint, sys.maxint, 0.0)
-        X = gm_com.sentinelize(X, sentinel)
+        X = common.sentinelize(X, sentinel)
         # Growing and shrinking list of features around our moving window #
         F = []
         # Current position counting on nucleotides (first nucleotide is zero) #

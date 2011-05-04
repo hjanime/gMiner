@@ -3,7 +3,7 @@ import sys
 
 # Importing #
 from . import gmManipulation
-from ... import gm_common as gm_com
+from ... import common
 
 #-------------------------------------------------------------------------------------------#
 class complement(gmManipulation):
@@ -15,7 +15,7 @@ class complement(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_appending(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_appending(*args) 
     
     def generate(self, X, stop_val):
         '''The result consists of all intervals that were not
@@ -40,12 +40,12 @@ class internal_merge(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_appending(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_appending(*args) 
     
     def generate(self, X, stop_val):
         '''Merges features that are adjacent or overlapping in one track'''
         sentinel = (sys.maxint, sys.maxint)
-        X = gm_com.sentinelize(X, sentinel)
+        X = common.sentinelize(X, sentinel)
         x = X.next()
         if x != sentinel:
             while True:
@@ -74,14 +74,14 @@ class overlap_track(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_intersection(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_intersection(*args) 
    
     def generate(self, X, Y):
         '''Computes the overlap of the first track against the second track
            returning only complete features from the first track'''
         sentinel = (sys.maxint, sys.maxint)
-        X = gm_com.sentinelize(X, sentinel)
-        Y = gm_com.sentinelize(Y, sentinel)
+        X = common.sentinelize(X, sentinel)
+        Y = common.sentinelize(Y, sentinel)
         x = X.next()
         y = Y.next()
         if x == sentinel or y == sentinel: continue_loop = False
@@ -115,7 +115,7 @@ class overlap_pieces(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return gm_com.gmCollapse.by_intersection(*args) 
+    def chr_collapse(self, *args): return common.gmCollapse.by_intersection(*args) 
     
     def generate(self, X, Y, stop_val):
         '''Computes the overlap between both tracks returning
@@ -139,8 +139,8 @@ class overlap_pieces(gmManipulation):
         # fjoin: Simple and Efficient Computation of Feature Overlap #
         # J. Comp. Bio., 13(8), Oct. 2006, pp 1457-1464. #
         sentinel = (sys.maxint, sys.maxint)
-        X = gm_com.sentinelize(X, sentinel)
-        Y = gm_com.sentinelize(Y, sentinel)
+        X = common.sentinelize(X, sentinel)
+        Y = common.sentinelize(Y, sentinel)
         x = X.next()
         y = Y.next()
         Wx = []

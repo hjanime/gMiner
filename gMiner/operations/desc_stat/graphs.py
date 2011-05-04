@@ -7,9 +7,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as pyplot
 
 # gMiner Modules #
-from ... import gm_common    as gm_com
-from ... import gm_errors    as gm_err
-from ...gm_constants import *
+from ...constants import *
+from ... import common
 
 # Constants #
 gm_default_plot_color      = 'magenta'
@@ -36,9 +35,9 @@ class gmGraph(object):
 
         # Chromosome check #
         self.chrs = list(set([subtrack.chr for subtrack in self.subtracks if subtrack.chr]))
-        self.chrs.sort(key=gm_com.natural_sort)
+        self.chrs.sort(key=common.natural_sort)
         if self.request['per_chromosome'] and len(self.chrs)==0:
-            raise gm_err.gmError(400, "After processing no chromosomes are left to graph")
+            raise Exception("After processing no chromosomes are left to graph")
 
         # Type of graph #
         self.request['gm_graph_type'] =  map(lambda x: isinstance(x,list) and 'boxplot' or 'barplot', [self.subtracks[0].stat])[0]
@@ -136,9 +135,9 @@ class gmGraph(object):
             self.graph_legend.append([gm_default_color_selection , "Selection"])
         if self.b_many and self.b_chr:
             for track in self.tracks:
-                self.graph_legend.append([gm_com.number_to_color(track.number) , track.name])
-        for l in self.graph_legend: l[1] = gm_com.wrap_string(l[1], 25)
-        self.graph_legend = [[l[0], gm_com.wrap_string(l[1], 52)] for l in self.graph_legend]
+                self.graph_legend.append([common.number_to_color(track.number) , track.name])
+        for l in self.graph_legend: l[1] = common.wrap_string(l[1], 25)
+        self.graph_legend = [[l[0], common.wrap_string(l[1], 52)] for l in self.graph_legend]
 
     def gen_graph_title(self):
         from gMiner.gm_operations.desc_stat import gmCharacteristic
@@ -168,7 +167,7 @@ class gmGraph(object):
                     tmp_subtracks = [s for s in self.subtracks if s.track == track and s.chr == chr]
                     tmp_position = i*self.major_ystep+j*self.minor_ystep
                     tmp_height = self.minor_ystep
-                    if self.b_many: tmp_color = gm_com.number_to_color(track.number)
+                    if self.b_many: tmp_color = common.number_to_color(track.number)
                     else: tmp_color = gm_default_plot_color
                     self.elements += [gmPlotElement.Factory(self.request, tmp_subtracks, tmp_position, self.minor_ystep, tmp_color)]
         else:#                chr: -----NO-----
@@ -189,7 +188,7 @@ class gmGraph(object):
                 self.ylabels.append([i*self.major_ystep + self.hjump*0.5, track.name])
         else:
             self.ylabels = [[0.0, '']]
-        self.ylabels = [[l[0], gm_com.wrap_string(l[1], 30)] for l in self.ylabels]
+        self.ylabels = [[l[0], common.wrap_string(l[1], 30)] for l in self.ylabels]
 
     def gen_xlabel(self):
         from gMiner.gm_operations.desc_stat import gmCharacteristic
@@ -246,7 +245,7 @@ class gmBarElement(gmPlotElement):
             self.name = str(int(ratio)) + '%'
             self.rect = axes.barh(self.position, ratio, align='edge', height=self.height, color=self.color)[0]
         else:
-            self.name = gm_com.split_thousands(self.subtracks[0].stat)
+            self.name = common.split_thousands(self.subtracks[0].stat)
             self.rect = axes.barh(self.position, self.subtracks[0].stat, align='edge', height=self.height, color=self.color)[0]
 
     @classmethod

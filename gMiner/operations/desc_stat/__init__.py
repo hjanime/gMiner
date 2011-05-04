@@ -1,15 +1,7 @@
 # gMiner Modules #
-from ... import gm_common    as gm_com
-from ... import gm_parsing   as gm_par
-from ... import gm_errors    as gm_err
 from ...gm_constants import *
-
-# Submodules #
-from . import graphs as gra
-
-# Functions #
-def list_options():
-    return '\n'.join([f[0]+':'+f[1].title for f in gmCharacteristic.__dict__.items() if f[0][0] != '_'])
+from ... import common
+from . import graphs
 
 ###########################################################################   
 class gmOperation(object):
@@ -17,28 +9,29 @@ class gmOperation(object):
         self.type = 'desc_stat'
         self.request = request
         self.tracks = tracks
-    
+
+def assert_has_method(object, attribute):
     def prepare(self):
         # characteristic #
-        if not gm_par.exists_in_dict(self.request, 'characteristic'):
-            raise gm_err.gmError(400, "There does not seem to be a characteristic specified in the request")
-        gm_par.assert_has_method(gmCharacteristic, self.request['characteristic'])
+        if not self.request.get('characteristic'):
+            raise Exception("There does not seem to be a characteristic specified in the request")
+        if not hasattr(gmCharacteristic, self.request['characteristic']):
+            raise Exception("The '" + object.__name__ + "' object does not seem to have '" + attribute + "'.")
         # per_chromosome #
-        gm_par.default_if_none(self.request, 'per_chromosome')
-        gm_par.convert_to_bool(self.request, 'per_chromosome')
-        gm_par.assert_is_type(self.request['per_chromosome'], bool, 'per_chromosome')
+        self.request['per_chromosome'] = self.request.get('per_chromosome', False)
+        self.request['per_chromosome'] = bool(self.request['per_chromosome'])
         # compare_parents #
         if not self.request['selected_regions']: self.request['compare_parents'] = False
-        gm_par.default_if_none(self.request, 'compare_parents')
-        gm_par.convert_to_bool(self.request, 'compare_parents')
-        gm_par.assert_is_type(self.request['compare_parents'], bool, 'compare_parents')
+        self.request['compare_parents'] = self.request.get('compare_parents', False)
+        self.request['compare_parents'] = bool(self.request['compare_parents'])
         # gm_encoding elf
-        gm_par.default_if_none(self.request, 'gm_encoding', 'text/base64')
-        gm_par.assert_is_among(self.request['gm_encoding'], ['text/base64','image/png'], 'encoding')
+        self.request['gm_encoding'] = self.request.get('gm_encoding', 'text/base64')
+        if self.request['gm_encoding'] not in ['text/base64','image/png']:
+            raise Exception("The encoding variable does not seem to be valid.")
         # Create subtracks #
         self.subtracks = [subtrack for track in self.tracks for subtrack in self.track_cut_down(track)]
         # Create graph #
-        self.graph = gra.gmGraph(self.request, self.subtracks, self.tracks)
+        self.graph = graphs.gmGraph(self.request, self.subtracks, self.tracks)
          
     def track_cut_down(self, track):
         region = self.request['selected_regions']
@@ -113,7 +106,7 @@ def gm_get_characteristic(subtrack, chara):
     if shortcut: result = shortcut
     # Do it #
     subtrack.fields = charafn.fields
-    result = getattr(gm_com.gmCollapse, charafn.collapse)([charafn(data) for data in subtrack])
+    result = getattr(common.gmCollapse, charafn.collapse)([charafn(data) for data in subtrack])
     subtrack.stat = result
     # Store it #
     if storable and not stored: subtrack.track.write_stored('desc_stat', chara, subtrack.selection, result)
