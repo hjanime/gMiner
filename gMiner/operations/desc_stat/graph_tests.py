@@ -2,24 +2,17 @@
 This module will genereate almost every possible graph with the desc_stat module. 
 '''
 
-# Modules #
+# General modules #
 import os, sys
 
-# gMiner #
+# Other modules #
+from bbcflib.track import Track
+from bbcflib.track.test_variables import track_collections
+
+# Internal modules #
 import gMiner
 from ... import gm_errors as gm_err
 from ...gm_constants import *
-
-# Every collection of data #
-collections = {
-    'Validation': 'gMiner.gm_tests.gm_graphs.gm_graph_validation',
-    'Yeast':      'gMiner.gm_tests.gm_graphs.gm_graph_yeast',
-    'Random':     'gMiner.gm_tests.gm_graphs.gm_graph_random',
-}
-
-for col in collections:
-    __import__(collections[col]) 
-    collections[col] = sys.modules[collections[col]]
 
 # A naming convention dictonary #
 name_dict = {
@@ -41,10 +34,44 @@ chara_dict = {
     'score': '_Score',
 }
 
+# Every collection of data #
+collections = {
+    'Validation': {
+        'track_set': {
+            'single': track_collections['Validation']['1'],
+            'many': {
+                1: track_collections['Validation']['1'],
+                2: track_collections['Validation']['2'],
+                3: track_collections['Validation']['3'],
+        }}
+    },
+    #--------------------–-----#
+    'Yeast': {
+        'track_set': {
+            'single': track_collections['Yeast']['All genes'],
+            'many': {
+                1: track_collections['Yeast']['All genes'],
+                2: track_collections['Yeast']['Ribi genes'],
+                3: track_collections['Yeast']['RP genes'],
+        }}
+    },
+    #--------------------–-----#
+    'Random': {
+        'track_set': {
+            'single': track_collections['Random']['Test random track 1'],
+            'many': {
+                1: track_collections['Random']['Test random track 2'],
+                2: track_collections['Random']['Test random track 3'],
+                3: track_collections['Random']['Test random track 4'],
+        }}
+    },
+    #--------------------–-----#
+}
+
 # Main loops #
 def generate_graphs(result_path='/tmp/gMiner/'):
     if not os.path.isdir(result_path):
-        raise gm_err.gmError(400, "The result location specified is not a directory")
+        raise Exception("The result location specified is not a directory")
     max_count = 2*2*2*2*4
     max_count -= max_count/4 
     max_count *= len(collections) 
@@ -95,13 +122,26 @@ def generate_graphs(result_path='/tmp/gMiner/'):
 #TODO
 ########################################################################### 
 # Track set #
-track_set = {
-    'single': gm_tests.gm_track_collections['Random']['Test random track 1'],
-    'many': {
-        1: gm_tests.gm_track_collections['Random']['Test random track 2'],
-        2: gm_tests.gm_track_collections['Random']['Test random track 3'],
-        3: gm_tests.gm_track_collections['Random']['Test random track 4'],
-}}
+
+# Extra variable #
+request_selection_string = 'chr1:0:30;chr1:122:126'
+
+# Make name #
+def make_track_name(path): 
+    return path.split('/')[-1]
+
+########################################################################### 
+# Track set #
+
+# Extra variable #
+request_selection_string = 'chr1:0:50000;chr1:52000:54000;chr1:56000:58000;chr2:50000:9999999999999'
+
+# Make name #
+def make_track_name(path): 
+    return path.split('/')[-1]
+
+########################################################################### 
+# Track set #
 
 # Extra variable #
 chrsuffix = 'Awfully super extra long chromosome denomination string '
@@ -113,39 +153,6 @@ def make_track_name(path):
     name_gen = tempfile._RandomNameSequence()
     return ' '.join([name_gen.next() for x in range(10)]) + ' ' + path.split('/')[-1] 
 
-########################################################################### 
-# Track set #
-track_set = {
-    'single': gm_tests.gm_track_collections['Validation']['Validation 1'],
-    'many': {
-        1: gm_tests.gm_track_collections['Validation']['Validation 1'],
-        2: gm_tests.gm_track_collections['Validation']['Validation 2'],
-        3: gm_tests.gm_track_collections['Validation']['Validation 3'],
-}}
-
-# Extra variable #
-request_selection_string = 'chr1:0:30;chr1:122:126'
-
-# Make name #
-def make_track_name(path): 
-    return path.split('/')[-1]
-
-########################################################################### 
-# Track set #
-track_set = {
-    'single': gm_tests.gm_track_collections['Yeast']['All genes'],
-    'many': {
-        1: gm_tests.gm_track_collections['Yeast']['All genes'],
-        2: gm_tests.gm_track_collections['Yeast']['Ribi genes'],
-        3: gm_tests.gm_track_collections['Yeast']['RP genes'],
-}}
-
-# Extra variable #
-request_selection_string = 'chr1:0:50000;chr1:52000:54000;chr1:56000:58000;chr2:50000:9999999999999'
-
-# Make name #
-def make_track_name(path): 
-    return path.split('/')[-1]
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

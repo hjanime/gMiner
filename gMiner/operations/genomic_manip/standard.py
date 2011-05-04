@@ -15,7 +15,7 @@ class complement(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_appending(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
     
     def generate(self, X, stop_val):
         '''The result consists of all intervals that were not
@@ -40,7 +40,7 @@ class internal_merge(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_appending(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
     
     def generate(self, X, stop_val):
         '''Merges features that are adjacent or overlapping in one track'''
@@ -74,7 +74,7 @@ class overlap_track(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_intersection(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
    
     def generate(self, X, Y):
         '''Computes the overlap of the first track against the second track
@@ -115,7 +115,7 @@ class overlap_pieces(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_intersection(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
     def generate(self, X, Y, stop_val):
         '''Computes the overlap between both tracks returning

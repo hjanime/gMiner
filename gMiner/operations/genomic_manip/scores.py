@@ -15,7 +15,7 @@ class merge_scores(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_union(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def generate(self, list_of_tracks, stop_val):
         '''Merges N quantitative tracks using the average fucntion'''
@@ -63,7 +63,7 @@ class mean_score_by_feature(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_union(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def generate(self, X, Y):
         '''Given a quantitative track "X" and a qualititive track "Y"
@@ -105,7 +105,7 @@ class window_smoothing(gmManipulation):
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
     output_constraints = []
     output_other       = []
-    def chr_collapse(self, *args): return common.gmCollapse.by_union(*args) 
+    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def generate(self, X, L, stop_val):
         '''Given a quantiative track and a window size in base pairs,

@@ -195,9 +195,6 @@ class gmGraph(object):
         unit_name = getattr(gmCharacteristic, self.request['characteristic']).units
         self.xlabel = unit_name
 
-    def cleanup(self):
-        for element in self.elements: element.cleanup()
-
 ########################################################################### 
 class gmPlotElement(object):
     @classmethod
@@ -221,13 +218,6 @@ class gmPlotElement(object):
 
     def finalize(self, axes, **kwargs):
         pass
-
-    def cleanup(self):
-       del self.request
-       del self.subtracks
-       del self.position
-       del self.height
-       del self.color 
 
 #-----------------------------------------------------------------------------#   
 class gmBarElement(gmPlotElement):
@@ -271,11 +261,6 @@ class gmBarElement(gmPlotElement):
         axes.text(xloc, yloc, self.name, horizontalalignment=align, verticalalignment='center', color=colour, weight='bold', fontsize=good_fontsize)
         if len(self.subtracks) == 2:
             axes.text(101.0, yloc, "100%", horizontalalignment='left', verticalalignment='center', color='k', weight='bold', fontsize=good_fontsize)
-
-    def cleanup(self):
-        del self.name
-        del self.rect
-        super(gmBarElement, self).cleanup() 
         
 #-----------------------------------------------------------------------------#   
 class gmBoxElement(gmPlotElement):
@@ -318,10 +303,6 @@ class gmBoxElement(gmPlotElement):
             all_values = [max(subtrack.stat) for e in elements for subtrack in e.subtracks if subtrack.stat]
             if all_values: return max(all_values)
         return maxvalue
-
-    def cleanup(self):
-        del self.DIQ
-        super(gmBoxElement, self).cleanup()
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

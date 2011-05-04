@@ -20,8 +20,13 @@ except NameError:
 def run(**kwargs):
     # Prepare the request #
     request = kwargs
-    track_dict = parse_tracks(request)
-    tracks = [Track(track, i, True) for i, track in enumerate(track_dict)]
+    track_dicts = parse_tracks(request)
+    # Prepare the tracks #
+    tracks = []
+    for i, track in enumerate(track_dicts):
+        t = Track(path=track['path'], name=track['name'])
+        t.number = i
+        tracks.append(t)
     # Standard request variables #
     request['selected_regions'] = resquest.get('selected_regions', '')
     parse_regions(request)
@@ -56,9 +61,9 @@ def parse_tracks(request_dict):
     number_of_tracks_sent = 1
     while request_dict.has_key("track" + str(number_of_tracks_sent + 1)):
         number_of_tracks_sent += 1
-    # Make a dictionary #
+    # Make a list of dictionaries #
     try:
-        tracks = [dict([['location',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
+        tracks = [dict([['path',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
     except KeyError:
         raise Exception("Every track specified must have a name associated")
     # Chromosome info #

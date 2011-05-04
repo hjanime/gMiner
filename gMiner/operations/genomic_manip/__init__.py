@@ -1,9 +1,18 @@
 # General modules #
 import sys, os
 
-# Modules #
-from ... import common    as gm_com
+# Other modules #
+from bbcflib.track import new
+
+# Internal modules #
 from ...constants import *
+from ... import common
+
+#-------------------------------------------------------------------------------------------#   
+def track_matches_desc(track, dict):
+    if track.type        != dict['kind']:       return False
+    if set(track.fields) < set(dict['fields']): return False
+    return True
 
 ############################################################################################# 
 class gmManipulation(object):
@@ -34,7 +43,7 @@ class gmManipulation(object):
                     if track_matches_desc(self.req_tracks[i], t):
                         tracks.append(self.req_tracks[i])
                         self.req_tracks.pop(i)
-                if tracks: t['obj'] = gm_tra.gmTrackCollection(tracks)
+                if tracks: t['obj'] = TrackCollection(tracks)
             else: 
                 for req_t in self.req_tracks:
                     if track_matches_desc(req_t, t):
@@ -59,15 +68,15 @@ class gmManipulation(object):
 
     def make_output_tracks(self):
         for t in self.output_tracks:
-            t['name']     = self.__doc__ + ' on ' + gm_com.andify_strings([track['obj'].name for track in self.input_tracks])
-            t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql' 
-            t['obj']      = gm_tra.gmTrack.new(t['location'], 'sql', t['kind'], t['name'])
-            t['obj'].write_meta_data({'name': t['name']})
+            t['name']     = self.__doc__ + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
+            t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '/'
+            t['obj']      = new(t['location'], 'sql', t['kind'], t['name'])
+            t['obj'].meta_tack = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}
 
-    def make_output_metadata(self):
+    def make_output_meta_chr(self):
         self.chrmeta = []
         for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].chrmeta if m['length'] and m['name'] == chr])})
-        for t in self.output_tracks: t['obj'].write_chr_meta(self.chrmeta)
+        for t in self.output_tracks: t['obj'].meta_chr = self.chrmeta
 
     def get_special_parameter_stop_val(self, chr_name):
         for chr in self.chrmeta:
@@ -81,7 +90,7 @@ class gmManipulation(object):
         for chr in self.chrs:
             kwargs = {}
             for t in self.input_tracks:
-                kwargs[t['name']] = getattr(t['obj'], 'get_data_' + t['kind'][:4])({'type': 'chr','chr': chr}, t['fields'])
+                kwargs[t['name']] = t['obj'].read(chr, t['fields'])
             for t in self.input_extras:
                 kwargs[t['name']] = getattr(self, 'get_special_parameter_' + t['type'])(chr)
             for t in self.input_other:
@@ -92,13 +101,8 @@ class gmManipulation(object):
         self.output_tracks[0]['obj'].unload()
 
     def chr_collapse(self, *args):
-        return gm_com.gmCollapse.by_appending(*args)
+        return common.collapse.by_appending(*args)
 
-#-------------------------------------------------------------------------------------------#   
-def track_matches_desc(track, dict):
-    if track.type        != dict['kind']:       return False
-    if set(track.fields) < set(dict['fields']): return False
-    return True
 
 #############################################################################################
 # Submodules #
@@ -133,7 +137,7 @@ class gmOperation(object):
         self.manip.make_input_other()
         self.manip.make_output_chromosomes()
         self.manip.make_output_tracks()
-        self.manip.make_output_metadata()
+        self.manip.make_output_meta_chr()
     
     def run(self):
         # Call manip methods #
@@ -141,6 +145,16 @@ class gmOperation(object):
         self.manip.finalize()
         # Report success # 
         return 200, [t['location'] for t in self.manip.output_tracks] , "text/plain"
+
+#############################################################################################
+class TrackCollection(object):
+    def __init__(self, tracks):
+        self.tracks = tracks
+        self.name = 'Collection of ' + str(len(tracks)) + ' track' + ((len(tracks) > 1) and 's' or '')
+        self.chrs = common.collapse.by_intersection([t.chrs for t in tracks])
+        self.chrmeta = []
+        for chr in self.chrs: self.chrmeta.append({'name': chr, 'length': max([m['length'] for n in tracks for m in n.chrmeta if m['length'] and m['name'] == chr])})
+    def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

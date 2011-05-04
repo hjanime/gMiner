@@ -1,5 +1,5 @@
 # gMiner Modules #
-from ...gm_constants import *
+from ...constants import *
 from ... import common
 from . import graphs
 
@@ -59,9 +59,6 @@ def assert_has_method(object, attribute):
             [gm_get_characteristic(subtrack, self.request['characteristic']) for subtrack in self.subtracks if subtrack.track == track]
         # Generate the graph #
         r1, r2, r3 = self.graph.generate()
-        # Free memory #
-        self.graph.cleanup()
-        for subtrack in self.subtracks: subtrack.cleanup()
         # Return result #
         return r1, r2, r3
 
@@ -79,15 +76,12 @@ class gmSubtrack(object):
     
     def __iter__(self):
         if self.selection['type'] == 'chr':
-            yield self.track.get_data_qual(self.selection, self.fields)
+            yield self.track.read(self.selection['chr'], self.fields)
         elif self.selection['type'] == 'all':
-            for chr in self.track.chrs: yield self.track.get_data_qual({'type': 'chr', 'chr': chr}, self.fields)
+            for chr in self.track.chrs: yield self.track.read(chr, self.fields)
         elif self.selection['type'] == 'region': 
-            for span in self.selection['region']: yield self.track.get_data_qual({'type': 'span', 'span': span}, self.fields)
+            for span in self.selection['region']: yield self.track.read(self.selection['span'], self.fields)
 
-    def cleanup(self):
-       del self.stat 
- 
 ###########################################################################   
 def gm_get_characteristic(subtrack, chara):
     # Variables #
@@ -98,18 +92,18 @@ def gm_get_characteristic(subtrack, chara):
     charafn = getattr(gmCharacteristic, chara)
     # Stored #
     storable = charafn.storable and (type == 'chr' or type == 'all')
-    if storable: stored = subtrack.track.get_stored('desc_stat', chara, subtrack.selection)
+    if storable: stored = False # subtrack.track.get_stored('desc_stat', chara, subtrack.selection)
     if stored: result = stored
     # Shortcut #
     shortcutable = not result and charafn.shortcutable and (type == 'chr' or type == 'all')
-    if shortcutable: shortcut = subtrack.track.stat_shortcut(chara, subtrack.selection)
+    if shortcutable: shortcut = False #subtrack.track.stat_shortcut(chara, subtrack.selection)
     if shortcut: result = shortcut
     # Do it #
     subtrack.fields = charafn.fields
-    result = getattr(common.gmCollapse, charafn.collapse)([charafn(data) for data in subtrack])
+    result = getattr(common.collapse, charafn.collapse)([charafn(data) for data in subtrack])
     subtrack.stat = result
     # Store it #
-    if storable and not stored: subtrack.track.write_stored('desc_stat', chara, subtrack.selection, result)
+    # if storable and not stored: subtrack.track.write_stored('desc_stat', chara, subtrack.selection, result)
 
 #-----------------------------------------------------------------------------#   
 class gmCharacteristic(object):

@@ -119,37 +119,37 @@ def import_module(name, path):
         if file: file.close()
 
 ###############################################################################   
-class gmCollapse(object):
+class collapse(object):
     '''
     Collapse lists in specific ways
 
-    >>> gmCollapse.by_adding([1,5,2])
+    >>> collapse.by_adding([1,5,2])
     8
-    >>> gmCollapse.by_adding([3])
+    >>> collapse.by_adding([3])
     3
-    >>> gmCollapse.by_appending([[1,5],[5,3],[2,1]])
+    >>> collapse.by_appending([[1,5],[5,3],[2,1]])
     [1, 5, 5, 3, 2, 1]
-    >>> gmCollapse.by_appending([[1,2,3]])
+    >>> collapse.by_appending([[1,2,3]])
     [1, 2, 3]
-    >>> gmCollapse.by_union([[1,5],[5,3],[2,1]])
+    >>> collapse.by_union([[1,5],[5,3],[2,1]])
     [1, 2, 3, 5]
-    >>> gmCollapse.by_intersection([[1,5,4],[5,3,3],[2,6,5]])
+    >>> collapse.by_intersection([[1,5,4],[5,3,3],[2,6,5]])
     [5]
     '''
 
-    @classmethod
+    @staticmethod
     def by_adding(cls, l):
         return sum(l)
 
-    @classmethod
+    @staticmethod
     def by_appending(cls, l):
         return [x for y in l for x in y]     
 
-    @classmethod
+    @staticmethod
     def by_union(cls, l):
         return list(set(cls.by_appending(l)))
 
-    @classmethod
+    @staticmethod
     def by_intersection(cls, l):
         return list(reduce(set.intersection, map(set,l)))
 
@@ -264,6 +264,16 @@ class memoized_method(object):
         except KeyError:
             res = cache[key] = self.func(*args, **kw)
         return res
+
+
+###############################################################################  
+def get_this_module_path():
+    ''' Will return the absolute path of the file containing
+        this function'''
+    import os
+    from inspect import getfile, currentframe
+    return os.path.abspath(getfile(currentframe()))
+    return os.path.realpath(__file__)
 
 ###############################################################################  
 def make_latex_string(string):
