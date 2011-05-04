@@ -28,9 +28,9 @@ def run(**kwargs):
         t.number = i
         tracks.append(t)
     # Standard request variables #
-    request['selected_regions'] = resquest.get('selected_regions', '')
+    request['selected_regions'] = request.get('selected_regions', '')
     parse_regions(request)
-    request['wanted_chromosomes'] = resquest.get('wanted_chromosomes', '')
+    request['wanted_chromosomes'] = request.get('wanted_chromosomes', '')
     parse_chrlist(request)
     # Determine final chromosome list #
     if request['wanted_chromosomes']:
@@ -79,7 +79,6 @@ def parse_regions(request):
     >>> d
     {'selected_regions': [{'start': 0, 'chr': 'chr1', 'end': 9}, {'start': 333, 'chr': 'chr2', 'end': 55555}]}
     '''
-    default_if_none(request, 'selected_regions')
     if request['selected_regions']:
         try: 
             request['selected_regions'] = [dict([['chr',p[0]],['start',int(p[1])],['end',int(p[2])]]) for p in [r.split(':') for r in request['selected_regions'].split(';')]]
@@ -93,7 +92,6 @@ def parse_chrlist(request):
     >>> d
     {'wanted_chromosomes': ['chr1', 'chr2', 'chr9']}
     '''
-    default_if_none(request, 'wanted_chromosomes')    
     if request['wanted_chromosomes']:
         request['wanted_chromosomes'] = [c for c in request['wanted_chromosomes'].split(';')]
 

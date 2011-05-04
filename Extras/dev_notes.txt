@@ -13,8 +13,8 @@ To build and upload the gMiner pacakge to the python package index you just need
 * Graphs *
 To run the automated graph tests, you can simply enter ipython and type the two following commands:
 
-    [1] import gMiner.gm_tests.gm_graphs as g
-    [2] g.generate_graphs()
+    [1] import gMiner.operations.desc_stat.graph_tests as g
+    [2] g.run()
 
 
 * Version *

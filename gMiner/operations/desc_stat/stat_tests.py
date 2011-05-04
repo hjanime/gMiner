@@ -14,7 +14,7 @@ except ImportError:
 ################################################################################### 
 class Test_Stats(unittest.TestCase):
     def runTest(self):
-        track = track_collections['Validation']['1']
+        track = track_collections['Validation'][1]
         with Track(track['path_sql']) as track['track']:
             track['data'] = list(track['track'].read('chr1'))
         tests  = [
@@ -38,7 +38,6 @@ class Test_Stats(unittest.TestCase):
         for t in tests:
             self.assertEqual(t['fn']([[d[Track.qualitative_fields.index(f)] for f in t['fn'].fields] for d in t['input']]), t['expected'])
 
-Test_Stats().runTest()
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #

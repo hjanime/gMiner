@@ -9,6 +9,7 @@ import matplotlib.pyplot as pyplot
 # gMiner Modules #
 from ...constants import *
 from ... import common
+from ..desc_stat import gmCharacteristic
 
 # Constants #
 gm_default_plot_color      = 'magenta'
@@ -17,7 +18,6 @@ gm_default_color_parent    = 'blue'
 
 ########################################################################### 
 class gmGraph(object):
-
     def __init__(self, request, subtracks, tracks):    
         self.request = request
         self.subtracks = subtracks
@@ -120,7 +120,7 @@ class gmGraph(object):
         result = rawfile.getvalue()
         if not 'gm_interactive' in self.request: pyplot.close(fig)
         if self.request['gm_encoding'] == 'text/base64': result = base64.encodestring(result)
-        return 200, result, self.request['gm_encoding']
+        return result
 
     def gen_bool_cases(self):
         self.b_many = len(self.tracks) > 1
@@ -140,9 +140,7 @@ class gmGraph(object):
         self.graph_legend = [[l[0], common.wrap_string(l[1], 52)] for l in self.graph_legend]
 
     def gen_graph_title(self):
-        from gMiner.gm_operations.desc_stat import gmCharacteristic
-        chara_name = getattr(gmCharacteristic, self.request['characteristic']).__doc__
-        self.graph_title = chara_name
+        self.graph_title = getattr(gmCharacteristic, self.request['characteristic']).title
         if not self.b_many:
             self.graph_title += ' of\n'
             if self.b_sel: self.graph_title += 'selection on '
@@ -191,7 +189,6 @@ class gmGraph(object):
         self.ylabels = [[l[0], common.wrap_string(l[1], 30)] for l in self.ylabels]
 
     def gen_xlabel(self):
-        from gMiner.gm_operations.desc_stat import gmCharacteristic
         unit_name = getattr(gmCharacteristic, self.request['characteristic']).units
         self.xlabel = unit_name
 

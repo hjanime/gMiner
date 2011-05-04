@@ -48,11 +48,11 @@ def make_track_name_random(path):
 collections = {
     'Validation': {
         'track_set': {
-            'single': track_collections['Validation']['1'],
+            'single': track_collections['Validation'][1],
             'many': {
-                1: track_collections['Validation']['1'],
-                2: track_collections['Validation']['2'],
-                3: track_collections['Validation']['3'],
+                1: track_collections['Validation'][1],
+                2: track_collections['Validation'][2],
+                3: track_collections['Validation'][3],
         }},
         'request_selection_string': 'chr1:0:30;chr1:122:126',
         'track_name_fn': make_track_name_path
@@ -70,11 +70,11 @@ collections = {
     },
     'Random': {
         'track_set': {
-            'single': track_collections['Random']['1'],
+            'single': track_collections['Random'][1],
             'many': {
-                1: track_collections['Random']['2'],
-                2: track_collections['Random']['3'],
-                3: track_collections['Random']['4'],
+                1: track_collections['Random'][2],
+                2: track_collections['Random'][3],
+                3: track_collections['Random'][4],
         }},
         'request_selection_string': ';'.join([chrsuffix + r for r in request_selection_regions]),
         'track_name_fn': make_track_name_random
@@ -82,7 +82,7 @@ collections = {
 }
 
 # Main loops #
-def generate_graphs(result_path='/tmp/gMiner/'):
+def run(result_path='/tmp/gMiner/'):
     if not os.path.isdir(result_path):
         raise Exception("The result location specified is not a directory")
     max_count = 2*2*2*2*4
@@ -102,7 +102,8 @@ def generate_graphs(result_path='/tmp/gMiner/'):
                             name = name + name_dict[b_comp][b_chr][b_many]
                             name = name + chara_dict[chara]
                             if not b_sel: name += '_NoSel'
-                            print gm_terminal_colors['txtylw'] + "Graph " + str(count) + " out of " + str(max_count) + "   (" + name + ")" + gm_terminal_colors['end']
+                            print gm_terminal_colors['txtylw'] + "Graph " + str(count) + " out of " + str(max_count) + \
+                            "   " + gm_terminal_colors['txtpur'] + name + gm_terminal_colors['end']
                             count += 1
                             # Making the request #
                             request = {}

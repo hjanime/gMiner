@@ -1,7 +1,6 @@
 # gMiner Modules #
 from ...constants import *
 from ... import common
-from . import graphs
 
 ###########################################################################   
 class gmOperation(object):
@@ -10,7 +9,6 @@ class gmOperation(object):
         self.request = request
         self.tracks = tracks
 
-def assert_has_method(object, attribute):
     def prepare(self):
         # characteristic #
         if not self.request.get('characteristic'):
@@ -58,9 +56,7 @@ def assert_has_method(object, attribute):
         for track in self.tracks:
             [gm_get_characteristic(subtrack, self.request['characteristic']) for subtrack in self.subtracks if subtrack.track == track]
         # Generate the graph #
-        r1, r2, r3 = self.graph.generate()
-        # Return result #
-        return r1, r2, r3
+        return self.graph.generate()
 
 ###########################################################################   
 class gmSubtrack(object):
@@ -80,7 +76,7 @@ class gmSubtrack(object):
         elif self.selection['type'] == 'all':
             for chr in self.track.chrs: yield self.track.read(chr, self.fields)
         elif self.selection['type'] == 'region': 
-            for span in self.selection['region']: yield self.track.read(self.selection['span'], self.fields)
+            for span in self.selection['region']: yield self.track.read(span, self.fields)
 
 ###########################################################################   
 def gm_get_characteristic(subtrack, chara):
@@ -171,6 +167,9 @@ class gmCharacteristic(object):
         '''Returns the score distribution'''
         iterable = list(iterable)
         return [x[0] for x in iterable]
+
+# Avoid circular imports #
+from . import graphs
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

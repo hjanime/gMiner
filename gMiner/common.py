@@ -138,19 +138,19 @@ class collapse(object):
     '''
 
     @staticmethod
-    def by_adding(cls, l):
+    def by_adding(l):
         return sum(l)
 
     @staticmethod
-    def by_appending(cls, l):
+    def by_appending(l):
         return [x for y in l for x in y]     
 
     @staticmethod
-    def by_union(cls, l):
+    def by_union(l):
         return list(set(cls.by_appending(l)))
 
     @staticmethod
-    def by_intersection(cls, l):
+    def by_intersection(l):
         return list(reduce(set.intersection, map(set,l)))
 
 
