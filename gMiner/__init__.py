@@ -52,7 +52,7 @@ def run(**kwargs):
 def parse_tracks(request_dict):
     '''
     >>> parse_tracks({'track1': 'aa', 'track1_name': 'ff'})
-    [{'location': 'aa', 'name': 'ff'}]
+    [{'path': 'aa', 'name': 'ff'}]
     '''
 
     # Number of tracks #

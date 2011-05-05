@@ -144,7 +144,7 @@ class gmOperation(object):
         self.manip.execute()
         self.manip.finalize()
         # Report success # 
-        return 200, [t['location'] for t in self.manip.output_tracks] , "text/plain"
+        return [t['location'] for t in self.manip.output_tracks]
 
 #############################################################################################
 class TrackCollection(object):
