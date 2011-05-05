@@ -6,7 +6,7 @@ Descriptive Statistics
 One of the primary goals of gFeatMiner is to provide simple graphs that help the user describe and explore his genomic datasets. These graphs are generated quickly and on-the-fly as they are requested. To access this functionality you must specify ``operation_type=desc_stat`` in the job request as seen in this exemple, in addition to a few other parameters that are detailed below::
 
     import gMiner
-    result = gMiner.run(
+    files = gMiner.run(
         track1             = '/scratch/genomic/tracks/ribosome_proteins.sql',
         track1_name        = 'RP genes (SGD)',
         track2             = '/scratch/genomic/tracks/ribosome_genesis.sql',
@@ -19,13 +19,11 @@ One of the primary goals of gFeatMiner is to provide simple graphs that help the
         wanted_chromosomes = 'chr1;chr2;chr5;chr6;chr7;chr8;chr9;chr10;chr11;chr12;' + \
                              'chr13;chr14;chr15;chr16;chr17;chr18;chr19;chr20;chr21;' + \
                              'chr22;chrX;chrY',
-        gm_encoding        = 'image/png',
+        output_location    = '/tmp/',
     )
 
-The ``result`` varaible will now contain the requested graph in PNG format, suitable for displaying or writing to a file like so::
-
-    with open('/tmp/graph.png', 'w') as file: file.write(result)
-
+The ``files`` varaible will now contain the path to the file created in PNG format.
+ 
 Parameters
 ----------
 
@@ -56,7 +54,7 @@ Key                    Value
 
 **wanted_chromosomes** An optional list of chromosomes present in the inputed tracks. If such a list is provided, the resulting graph will only contain the specified chromosomes and will ignore those not in the list.
 
-**gm_encoding**        Can take the following values: ``image/png`` or ``text/base64``. It will default to the second option if not specified. The first option will return a raw binary stream while the second will return a PNG that is base64 encoded and thus in plain text.
+**output_location**    Specifies the location at which the newly created image will be written.
 ====================== =====
 
 Characteristics

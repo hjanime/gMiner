@@ -1,5 +1,5 @@
 # General modules #
-import time, base64, cStringIO
+import time
 
 # Change backend #
 import matplotlib
@@ -18,10 +18,11 @@ gm_default_color_parent    = 'blue'
 
 ########################################################################### 
 class gmGraph(object):
-    def __init__(self, request, subtracks, tracks):    
+    def __init__(self, request, subtracks, tracks, output_dir):    
         self.request = request
         self.subtracks = subtracks
         self.tracks = tracks
+        self.output_dir = output_dir
 
     def generate(self):
         # Size variables #
@@ -114,13 +115,13 @@ class gmGraph(object):
         fig.text(rightcorner, toprightcorner, time.asctime(), horizontalalignment='right', fontsize=self.fontsize0)
         fig.text(leftcorner, topleftcorner, gm_project_name + ' generated graph', horizontalalignment='left', fontsize=self.fontsize0)
 
-        # Return a PNG #
-        rawfile = cStringIO.StringIO()
-        fig.savefig(rawfile, format='png', transparent=True)
-        result = rawfile.getvalue()
+        # Return a PNG  vrequest['output_name']#
+        if self.request['output_name']: self.path = self.output_dir + '/' + self.request['output_name'] + '.png'
+        else: self.path = self.output_dir + '/gminer_' + self.request['characteristic']           + '.png'
+        with open(self.path, 'w') as f:
+            fig.savefig(f, format='png', transparent=True)
         if not 'gm_interactive' in self.request: pyplot.close(fig)
-        if self.request['gm_encoding'] == 'text/base64': result = base64.encodestring(result)
-        return result
+        return [self.path]
 
     def gen_bool_cases(self):
         self.b_many = len(self.tracks) > 1

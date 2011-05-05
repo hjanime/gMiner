@@ -1,8 +1,8 @@
 import gMiner
-result = gMiner.run(
-    track1             = '/scratch/genomic/tracks/ribosome_proteins.sql',
+files = gMiner.run(
+    track1             = '/scratch/sinclair/Genomic/yeast_data/ribosome_proteins/ribosome_proteins.sql',
     track1_name        = 'RP genes (SGD)',
-    track2             = '/scratch/genomic/tracks/ribosome_genesis.sql',
+    track2             = '/scratch/sinclair/Genomic/yeast_data/ribosome_genesis/ribosome_genesis.sql',
     track2_name        = 'Ribi genes (SGD)',
     operation_type     = 'desc_stat',
     characteristic     = 'base_coverage',
@@ -12,6 +12,5 @@ result = gMiner.run(
     wanted_chromosomes = 'chr1;chr2;chr5;chr6;chr7;chr8;chr9;chr10;chr11;chr12;' + \
                          'chr13;chr14;chr15;chr16;chr17;chr18;chr19;chr20;chr21;' + \
                          'chr22;chrX;chrY',
-    gm_encoding        = 'image/png',
+    output_location    = '/tmp/',
 )
-with open('/tmp/graph.png', 'w') as file: file.write(result)

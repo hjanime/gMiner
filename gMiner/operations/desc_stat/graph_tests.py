@@ -110,6 +110,8 @@ def run(result_path='/tmp/gMiner/'):
                             request['gm_encoding'] = 'image/png'
                             request['operation_type'] = 'desc_stat'
                             request['characteristic'] = chara 
+                            request['output_location'] = result_path 
+                            request['output_name'] = name
                             if b_many:
                                 request['track1'] = col['track_set']['many'][1]['path_sql'] 
                                 request['track1_name'] = col['track_name_fn'](col['track_set']['many'][1]['name'])
@@ -127,11 +129,7 @@ def run(result_path='/tmp/gMiner/'):
                             if b_comp: 
                                 request['compare_parents'] = 'True'
                             # Executing the request #
-                            result = gMiner.run(**request)
-                            # Write the result #
-                            result_file = open(result_path + name + '.png', 'w')
-                            result_file.write(result)
-                            result_file.close()
+                            gMiner.run(**request)
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

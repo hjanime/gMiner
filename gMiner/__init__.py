@@ -1,5 +1,8 @@
 b'This module needs Python 2.6 or later.'
 
+# General modules #
+import os
+
 # Other modules #
 from bbcflib.track import Track
 
@@ -40,13 +43,26 @@ def run(**kwargs):
     # Import the correct operation #
     if not hasattr(operations, request['operation_type']):
         try:
-            __import__('gMiner.gm_operations.' + request['operation_type'])
+            __import__('gMiner.operations.' + request['operation_type'])
         except ImportError:
             raise Exception("The operation " + request['operation_type'] + " is not supported.")
-    operation = getattr(operations, request['operation_type']).gmOperation(request, tracks)
+    operation = getattr(operations, request['operation_type']).gmOperation()
+    # Variables #
+    operation.request = request
+    operation.tracks = tracks
+    # Check variables #
+    if not operation.request.get('output_location'):
+        raise Exception("There does not seem to be an output location specified in the request")
+    operation.output_dir = operation.request['output_location'].rstrip('/')
+    if not os.path.isdir(operation.output_dir):
+        raise Exception("The output location specified is not a directory")
     # Run it #
     operation.prepare()
-    return operation.run()
+    result = operation.run()
+    # Close tracks #
+    for t in tracks: t.unload()
+    # Return result #
+    return result 
 
 ###########################################################################
 def parse_tracks(request_dict):

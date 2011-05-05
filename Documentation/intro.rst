@@ -72,21 +72,21 @@ How do I use it ?
 Once gFeatMiner is installed, you use it in a python script by importing it and running a job, like so::
      
     import gMiner
-    result = gMiner.run(
+    files = gMiner.run(
         track1          = '/scratch/genomic/tracks/all_yeast_genes.sql',
         track1_name     = 'S. cer. genes (SGD)',
         operation_type  = 'desc_stat',
         characteristic  = 'number_of_features',
         per_chromosome  = 'True',
         compare_parents = 'False',
-        gm_encoding     = 'image/png',
+        output_location = '/tmp/',
     )
 
-The ``result`` varaible now contains the requested graph in PNG format, suitable for displaying or writing to a file like so::
+The ``files`` varaible now contains the a list of file paths. In this case:: 
 
-    with open('/tmp/graph.png', 'w') as file: file.write(result)
+    ['/tmp/gminer_number_of_features.png']
 
-Other types of job, for instance, might return a list of file paths. Here is an exemple that creates a new genomic track in the temporary directory::
+Other types of job, for instance, might create new tracks instead of image files. Here is an exemple that creates a new genomic track in the temporary directory::
 
     import gMiner
     files = gMiner.run(

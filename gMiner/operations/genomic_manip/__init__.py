@@ -16,19 +16,10 @@ def track_matches_desc(track, dict):
 
 ############################################################################################# 
 class gmManipulation(object):
-    def __init__(self, request=None, tracks=None):
+    def __init__(self, request=None, tracks=None, output_dir=None):
         self.request = request
         self.req_tracks = tracks
-
-    def check(self):
-        # Location specified #
-        if len(self.output_tracks) > 0:
-            if not self.request.get('output_location'):
-                raise Exception("There does not seem to be an output location specified in the request")
-        # Location is a directory #
-        self.output_dir = self.request['output_location'].rstrip('/')
-        if not os.path.isdir(self.output_dir):
-            raise Exception("The output location specified is not a directory")
+        self.output_dir = output_dir
 
     def make_input_tracks(self):
         # Number of tracks #
@@ -103,7 +94,6 @@ class gmManipulation(object):
     def chr_collapse(self, *args):
         return common.collapse.by_appending(*args)
 
-
 #############################################################################################
 # Submodules #
 from .standard import *
@@ -111,12 +101,6 @@ from .scores import *
  
 # Main object #
 class gmOperation(object):
-    def __init__(self, request, tracks):
-        # Other variables #
-        self.type = 'genomic_manip'
-        self.request = request
-        self.tracks = tracks
-    
     def prepare(self):
         # Manipulation specified #
         if not self.request.get('manipulation'):
@@ -126,13 +110,12 @@ class gmOperation(object):
             if not issubclass(globals()[self.request['manipulation']], gmManipulation):
                 raise Exception("The specified manipulation '" + self.request['manipulation'] + "' is not a manipulation.")
         except KeyError:
-            raise gm_err.gmError(400,     "The specified manipulation '" + self.request['manipulation'] + "' does not exist.")
+            raise Exception("The specified manipulation '" + self.request['manipulation'] + "' does not exist.")
         except TypeError:
-            raise gm_err.gmError(400,     "The specified manipulation '" + self.request['manipulation'] + "' is a speical object in python.")
+            raise Exception("The specified manipulation '" + self.request['manipulation'] + "' is a speical object in python.")
         # Get the manipulation #
-        self.manip = globals()[self.request['manipulation']](self.request, self.tracks)
+        self.manip = globals()[self.request['manipulation']](self.request, self.tracks, self.output_dir)
         # Call manip methods #
-        self.manip.check()
         self.manip.make_input_tracks()
         self.manip.make_input_other()
         self.manip.make_output_chromosomes()

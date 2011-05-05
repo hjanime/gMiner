@@ -1,11 +1,10 @@
 import gMiner
-result = gMiner.run(
-    track1          = '/scratch/genomic/tracks/all_yeast_genes.sql',
+files = gMiner.run(
+    track1          = '/scratch/sinclair/Genomic/yeast_data/all_yeast_genes/all_yeast_genes.sql',
     track1_name     = 'S. cer. genes (SGD)',
     operation_type  = 'desc_stat',
     characteristic  = 'number_of_features',
     per_chromosome  = 'True',
     compare_parents = 'False',
-    gm_encoding     = 'image/png',
+    output_location = '/tmp/',
 )
-with open('/tmp/graph.png', 'w') as file: file.write(result)

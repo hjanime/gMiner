@@ -52,8 +52,6 @@ class Test(unittest.TestCase):
 
         self.assertEqual(data, expected)
 
-Test().runTest()
-
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #

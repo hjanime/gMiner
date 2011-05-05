@@ -4,11 +4,6 @@ from ... import common
 
 ###########################################################################   
 class gmOperation(object):
-    def __init__(self, request, tracks):
-        self.type = 'desc_stat'
-        self.request = request
-        self.tracks = tracks
-
     def prepare(self):
         # characteristic #
         if not self.request.get('characteristic'):
@@ -22,14 +17,10 @@ class gmOperation(object):
         if not self.request['selected_regions']: self.request['compare_parents'] = False
         self.request['compare_parents'] = self.request.get('compare_parents', False)
         self.request['compare_parents'] = bool(self.request['compare_parents'])
-        # gm_encoding elf
-        self.request['gm_encoding'] = self.request.get('gm_encoding', 'text/base64')
-        if self.request['gm_encoding'] not in ['text/base64','image/png']:
-            raise Exception("The encoding variable does not seem to be valid.")
         # Create subtracks #
         self.subtracks = [subtrack for track in self.tracks for subtrack in self.track_cut_down(track)]
         # Create graph #
-        self.graph = graphs.gmGraph(self.request, self.subtracks, self.tracks)
+        self.graph = graphs.gmGraph(self.request, self.subtracks, self.tracks, self.output_dir)
          
     def track_cut_down(self, track):
         region = self.request['selected_regions']

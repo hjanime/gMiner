@@ -1,5 +1,5 @@
 import gMiner
-result = gMiner.run(
+files = gMiner.run(
     track1          : '/scratch/genomic/tracks/refseq_ucsc.sql',
     track1_name     : 'hg19 refSeq genome-wide from UCSC',
     track2          : '/scratch/genomic/tracks/hiv_bushman.sql',
