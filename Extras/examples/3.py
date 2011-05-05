@@ -1,8 +1,8 @@
 import gMiner
 files = gMiner.run(
-    track1             = '/scratch/sinclair/Genomic/yeast_data/ribosome_proteins/ribosome_proteins.sql',
+    track1             = '/scratch/genomic/tracks/ribosome_proteins.sql',
     track1_name        = 'RP genes (SGD)',
-    track2             = '/scratch/sinclair/Genomic/yeast_data/ribosome_genesis/ribosome_genesis.sql',
+    track2             = '/scratch/genomic/tracks/ribosome_genesis.sql',
     track2_name        = 'Ribi genes (SGD)',
     operation_type     = 'desc_stat',
     characteristic     = 'base_coverage',
