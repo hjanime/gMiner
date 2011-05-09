@@ -1,4 +1,4 @@
-.. automodule:: gMiner.gm_operations.genomic_manip
+.. automodule:: gMiner.operations.genomic_manip
 
 =====================
 Genomic Manipulations
@@ -52,10 +52,10 @@ Several types of manipulations can be used to generate different types of tracks
 
 Standard
 """"""""
-.. automodule:: gMiner.gm_operations.genomic_manip.standard
+.. automodule:: gMiner.operations.genomic_manip.standard
     :members:
 
 Scores
 """"""
-.. automodule:: gMiner.gm_operations.genomic_manip.scores
+.. automodule:: gMiner.operations.genomic_manip.scores
    :members:

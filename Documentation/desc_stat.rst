@@ -1,3 +1,4 @@
+.. automodule:: gMiner.operations.desc_stat
 
 ======================
 Descriptive Statistics
@@ -61,7 +62,6 @@ Characteristics
 ---------------
 Several types of characterisitcs can be used to generate different types of graphs. You can chose which charaterisitc to plot by specifiing ``characteristic=`` followed by one of the values in bold below:
 
-.. automodule:: gMiner.gm_operations.desc_stat
 .. automethod:: gmCharacteristic.number_of_features
 .. automethod:: gmCharacteristic.base_coverage
 .. automethod:: gmCharacteristic.length
