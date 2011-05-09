@@ -2,8 +2,13 @@
 import time
 
 # Change backend #
-import matplotlib
-matplotlib.use('Agg')
+if 'matplotlib' in globals():
+    import matplotlib
+    matplotlib.use('Agg')
+else:
+    import matplotlib
+
+# Plotting module #
 import matplotlib.pyplot as pyplot
 
 # gMiner Modules #
