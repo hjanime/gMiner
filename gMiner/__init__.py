@@ -2,6 +2,7 @@ b'This module needs Python 2.6 or later.'
 
 # General modules #
 import os
+from contextlib import nested
 
 # Other modules #
 from bbcflib.track import Track
@@ -20,26 +21,7 @@ except NameError:
     gm_path = 'gMiner'
 
 ###########################################################################
-def run(**kwargs):
-    # Prepare the request #
-    request = kwargs
-    track_dicts = parse_tracks(request)
-    # Prepare the tracks #
-    tracks = []
-    for i, track in enumerate(track_dicts):
-        t = Track(path=track['path'], name=track['name'], chrfile=track.get('chrs'))
-        t.number = i
-        tracks.append(t)
-    # Standard request variables #
-    request['selected_regions'] = request.get('selected_regions', '')
-    parse_regions(request)
-    request['wanted_chromosomes'] = request.get('wanted_chromosomes', '')
-    parse_chrlist(request)
-    # Determine final chromosome list #
-    if request['wanted_chromosomes']:
-        for track in tracks: track.chrs = (set(track.all_chrs) & set(request['wanted_chromosomes']))
-    else:
-        for track in tracks: track.chrs = track.all_chrs
+def run(**request):
     # Import the correct operation #
     if not hasattr(operations, request['operation_type']):
         try:
@@ -47,28 +29,41 @@ def run(**kwargs):
         except ImportError:
             raise Exception("The operation " + request['operation_type'] + " is not supported.")
     operation = getattr(operations, request['operation_type']).gmOperation()
-    # Variables #
-    operation.request = request
-    operation.tracks = tracks
-    # Check variables #
-    if not operation.request.get('output_location'):
+    # Mandatory request variables #
+    if not request.get('output_location'):
         raise Exception("There does not seem to be an output location specified in the request")
-    operation.output_dir = operation.request['output_location'].rstrip('/')
-    if not os.path.isdir(operation.output_dir):
-        raise Exception("The output location specified is not a directory")
-    # Run it #
-    operation.prepare()
-    result = operation.run()
-    # Close tracks #
-    for t in tracks: t.unload()
-    # Return result #
-    return result 
+    output_dir = request['output_location'].rstrip('/')
+    if not os.path.isdir(output_dir):
+        raise Exception("The output location specified is not a directory")    
+    # Optional request variables #
+    request['selected_regions']   = request.get('selected_regions', '')
+    parse_regions(request)
+    request['wanted_chromosomes'] = request.get('wanted_chromosomes', '')
+    parse_chrlist(request)
+    # Prepare the tracks #
+    track_dicts = parse_tracks(request)
+    contexts = [Track(t['path'], name=t['name'], chrfile=t.get('chrs')) for t in track_dicts]
+    with nested(*contexts) as tracks:
+        # Assign numbers #
+        for i, t in enumerate(tracks): t.number = i
+        # Determine final chromosome list #
+        if request['wanted_chromosomes']:
+            for track in tracks: track.chrs = (set(track.all_chrs) & set(request['wanted_chromosomes']))
+        else:
+            for track in tracks: track.chrs = track.all_chrs
+        # Copy variables #
+        operation.request    = request
+        operation.tracks     = tracks
+        operation.output_dir = output_dir
+        # Run it #
+        operation.prepare()
+        return operation.run()
 
 ###########################################################################
 def parse_tracks(request_dict):
     '''
-    >>> parse_tracks({'track1': 'aa', 'track1_name': 'ff'})
-    [{'path': 'aa', 'name': 'ff'}]
+    >>> parse_tracks({'track1': 'aa', 'track1_name': 'ff', 'track1_chrs': 'bb'})
+    [{'path': 'aa', 'chrs': 'bb', 'name': 'ff'}]
     '''
 
     # Number of tracks #
