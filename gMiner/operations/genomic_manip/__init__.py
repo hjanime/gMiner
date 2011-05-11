@@ -10,7 +10,7 @@ from ... import common
 
 #-------------------------------------------------------------------------------------------#   
 def track_matches_desc(track, dict):
-    if track.type        != dict['kind']:       return False
+    if track.datatype    != dict['kind']:       return False
     if set(track.fields) < set(dict['fields']): return False
     return True
 
