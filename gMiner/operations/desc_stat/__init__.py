@@ -1,4 +1,7 @@
-# gMiner Modules #
+# Other modules #
+from bbcflib.track import Track
+
+# Internal modules #
 from ...constants import *
 from ... import common
 
@@ -23,24 +26,35 @@ class gmOperation(object):
         self.graph = graphs.gmGraph(self.request, self.subtracks, self.tracks, self.output_dir)
          
     def track_cut_down(self, track):
-        region = self.request['selected_regions']
-        if region:
-            #--- YES SELECTION ---#    
-            if self.request['per_chromosome']:
-                for chr in track.chrs:
-                    subregion = [subr for subr in region if subr['chr'] == chr]
-                    if subregion == []: continue
-                    yield gmSubtrack(self.request, track, {'type': 'region', 'region': subregion})
-                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
-            else:
-                yield gmSubtrack(self.request, track, {'type': 'region', 'region': region})
-                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
-        else:
+        regions = self.request['selected_regions']
+        if not regions:
             #--- NO SELECTION ---#
-            if self.request['per_chromosome']:
-               for chr in track.chrs: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
+            if not self.request['per_chromosome']:
+               yield gmSubtrack(self.request, track, {'type': 'all'})
             else:
-                yield gmSubtrack(self.request, track, {'type': 'all'})
+               for chr in track.chrs: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
+        if type(regions) == list:
+            #--- STRING SELECTION ---#
+            if not self.request['per_chromosome']:
+                yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': regions})
+                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
+            else:
+                for chr in track.chrs:
+                    subregions = [subr for subr in regions if subr['chr'] == chr]
+                    if subregions == []: continue
+                    yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': subregions})
+                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
+        else:
+            #--- TRACK SELECTION ---#
+            with Track(self.request['selected_regions']) as t:
+                if not self.request['per_chromosome']:
+                    yield gmSubtrack(self.request, track, {'type': 'track', 'track': self.request['selected_regions']})
+                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
+                else:
+                    for chr in track.chrs:
+                        if chr not in t: continue
+                        yield gmSubtrack(self.request, track, {'type': 'trackchr', 'chr': chr})
+                        if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
         
     def run(self):
         # Compute characterisitcs #
@@ -59,15 +73,25 @@ class gmSubtrack(object):
         # Unique chromosome #
         self.chr = None
         if self.selection['type'] == 'chr': self.chr = selection['chr']
-        if self.selection['type'] == 'region' and self.request['per_chromosome']: self.chr = selection['region'][0]['chr']
+        if self.selection['type'] == 'regions' and self.request['per_chromosome']: self.chr = selection['regions'][0]['chr']
+        if self.selection['type'] == 'trackchr': self.chr = selection['chr']
     
     def __iter__(self):
         if self.selection['type'] == 'chr':
             yield self.track.read(self.selection['chr'], self.fields)
         elif self.selection['type'] == 'all':
             for chr in self.track.chrs: yield self.track.read(chr, self.fields)
-        elif self.selection['type'] == 'region': 
-            for span in self.selection['region']: yield self.track.read(span, self.fields)
+        elif self.selection['type'] == 'regions': 
+            for span in self.selection['regions']: yield self.track.read(span, self.fields)
+        elif self.selection['type'] == 'track':
+            with Track(self.request['selected_regions']) as t:
+                for chr in self.track.chrs: 
+                    sel = (chr, t.read(chr, ['start', 'end']))
+                    yield self.track.read(sel, self.fields)
+        elif self.selection['type'] == 'trackchr': 
+            with Track(self.request['selected_regions']) as t:
+                sel = (self.selection['chr'], t.read(self.selection['chr'], ['start', 'end']))
+                yield self.track.read(sel, self.fields)
 
 ###########################################################################   
 def gm_get_characteristic(subtrack, chara):
@@ -92,16 +116,16 @@ def gm_get_characteristic(subtrack, chara):
     # Store it #
     # if storable and not stored: subtrack.track.write_stored('desc_stat', chara, subtrack.selection, result)
 
-#-----------------------------------------------------------------------------#   
+#-------------------------------------------------------------------------#   
 class gmCharacteristic(object):
 
     def num_of_features_options(func):
-        func.title = '''Number of features'''
-        func.fields = ['start']
+        func.title        = '''Number of features'''
+        func.fields       = ['start']
         func.shortcutable = True
-        func.storable = True
-        func.units = 'Count'
-        func.collapse = 'by_adding'
+        func.storable     = True
+        func.units        = 'Count'
+        func.collapse     = 'by_adding'
         return func
     @classmethod 
     @num_of_features_options
@@ -110,12 +134,12 @@ class gmCharacteristic(object):
         return sum(1 for _ in iterable)
 
     def base_coverage_options(func):
-        func.title = '''Base coverage'''
-        func.fields = ['start','end']
+        func.title        = '''Base coverage'''
+        func.fields       = ['start','end']
         func.shortcutable = False
-        func.storable = True
-        func.units = 'Base pairs'
-        func.collapse = 'by_adding'
+        func.storable     = True
+        func.units        = 'Base pairs'
+        func.collapse     = 'by_adding'
         return func
     @classmethod 
     @base_coverage_options
@@ -131,12 +155,12 @@ class gmCharacteristic(object):
         return sum
 
     def length_options(func):
-        func.title = '''Length distribution'''
-        func.fields = ['start','end']
+        func.title        = '''Length distribution'''
+        func.fields       = ['start','end']
         func.shortcutable = False
-        func.storable = False
-        func.units = 'Base Pairs'
-        func.collapse = 'by_appending'
+        func.storable     = False
+        func.units        = 'Base Pairs'
+        func.collapse     = 'by_appending'
         return func
     @classmethod
     @length_options
@@ -145,12 +169,12 @@ class gmCharacteristic(object):
         return [x[1]-x[0] for x in iterable]
 
     def score_options(func):
-        func.title = '''Score distribution'''
-        func.fields = ['score']
+        func.title        = '''Score distribution'''
+        func.fields       = ['score']
         func.shortcutable = False
-        func.storable = False
-        func.units = 'Undefined'
-        func.collapse = 'by_appending'
+        func.storable     = False
+        func.units        = 'Undefined'
+        func.collapse     = 'by_appending'
         return func
     @classmethod
     @score_options

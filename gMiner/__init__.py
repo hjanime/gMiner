@@ -90,6 +90,7 @@ def parse_regions(request):
     >>> d
     {'selected_regions': [{'start': 0, 'chr': 'chr1', 'end': 9}, {'start': 333, 'chr': 'chr2', 'end': 55555}]}
     '''
+    if os.path.exists(request['selected_regions']): return
     if request['selected_regions']:
         try: 
             request['selected_regions'] = [dict([['chr',p[0]],['start',int(p[1])],['end',int(p[2])]]) for p in [r.split(':') for r in request['selected_regions'].split(';')]]
