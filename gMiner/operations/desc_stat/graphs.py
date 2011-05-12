@@ -230,8 +230,8 @@ class gmBarElement(gmPlotElement):
             self.name = ''
             return 0
         if len(self.subtracks) == 2:
-            child_stat = [s for s in self.subtracks if s.selection['type'] == 'region'][0].stat
-            parent_stat = [s for s in self.subtracks if s.selection['type'] != 'region'][0].stat 
+            child_stat = [s for s in self.subtracks if not s.parent][0].stat
+            parent_stat = [s for s in self.subtracks if s.parent][0].stat 
             if parent_stat == 0: ratio = 0
             else: ratio = 100.0 * child_stat / parent_stat
             big_rect = axes.barh(self.position, 100.0, align='edge', height=self.height, color='gray') 
@@ -273,7 +273,7 @@ class gmBoxElement(gmPlotElement):
             self.components = None
             return 0
         if len(self.subtracks) == 2:
-            stat_selection =[s.stat for s in self.subtracks if s.selection['type'] == 'region'][0]
+            stat_selection = [s.stat for s in self.subtracks if not s.parent][0]
             if stat_selection:
                 comp_selection = axes.boxplot(stat_selection, vert=0, positions=[self.position+self.height/2.0+0.1])
                 box_coord_sel = comp_selection['boxes'][0].get_xdata()
@@ -282,7 +282,7 @@ class gmBoxElement(gmPlotElement):
                 for comp in comp_selection.items(): [pyplot.setp(line, color=self.color) for line in comp[1]]
             else:
                 diq_sel = 0
-            stat_parent = [s.stat for s in self.subtracks if s.selection['type'] != 'region'][0]
+            stat_parent = [s.stat for s in self.subtracks if s.parent][0]
             if stat_parent:
                 comp_parent = axes.boxplot(stat_parent, vert=0, positions=[self.position+self.height/2.0-0.1])
                 box_coord_parent = comp_parent['boxes'][0].get_xdata()

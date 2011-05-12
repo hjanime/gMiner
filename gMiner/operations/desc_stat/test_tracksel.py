@@ -15,16 +15,19 @@ class Test(unittest.TestCase):
     def runTest(self):
         outdir = '/tmp/gMiner/'
         files = gMiner.run(
-           track1          = track_collections['Yeast']['All genes']['path_sql'],
-           track1_name     = 'All genes from SGD',
-           track2          = track_collections['Yeast']['Ribi genes']['path_sql'],
-           track2_name     = 'Ribosome genesis',
-           track3          = track_collections['Yeast']['RP genes']['path_sql'],
-           track3_name     = 'Ribosome proteins',
-           operation_type  = 'desc_stat',
-           characteristic  = 'length',
-           output_location = outdir,
+           track1           = track_collections['Validation'][2]['path_sql'],
+           track1_name      = 'Validation track two',
+           operation_type   = 'desc_stat',
+           characteristic   = 'base_coverage',
+           selected_regions = track_collections['Validation'][3]['path_sql'],
+           per_chromosome   = True,
+           compare_parents  = True,
+           output_location  = outdir,
         )
+        
+        # Result should be 120 / 150
+
+Test().runTest()
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

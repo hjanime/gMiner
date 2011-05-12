@@ -4,7 +4,7 @@ from bbcflib.track import Track
 # Internal modules #
 from ...constants import *
 from ... import common
-from ..genomic_manip import standard
+from ..genomic_manip import standard as manip
 
 ###########################################################################
 class gmOperation(object):
@@ -34,28 +34,28 @@ class gmOperation(object):
                yield gmSubtrack(self.request, track, {'type': 'all'})
             else:
                for chr in track.chrs: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
-        if type(regions) == list:
+        elif type(regions) == list:
             #--- STRING SELECTION ---#
             if not self.request['per_chromosome']:
-                yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': regions})
-                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
+                yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': regions}, False)
+                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'}, True)
             else:
                 for chr in track.chrs:
                     subregions = [subr for subr in regions if subr['chr'] == chr]
                     if subregions == []: continue
-                    yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': subregions})
-                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
+                    yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': subregions}, False)
+                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr}, True)
         else:
             #--- TRACK SELECTION ---#
             if not self.request['per_chromosome']:
-                yield gmSubtrack(self.request, track, {'type': 'track', 'track': self.request['selected_regions']})
-                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
+                yield gmSubtrack(self.request, track, {'type': 'track', 'track': self.request['selected_regions']}, False)
+                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'}, True)
             else:
                 with Track(self.request['selected_regions']) as t:
                     for chr in track.chrs:
                         if chr not in t: continue
-                        yield gmSubtrack(self.request, track, {'type': 'trackchr', 'chr': chr})
-                        if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
+                        yield gmSubtrack(self.request, track, {'type': 'trackchr', 'chr': chr}, False)
+                        if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr}, True)
         
     def run(self):
         # Compute characterisitcs #
@@ -66,10 +66,11 @@ class gmOperation(object):
 
 ###########################################################################
 class gmSubtrack(object):
-    def __init__(self, request, track, selection):
+    def __init__(self, request, track, selection, parent=None):
         self.request = request
         self.track = track 
         self.selection = selection
+        self.parent = parent
         
         # Unique chromosome #
         self.chr = None
@@ -86,15 +87,15 @@ class gmSubtrack(object):
             for span in self.selection['regions']: yield self.track.read(span, self.fields)
         elif self.selection['type'] == 'trackchr': 
             with Track(self.request['selected_regions']) as t:
-                yield self.make_overlap(t, self.selection['chr'])
+                for x in self.make_overlap(t, self.selection['chr']): yield x
         elif self.selection['type'] == 'track':
             with Track(self.request['selected_regions']) as t:
                 for chrom in self.track.chrs:
-                    yield self.make_overlap(t, chrom)
+                    for x in self.make_overlap(t, chrom): yield x
  
     def make_overlap(self, t, chrom):
         sel_feats  = t.read(chrom, ['start', 'end'])
-        orig_feats = self.track.read(sel, self.fields)
+        orig_feats = self.track.read(chrom, self.fields)
         yield manip.overlap_track().generate(orig_feats, sel_feats)
         
 ###########################################################################
