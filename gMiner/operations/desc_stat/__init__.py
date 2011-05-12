@@ -4,8 +4,9 @@ from bbcflib.track import Track
 # Internal modules #
 from ...constants import *
 from ... import common
+from ..genomic_manip import standard
 
-###########################################################################   
+###########################################################################
 class gmOperation(object):
     def prepare(self):
         # characteristic #
@@ -46,11 +47,11 @@ class gmOperation(object):
                     if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
         else:
             #--- TRACK SELECTION ---#
-            with Track(self.request['selected_regions']) as t:
-                if not self.request['per_chromosome']:
-                    yield gmSubtrack(self.request, track, {'type': 'track', 'track': self.request['selected_regions']})
-                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
-                else:
+            if not self.request['per_chromosome']:
+                yield gmSubtrack(self.request, track, {'type': 'track', 'track': self.request['selected_regions']})
+                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'})
+            else:
+                with Track(self.request['selected_regions']) as t:
                     for chr in track.chrs:
                         if chr not in t: continue
                         yield gmSubtrack(self.request, track, {'type': 'trackchr', 'chr': chr})
@@ -63,7 +64,7 @@ class gmOperation(object):
         # Generate the graph #
         return self.graph.generate()
 
-###########################################################################   
+###########################################################################
 class gmSubtrack(object):
     def __init__(self, request, track, selection):
         self.request = request
@@ -83,17 +84,20 @@ class gmSubtrack(object):
             for chr in self.track.chrs: yield self.track.read(chr, self.fields)
         elif self.selection['type'] == 'regions': 
             for span in self.selection['regions']: yield self.track.read(span, self.fields)
-        elif self.selection['type'] == 'track':
-            with Track(self.request['selected_regions']) as t:
-                for chr in self.track.chrs: 
-                    sel = (chr, t.read(chr, ['start', 'end']))
-                    yield self.track.read(sel, self.fields)
         elif self.selection['type'] == 'trackchr': 
             with Track(self.request['selected_regions']) as t:
-                sel = (self.selection['chr'], t.read(self.selection['chr'], ['start', 'end']))
-                yield self.track.read(sel, self.fields)
-
-###########################################################################   
+                yield self.make_overlap(t, self.selection['chr'])
+        elif self.selection['type'] == 'track':
+            with Track(self.request['selected_regions']) as t:
+                for chrom in self.track.chrs:
+                    yield self.make_overlap(t, chrom)
+ 
+    def make_overlap(self, t, chrom):
+        sel_feats  = t.read(chrom, ['start', 'end'])
+        orig_feats = self.track.read(sel, self.fields)
+        yield manip.overlap_track().generate(orig_feats, sel_feats)
+        
+###########################################################################
 def gm_get_characteristic(subtrack, chara):
     # Variables #
     result = False
@@ -116,7 +120,7 @@ def gm_get_characteristic(subtrack, chara):
     # Store it #
     # if storable and not stored: subtrack.track.write_stored('desc_stat', chara, subtrack.selection, result)
 
-#-------------------------------------------------------------------------#   
+#-------------------------------------------------------------------------#
 class gmCharacteristic(object):
 
     def num_of_features_options(func):

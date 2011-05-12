@@ -67,7 +67,7 @@ class internal_merge(gmManipulation):
 class overlap_track(gmManipulation):
     '''Overlap by track'''
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
-                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end']}]
     input_constraints  = ['ordered']
     input_other        = []
     input_extras       = []
