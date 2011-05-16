@@ -59,7 +59,7 @@ class gmManipulation(object):
 
     def make_output_tracks(self):
         for t in self.output_tracks:
-            t['name']     = self.__doc__ + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
+            t['name']     = self.name + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
             t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
             t['obj']      = new(t['location'], 'sql', t['kind'], t['name'])
             t['obj'].meta_tack = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}

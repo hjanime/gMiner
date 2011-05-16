@@ -7,7 +7,9 @@ from ... import common
 
 #-------------------------------------------------------------------------------------------#
 class merge_scores(Manip):
-    '''Merge scores'''
+    '''Merges N quantitative streams using the average fucntion'''
+    
+    name               = 'Merge scores'
     input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
     input_other        = []
@@ -18,7 +20,6 @@ class merge_scores(Manip):
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def __call__(self, list_of_tracks, stop_val):
-        '''Merges N quantitative tracks using the average fucntion'''
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)
         tracks = [common.sentinelize(x, sentinel) for x in list_of_tracks]
@@ -54,7 +55,12 @@ class merge_scores(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class mean_score_by_feature(Manip):
-    '''Mean score by feature'''
+    '''Given a quantitative stream "X" and a qualititive stream "Y"
+       computes the mean of scores in X for every feature in Y.
+       The output consits of a qualitative stream simliar to Y but
+       with a new score value proprety for every feature.'''
+
+    name               = 'Mean score by feature'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
                           {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start', 'end', 'name', 'score', 'strand']}]
     input_constraints  = []
@@ -66,10 +72,6 @@ class mean_score_by_feature(Manip):
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def __call__(self, X, Y):
-        '''Given a quantitative track "X" and a qualititive track "Y"
-           computes the mean of scores in X for every feature in Y.
-           The output consits of a qualitative track simliar to Y but
-           with a new score value proprety for every feature.'''
         # Sentinel #
         sentinel = (sys.maxint, sys.maxint, 0.0)
         X = common.sentinelize(X, sentinel)
@@ -97,7 +99,13 @@ class mean_score_by_feature(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class window_smoothing(Manip):
-    '''Smooth scores'''
+    '''Given a quantiative stream and a window size in base pairs,
+       will output a new quantiative stream with, at each position
+       p, the mean of the scores in the window [p-L, p+L].
+       Border cases are handled by zero padding and the signal's
+       support is invariant.'''
+
+    name               = 'Smooth scores'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
     input_other        = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
@@ -108,11 +116,6 @@ class window_smoothing(Manip):
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def __call__(self, X, L, stop_val):
-        '''Given a quantiative track and a window size in base pairs,
-           will output a new quantiative track with, at each position
-           p, the mean of the scores in the window [p-L, p+L].
-           Border cases are handled by zero padding and the signal's
-           support is invariant.'''
         # Sentinel #
         sentinel = (sys.maxint, sys.maxint, 0.0)
         X = common.sentinelize(X, sentinel)

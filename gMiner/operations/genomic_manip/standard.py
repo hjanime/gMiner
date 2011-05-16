@@ -7,7 +7,10 @@ from ... import common
 
 #-------------------------------------------------------------------------------------------#
 class complement(Manip):
-    '''Complement'''
+    '''The result consists of all intervals that were not
+       covered by a feature in the original track'''
+
+    name               = 'Complement'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end']}]
     input_constraints  = []
     input_other        = []
@@ -18,8 +21,6 @@ class complement(Manip):
     def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
     
     def __call__(self, X, stop_val):
-        '''The result consists of all intervals that were not
-           covered by a feature in the original track'''
         last_end = 0
         for x in X:
             if x[0] > last_end:
@@ -32,7 +33,9 @@ class complement(Manip):
 
 #-------------------------------------------------------------------------------------------# 
 class internal_merge(Manip):
-    '''Internal merge'''
+    '''Merges features that are adjacent or overlapping in one track'''
+
+    name               = 'Internal merge'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     input_constraints  = []
     input_other        = []
@@ -43,7 +46,6 @@ class internal_merge(Manip):
     def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
     
     def __call__(self, X, stop_val):
-        '''Merges features that are adjacent or overlapping in one track'''
         sentinel = (sys.maxint, sys.maxint)
         X = common.sentinelize(X, sentinel)
         x = X.next()
@@ -65,7 +67,10 @@ class internal_merge(Manip):
 
 #-------------------------------------------------------------------------------------------# 
 class overlap_track(Manip):
-    '''Overlap by track'''
+    '''Computes the overlap of the first track against the second track
+       returning only complete features from the first track'''
+
+    name               = 'Overlap by track'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
                           {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end']}]
     input_constraints  = ['ordered']
@@ -77,8 +82,6 @@ class overlap_track(Manip):
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
    
     def __call__(self, X, Y):
-        '''Computes the overlap of the first track against the second track
-           returning only complete features from the first track'''
         sentinel = (sys.maxint, sys.maxint)
         X = common.sentinelize(X, sentinel)
         Y = common.sentinelize(Y, sentinel)
@@ -106,7 +109,10 @@ class overlap_track(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class overlap_pieces(Manip):
-    '''Overlap by pieces'''
+    '''Computes the overlap between both tracks returning
+       new features that exacly match the overlaping zones'''
+
+    name               = 'Overlap by pieces'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
                           {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
     input_constraints  = ['ordered']
@@ -118,8 +124,6 @@ class overlap_pieces(Manip):
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
     def __call__(self, X, Y, stop_val):
-        '''Computes the overlap between both tracks returning
-           new features that exacly match the overlaping zones'''
         def scan(f, Wf, g, Wg, lastPick):
             g_index = 0
             while g_index < len(Wg):
