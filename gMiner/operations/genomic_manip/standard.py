@@ -157,6 +157,28 @@ class overlap_pieces(Manip):
                 for z in scan(y, Wy, x, Wx, 1): yield z 
                 y = Y.next()      
 
+#-------------------------------------------------------------------------------------------# 
+class neighborhood(Manip):
+    '''Given a steam of features and two integers X and Y, will replace
+       every feature (start, end, ...) by (start+X, end+Y, ...).
+       X and Y may be positive or negative. If the on_strand parameter
+       is set to True, features on the negative strand are replaced by
+       (start-Y, end-X, ...)'''
+
+    name               = 'Neighborhood regions'
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+    input_constraints  = []
+    input_other        = []
+    input_extras       = []
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+    output_constraints = []
+    output_other       = []
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args)
+
+    def __call__(self, X):
+        for x in X:
+            yield x
+
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
