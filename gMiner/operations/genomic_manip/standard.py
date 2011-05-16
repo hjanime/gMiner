@@ -8,7 +8,7 @@ from ... import common
 #-------------------------------------------------------------------------------------------#
 class complement(Manip):
     '''The result consists of all intervals that were not
-       covered by a feature in the original track'''
+       covered by a feature in the original stream'''
 
     name               = 'Complement'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end']}]
@@ -33,7 +33,7 @@ class complement(Manip):
 
 #-------------------------------------------------------------------------------------------# 
 class internal_merge(Manip):
-    '''Merges features that are adjacent or overlapping in one track'''
+    '''Merges features that are adjacent or overlapping in one stream'''
 
     name               = 'Internal merge'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
@@ -67,8 +67,8 @@ class internal_merge(Manip):
 
 #-------------------------------------------------------------------------------------------# 
 class overlap_track(Manip):
-    '''Computes the overlap of the first track against the second track
-       returning only complete features from the first track'''
+    '''Computes the overlap of the first stream against the second stream
+       returning only complete features from the first stream'''
 
     name               = 'Overlap by track'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
@@ -109,7 +109,7 @@ class overlap_track(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class overlap_pieces(Manip):
-    '''Computes the overlap between both tracks returning
+    '''Computes the overlap between both streams returning
        new features that exacly match the overlaping zones'''
 
     name               = 'Overlap by pieces'
@@ -156,6 +156,7 @@ class overlap_pieces(Manip):
             else:
                 for z in scan(y, Wy, x, Wx, 1): yield z 
                 y = Y.next()      
+
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

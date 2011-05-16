@@ -4,7 +4,7 @@ from bbcflib.track import Track
 # Internal modules #
 from ...constants import *
 from ... import common
-from ..genomic_manip import standard as manip
+from .. import genomic_manip as manip
 
 ###########################################################################
 class gmOperation(object):
@@ -56,7 +56,7 @@ class gmOperation(object):
                         if chr not in t: continue
                         yield gmSubtrack(self.request, track, {'type': 'trackchr', 'chr': chr}, False)
                         if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr}, True)
-        
+
     def run(self):
         # Compute characterisitcs #
         for track in self.tracks:

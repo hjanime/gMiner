@@ -1,11 +1,7 @@
-# General modules #
-import sys, os
-
 # Other modules #
 from bbcflib.track import new
 
 # Internal modules #
-from ...constants import *
 from ... import common
 
 #-------------------------------------------------------------------------------------------#   
@@ -16,11 +12,6 @@ def track_matches_desc(track, dict):
 
 ############################################################################################# 
 class gmManipulation(object):
-    def __init__(self, request=None, tracks=None, output_dir=None):
-        self.request = request
-        self.req_tracks = tracks
-        self.output_dir = output_dir
-
     def make_input_tracks(self):
         # Number of tracks #
         if not 'list of tracks' in [t['type'] for t in self.input_tracks]:
@@ -73,6 +64,19 @@ class gmManipulation(object):
         for chr in self.chrmeta:
             if chr['name'] == chr_name: return chr['length']
 
+    #-------------------------------------------------------------------------------------------#
+    def __init__(self, request=None, tracks=None, output_dir=None):
+        self.request = request
+        self.req_tracks = tracks
+        self.output_dir = output_dir
+
+    def prepare(self):
+        self.make_input_tracks()
+        self.make_input_other()
+        self.make_output_chromosomes()
+        self.make_output_tracks()
+        self.make_output_meta_chr()
+ 
     def execute(self):
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
@@ -87,12 +91,7 @@ class gmManipulation(object):
             for t in self.input_other:
                 kwargs[t['name']] = t['value']
             T['obj'].write(chr, self(**kwargs), T['fields'])
-
-    def finalize(self):
         self.output_tracks[0]['obj'].unload()
-
-    def chr_collapse(self, *args):
-        return common.collapse.by_appending(*args)
 
 #############################################################################################
 # Submodules #
@@ -116,16 +115,11 @@ class gmOperation(object):
         # Get the manipulation #
         self.manip = globals()[self.request['manipulation']](self.request, self.tracks, self.output_dir)
         # Call manip methods #
-        self.manip.make_input_tracks()
-        self.manip.make_input_other()
-        self.manip.make_output_chromosomes()
-        self.manip.make_output_tracks()
-        self.manip.make_output_meta_chr()
+        self.manip.prepare()
     
     def run(self):
         # Call manip methods #
         self.manip.execute()
-        self.manip.finalize()
         # Report success # 
         return [t['location'] for t in self.manip.output_tracks]
 
