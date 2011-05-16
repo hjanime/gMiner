@@ -86,7 +86,7 @@ class gmManipulation(object):
                 kwargs[t['name']] = getattr(self, 'get_special_parameter_' + t['type'])(chr)
             for t in self.input_other:
                 kwargs[t['name']] = t['value']
-            T['obj'].write(chr, self.generate(**kwargs), T['fields'])
+            T['obj'].write(chr, self(**kwargs), T['fields'])
 
     def finalize(self):
         self.output_tracks[0]['obj'].unload()

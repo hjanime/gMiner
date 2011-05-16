@@ -2,11 +2,11 @@
 import sys
 
 # Importing #
-from . import gmManipulation
+from . import gmManipulation as Manip
 from ... import common
 
 #-------------------------------------------------------------------------------------------#
-class merge_scores(gmManipulation):
+class merge_scores(Manip):
     '''Merge scores'''
     input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
@@ -17,7 +17,7 @@ class merge_scores(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
-    def generate(self, list_of_tracks, stop_val):
+    def __call__(self, list_of_tracks, stop_val):
         '''Merges N quantitative tracks using the average fucntion'''
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)
@@ -53,7 +53,7 @@ class merge_scores(gmManipulation):
                     elements.pop(i)
 
 #-------------------------------------------------------------------------------------------#
-class mean_score_by_feature(gmManipulation):
+class mean_score_by_feature(Manip):
     '''Mean score by feature'''
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
                           {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start', 'end', 'name', 'score', 'strand']}]
@@ -65,7 +65,7 @@ class mean_score_by_feature(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
-    def generate(self, X, Y):
+    def __call__(self, X, Y):
         '''Given a quantitative track "X" and a qualititive track "Y"
            computes the mean of scores in X for every feature in Y.
            The output consits of a qualitative track simliar to Y but
@@ -96,7 +96,7 @@ class mean_score_by_feature(gmManipulation):
             yield (y[0], y[1], y[2], score/(y[1]-y[0]), y[4])
 
 #-------------------------------------------------------------------------------------------#
-class window_smoothing(gmManipulation):
+class window_smoothing(Manip):
     '''Smooth scores'''
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
     input_constraints  = []
@@ -107,7 +107,7 @@ class window_smoothing(gmManipulation):
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
-    def generate(self, X, L, stop_val):
+    def __call__(self, X, L, stop_val):
         '''Given a quantiative track and a window size in base pairs,
            will output a new quantiative track with, at each position
            p, the mean of the scores in the window [p-L, p+L].

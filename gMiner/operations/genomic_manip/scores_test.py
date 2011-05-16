@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
             return smoothed.tolist()
 
         def check_both_methods():
-            computed_output      = list(genomic_manip.scores.window_smoothing().generate(stop_val=stop_val, L=L, X=X))
+            computed_output      = list(genomic_manip.scores.window_smoothing()(stop_val=stop_val, L=L, X=X))
             self.assertEqual(computed_output, expected_output)
             flat_X               = list(flatten_score(0, stop_val, X.__iter__()))
             flat_expected_output = list(flatten_score(0, stop_val, expected_output.__iter__()))
@@ -65,7 +65,7 @@ class Test(unittest.TestCase):
         check_both_methods()
 
         #--------------------------------------------------------------------------#
-        tests = [{'fn':    genomic_manip.scores.merge_scores().generate,
+        tests = [{'fn':    genomic_manip.scores.merge_scores(),
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [[],[]]},
                  'output': []}]
@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
             self.assertEqual(list(t['fn'](**t['input'])), t['output'])
                  
         #--------------------------------------------------------------------------#
-        tests = [{'fn':    genomic_manip.scores.merge_scores().generate,
+        tests = [{'fn':    genomic_manip.scores.merge_scores(),
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [track_collections['Scores'][1]['path_sql'],
                                                track_collections['Scores'][2]['path_sql'],
@@ -98,7 +98,7 @@ class Test(unittest.TestCase):
             self.assertEqual(list(t['fn'](**t['input'])), t['output'])
         #--------------------------------------------------------------------------#
 
-        tests  = [{'fn':   genomic_manip.scores.mean_score_by_feature().generate,
+        tests  = [{'fn':   genomic_manip.scores.mean_score_by_feature(),
                  'tracks':  {'X': track_collections['Scores'    ][4]['path_sql'],
                              'Y': track_collections['Validation'][2]['path_sql']},
                  'output': [(10,  20,  u'Name1',  15.0, 1),

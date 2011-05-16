@@ -96,7 +96,7 @@ class gmSubtrack(object):
     def make_overlap(self, t, chrom):
         sel_feats  = t.read(chrom, ['start', 'end'])
         orig_feats = self.track.read(chrom, self.fields)
-        yield manip.overlap_track().generate(orig_feats, sel_feats)
+        yield manip.overlap_track()(orig_feats, sel_feats)
         
 ###########################################################################
 def gm_get_characteristic(subtrack, chara):
