@@ -6,7 +6,8 @@ from ... import common
 
 #-------------------------------------------------------------------------------------------#   
 def track_matches_desc(track, dict):
-    if track.datatype    != dict['kind']:       return False
+    if not  dict['kind'] == 'any':
+        if track.datatype    != dict['kind']:       return False
     if set(track.fields) < set(dict['fields']): return False
     return True
 
@@ -38,12 +39,16 @@ class gmManipulation(object):
 
     def make_input_other(self):
         for t in self.input_other:
-            if not self.request.get(t['key']):
-                raise Exception("A required parameter for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a '" + t['key'] + "' paramater that must be of type: " + t['type'].__name__)
-            try:
-                t['value'] = t['type'](self.request[t['key']])
-            except ValueError as err:
-                raise Exception("The '" + t['key'] + "' parameter is not of type: " + t['type'].__name__, err)
+            if self.request.has_key(t['key']):
+                try:
+                    t['value'] = t['type'](self.request[t['key']])
+                except ValueError as err:
+                    raise Exception("The '" + t['key'] + "' parameter is not of type: " + t['type'].__name__, err)
+            else:
+                if t.has_key('default'):
+                    t['value'] = t['default']
+                else:
+                    raise Exception("A required parameter for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a '" + t['key'] + "' paramater that must be of type: " + t['type'].__name__)
 
     def make_output_chromosomes(self):
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
@@ -64,12 +69,22 @@ class gmManipulation(object):
         for chr in self.chrmeta:
             if chr['name'] == chr_name: return chr['length']
 
+    def get_special_parameter_datatype(self, chr_name):
+        return self.input_tracks[0]['obj'].datatype
+
     #-------------------------------------------------------------------------------------------#
     def __init__(self, request=None, tracks=None, output_dir=None):
         self.request = request
         self.req_tracks = tracks
         self.output_dir = output_dir
 
+    def __call__(self, datatype, **kwargs):
+        if datatype == 'quantitative':
+            for x in self.quan(**kwargs): yield x
+        if datatype == 'qualitative':
+            for x in self.qual(**kwargs): yield x
+
+    #-------------------------------------------------------------------------------------------#
     def prepare(self):
         self.make_input_tracks()
         self.make_input_other()

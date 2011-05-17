@@ -158,27 +158,114 @@ class overlap_pieces(Manip):
                 y = Y.next()      
 
 #-------------------------------------------------------------------------------------------# 
-class neighborhood(Manip):
-    '''Given a steam of features and two integers X and Y, will replace
-       every feature (start, end, ...) by (start+X, end+Y, ...).
-       X and Y may be positive or negative. If the on_strand parameter
-       is set to True, features on the negative strand are replaced by
-       (start-Y, end-X, ...)'''
+class bounded(Manip):
+    '''Given a stream of features and two integers 'min_bound', 'max_bound',
+       this manipulation will output every feature untouched unless one of the
+       features exceeds the specified bounds, in which case it is cropped.'''
 
     name               = 'Neighborhood regions'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end']}]
     input_constraints  = []
-    input_other        = []
+    input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': sys.minint},
+                          {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default': sys.maxint}]
     input_extras       = []
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end']}]
     output_constraints = []
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
 
-    def __call__(self, X):
-        for x in X:
-            yield x
+    def __call__(self, X, min_bound, max_bound):
+        for x in X: 
+            if not x[1] < min_bound and not x[0] > max_bound and x[0] < x[1]:
+                yield (max(x[0],min_bound), min(x[1],max_bound)) + x[2:]
 
+#-------------------------------------------------------------------------------------------# 
+class neighborhood(Manip):
+    '''Given a stream of features and four integers 'before_start', 'after_end',
+       'after_start' and 'before_end', this manipulation will output,
+       for every feature in the input stream, one or two features
+       in the neighboorhod of the orginal feature.
+
+       * Only 'before_start' and 'after_end' are given:
+             (start, end, ...) -> (start+before_start, end+after_end, ...)
+
+       * Only 'before_start' and 'after_start' are given:
+             (start, end, ...) -> (start+before_start, start+after_start, ...)
+
+       * Only 'after_end' and 'before_end' are given:
+             (start, end, ...) -> (end+before_end, end+after_end, ...)
+
+       * If all four parameters are given, a pair of features is outputed:
+             (start, end, ...) -> (start+before_start, start+after_start, ...)
+                                  (end+before_end, end+after_end, ...)
+
+       * If the boolean parameter 'on_strand' is set to True,
+         features on the negative strand are inverted as such:
+             (start, end, ...) -> (start-after_end, start-before_end, ...)
+                                  (end-after_start, end-before_start, ...)
+
+       * If the inputed stream is quantitative, only 'before_start' and 'after_end'
+         are taken into consideration and must be equal.'''
+
+    name               = 'Neighborhood regions'
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end']}]
+    input_constraints  = []
+    input_other        = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
+                          {'type': int, 'key': 'after_end',    'name': 'after_end',    'default': None},
+                          {'type': int, 'key': 'after_start',  'name': 'after_start',  'default': None},
+                          {'type': int, 'key': 'before_end',   'name': 'before_end',   'default': None}]
+    input_extras       = [{'type': 'datatype', 'name': 'datatype'},
+                          {'type': 'stop_val', 'name': 'stop_val'}]
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+    output_constraints = []
+    output_other       = []
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args)
+
+    def quan(self, stop_val, **kwargs):
+        def generate(X, before_start=None, after_end=None, after_start=None, before_end=None, on_strand=False):
+            if before_start and after_start:
+                if before_start > after_start:
+                    raise Exception("before_start cannot be larger than after_start")
+            if before_end and after_end:
+                if before_end > after_end:
+                    raise Exception("before_end cannot be larger than after_end")
+            if not on_strand:
+                if before_start and after_end and after_start and before_end:
+                    for x in X:
+                        yield (x[0]+before_start, x[1]+before_start) + x[2:]
+                        yield (x[0]+before_start, x[1]+before_start) + x[2:]
+                if before_start and after_end:
+                    for x in X: yield (x[0]+before_start, x[1]+after_end)    + x[2:]
+                if before_start and after_start:
+                    for x in X: yield (x[0]+before_start, x[0]+after_start)  + x[2:]
+                if before_end and after_end:
+                    for x in X: yield (x[1]+before_end,   x[1]+after_end)    + x[2:]
+            else:
+                if before_start and after_end and after_start and before_end:
+                    for x in X:
+                        yield (x[0]+before_start, x[1]+before_start) + x[2:]
+                        yield (x[0]+before_start, x[1]+before_start) + x[2:]
+                if before_start and after_end:
+                    for x in X: yield (x[0]-after_end,    x[1]-before_start) + x[2:]
+                if before_start and after_start:
+                    for x in X: yield (x[1]-after_start,  x[1]-before_start) + x[2:]
+                if after_end and before_end:
+                    for x in X: yield (x[0]+before_start, x[1]+before_start) + x[2:]
+        for x in bounded(generate(*args, **kwargs), 0, stop_val): yield x
+
+
+    def qual(self, stop_val, **kwargs):
+        def generate(X, before_start=None, after_end=None, after_start=None, before_end=None, on_strand=False):
+            if on_strand:
+                raise Exception("As the track is quantitative, you cannot specify on_strand=True")
+            if after_start:
+                raise Exception("As the track is quantitative, you cannot specify after_start")
+            if before_end:
+                raise Exception("As the track is quantitative, you cannot specify before_end")
+            if before_start != after_end:
+                raise Exception("As the track is quantitative, before_start and after_start need to be equal")
+            for x in X: yield (x[0]+before_start, x[1]+before_start) + x[2:]
+        for x in bounded(generate(*args, **kwargs), 0, stop_val): yield x
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
