@@ -221,7 +221,7 @@ class neighborhood(Manip):
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
 
-    def quan(self, stop_val, **kwargs):
+    def qual(self, stop_val, **kwargs):
         def generate(X, before_start=None, after_end=None, after_start=None, before_end=None, on_strand=False):
             if before_start and after_start:
                 if before_start > after_start:
@@ -254,7 +254,7 @@ class neighborhood(Manip):
         X = generate(**kwargs) 
         for x in bounded()(X, 0, stop_val): yield x
 
-    def qual(self, stop_val, **kwargs):
+    def quan(self, stop_val, **kwargs):
         def generate(X, before_start=None, after_end=None, after_start=None, before_end=None, on_strand=False):
             if on_strand:
                 raise Exception("As the track is quantitative, you cannot specify 'on_strand=True'")

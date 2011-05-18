@@ -85,8 +85,6 @@ class Test(unittest.TestCase):
             dict.update(t['tracks'])
             self.assertEqual(list(t['fn'](**dict)), t['expected'])
 
-Test().runTest()
-
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #

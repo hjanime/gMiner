@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
            track1_chrs     = yeast_chr_file,
            operation_type  = 'genomic_manip',
            manipulation    = 'neighborhood',
-           before_start    = 2,
+           before_start    = -2,
            after_end       = 2,
            output_location = outdir,
         )
@@ -32,7 +32,7 @@ class Test(unittest.TestCase):
             data = list(t.read('chr1'))
         os.remove(files[0])
 
-        expected = [(-2,   12,  u'Validation feature 1',  10.0),
+        expected = [( 0,   12,  u'Validation feature 1',  10.0),
                     ( 0,   10,  u'Validation feature 2',   0.0),
                     (18,   32, u'Validation feature 3',   10.0),
                     (23,   32, u'Validation feature 4',    0.0),
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
                     (88,  102, u'Validation feature 9',   10.0),
                     (88,  112, u'Validation feature 10',  10.0),
                     (118, 132, u'Validation feature 11',  10.0),
-                    (123, 137, u'Validation feature 12',   0.0)]
+                    (123, 137, u'Validation feature 12',   5.0)]
         self.assertEqual(data, expected)
         #---------------------------------------------------------------------------------------#
 
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
            track1_chrs     = yeast_chr_file,
            operation_type  = 'genomic_manip',
            manipulation    = 'neighborhood',
-           before_start    = 2,
+           before_start    = -2,
            after_end       = 2,
            output_location = outdir,
         )
