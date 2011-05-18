@@ -166,8 +166,8 @@ class bounded(Manip):
     name               = 'Neighborhood regions'
     input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end']}]
     input_constraints  = []
-    input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': sys.minint},
-                          {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default': sys.maxint}]
+    input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
+                          {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
     input_extras       = []
     output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end']}]
     output_constraints = []
@@ -251,8 +251,8 @@ class neighborhood(Manip):
                     for x in X: yield (x[0]-after_end,    x[0]-before_end) + x[2:]
                 if before_start and after_end:
                     for x in X: yield (x[0]-after_end,    x[1]-before_start) + x[2:]
-        X = generate(*args, **kwargs) 
-        for x in bounded(X, 0, stop_val): yield x
+        X = generate(**kwargs) 
+        for x in bounded()(X, 0, stop_val): yield x
 
     def qual(self, stop_val, **kwargs):
         def generate(X, before_start=None, after_end=None, after_start=None, before_end=None, on_strand=False):
@@ -265,8 +265,8 @@ class neighborhood(Manip):
             if before_start != after_end:
                 raise Exception("As the track is quantitative, 'before_start' and 'after_start' need to be equal")
             for x in X: yield (x[0]+before_start, x[1]+before_start) + x[2:]
-        X = generate(*args, **kwargs)
-        for x in bounded(X, 0, stop_val): yield x
+        X = generate(**kwargs)
+        for x in bounded()(X, 0, stop_val): yield x
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

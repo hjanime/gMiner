@@ -78,7 +78,7 @@ class gmManipulation(object):
         self.req_tracks = tracks
         self.output_dir = output_dir
 
-    def __call__(self, datatype, **kwargs):
+    def __call__(self, datatype='quantitative', **kwargs):
         if datatype == 'quantitative':
             for x in self.quan(**kwargs): yield x
         if datatype == 'qualitative':

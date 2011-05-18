@@ -61,6 +61,21 @@ class Test(unittest.TestCase):
                               (252, 258, 'NameK with Name12', 0.0, 0),
                               (256, 260, 'NameL with Name12', 0.0, 0),
                               (270, 275, 'Name13 with NameL', 0.0, 0)]},
+                {'fn':     genomic_manip.standard.neighborhood(),
+                 'input':  {'stop_val': 135, 'before_start':-2, 'after_end':2},
+                 'tracks': {'X': track_collections['Validation'][1]['path_sql']},
+                 'expected': [( 0,   12,  u'Validation feature 1',  10.0),
+                              ( 0,   10,  u'Validation feature 2',   0.0),
+                              (18,   32, u'Validation feature 3',   10.0),
+                              (23,   32, u'Validation feature 4',    0.0),
+                              (38,   47, u'Validation feature 5',    0.0),
+                              (38,   52, u'Validation feature 6',   10.0),
+                              (58,   72, u'Validation feature 7',   10.0),
+                              (68,   82, u'Validation feature 8',   10.0),
+                              (88,  102, u'Validation feature 9',   10.0),
+                              (88,  112, u'Validation feature 10',  10.0),
+                              (118, 132, u'Validation feature 11',  10.0),
+                              (123, 135, u'Validation feature 12',   5.0)]},
                  ]
 
         for t in tests:
@@ -69,6 +84,8 @@ class Test(unittest.TestCase):
             dict = t.get('input', {})
             dict.update(t['tracks'])
             self.assertEqual(list(t['fn'](**dict)), t['expected'])
+
+Test().runTest()
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
