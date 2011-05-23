@@ -164,12 +164,12 @@ class bounded(Manip):
        features exceeds the specified bounds, in which case it is cropped.'''
 
     name               = 'Neighborhood regions'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end']}]
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
     input_constraints  = []
     input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
                           {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
     input_extras       = []
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
     output_constraints = []
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
@@ -208,7 +208,7 @@ class neighborhood(Manip):
          are taken into consideration and must be equal.'''
 
     name               = 'Neighborhood regions'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end']}]
+    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
     input_constraints  = []
     input_other        = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
                           {'type': int, 'key': 'after_end',    'name': 'after_end',    'default': None},
@@ -216,7 +216,7 @@ class neighborhood(Manip):
                           {'type': int, 'key': 'before_end',   'name': 'before_end',   'default': None}]
     input_extras       = [{'type': 'datatype', 'name': 'datatype'},
                           {'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
     output_constraints = []
     output_other       = []
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
