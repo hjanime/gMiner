@@ -28,7 +28,7 @@ def run(**request):
             __import__('gMiner.operations.' + request['operation_type'])
         except ImportError:
             raise Exception("The operation " + request['operation_type'] + " is not supported.")
-    operation = getattr(operations, request['operation_type']).gmOperation()
+    run_op = getattr(operations, request['operation_type']).run
     # Mandatory request variables #
     if not request.get('output_location'):
         raise Exception("There does not seem to be an output location specified in the request")
@@ -51,13 +51,8 @@ def run(**request):
             for track in tracks: track.chrs = (set(track.all_chrs) & set(request['wanted_chromosomes']))
         else:
             for track in tracks: track.chrs = track.all_chrs
-        # Copy variables #
-        operation.request    = request
-        operation.tracks     = tracks
-        operation.output_dir = output_dir
         # Run it #
-        operation.prepare()
-        return operation.run()
+        return run_op(request, tracks, output_dir)
 
 ###########################################################################
 def parse_tracks(request_dict):

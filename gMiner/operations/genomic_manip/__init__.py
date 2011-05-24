@@ -4,17 +4,15 @@ from bbcflib.track import new
 # Internal modules #
 from ... import common
 
-#-------------------------------------------------------------------------------------------#   
-def track_matches_desc(track, info):
-    # Datatype #
-    if not info['kind'] == 'any' and track.datatype != info['kind']: return False
-    # Fields #
-    if track.fields[-1] == '...':
-        if set(track.fields[:-1]) < set(info['fields']): return False
-    else:
-        if set(track.fields)      < set(info['fields']): return False
-    # Default case #
-    return True
+#############################################################################################
+class TrackCollection(object):
+    def __init__(self, tracks):
+        self.tracks = tracks
+        self.name = 'Collection of ' + str(len(tracks)) + ' track' + ((len(tracks) > 1) and 's' or '')
+        self.chrs = common.collapse.by_intersection([t.chrs for t in tracks])
+        self.meta_chr = []
+        for chrom in self.chrs: self.meta_chr.append({'name': chrom, 'length': max([m['length'] for n in tracks for m in n.meta_chr if m['length'] and m['name'] == chrom])})
+    def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
 
 ############################################################################################# 
 class gmManipulation(object):
@@ -97,11 +95,6 @@ class gmManipulation(object):
         return self.input_tracks[0]['obj'].datatype
 
     #-------------------------------------------------------------------------------------------#
-    def __init__(self, request=None, tracks=None, output_dir=None):
-        self.request = request
-        self.req_tracks = tracks
-        self.output_dir = output_dir
-
     def __call__(self, datatype='qualitative', **kwargs):
         if datatype == 'qualitative':
             for x in self.qual(**kwargs): yield x
@@ -109,7 +102,8 @@ class gmManipulation(object):
             for x in self.quan(**kwargs): yield x
 
     #-------------------------------------------------------------------------------------------#
-    def prepare(self):
+    def run(self):
+        # Prepare stuff #
         self.make_input_tracks()
         self.make_input_fields()
         self.make_input_other()
@@ -118,8 +112,6 @@ class gmManipulation(object):
         self.make_output_meta_track()
         self.make_output_meta_chr()
         self.make_output_fields()
- 
-    def execute(self):
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
         # Only one output track #
@@ -140,40 +132,39 @@ class gmManipulation(object):
 from .standard import *
 from .scores import *
  
-# Main object #
-class gmOperation(object):
-    def prepare(self):
-        # Manipulation specified #
-        if not self.request.get('manipulation'):
-            raise Exception("There does not seem to be a manipulation specified in the request")
-        # Manipulation is a gmManipulation #
-        try:
-            if not issubclass(globals()[self.request['manipulation']], gmManipulation):
-                raise Exception("The specified manipulation '" + self.request['manipulation'] + "' is not a manipulation.")
-        except KeyError:
-            raise Exception("The specified manipulation '" + self.request['manipulation'] + "' does not exist.")
-        except TypeError:
-            raise Exception("The specified manipulation '" + self.request['manipulation'] + "' is a special object in python.")
-        # Get the manipulation #
-        self.manip = globals()[self.request['manipulation']](self.request, self.tracks, self.output_dir)
-        # Call manip methods #
-        self.manip.prepare()
-    
-    def run(self):
-        # Call manip methods #
-        self.manip.execute()
-        # Report success # 
-        return [t['location'] for t in self.manip.output_tracks]
+def track_matches_desc(track, info):
+    # Datatype #
+    if not info['kind'] == 'any' and track.datatype != info['kind']: return False
+    # Fields #
+    if track.fields[-1] == '...':
+        if set(track.fields[:-1]) < set(info['fields']): return False
+    else:
+        if set(track.fields)      < set(info['fields']): return False
+    # Default case #
+    return True
 
-#############################################################################################
-class TrackCollection(object):
-    def __init__(self, tracks):
-        self.tracks = tracks
-        self.name = 'Collection of ' + str(len(tracks)) + ' track' + ((len(tracks) > 1) and 's' or '')
-        self.chrs = common.collapse.by_intersection([t.chrs for t in tracks])
-        self.meta_chr = []
-        for chrom in self.chrs: self.meta_chr.append({'name': chrom, 'length': max([m['length'] for n in tracks for m in n.meta_chr if m['length'] and m['name'] == chrom])})
-    def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
+def run(request, tracks, output_dir):
+    # Manipulation specified #
+    if not request.get('manipulation'):
+        raise Exception("There does not seem to be a manipulation specified in the request")
+    # Manipulation exists #
+    try:
+        if not issubclass(globals()[request['manipulation']], gmManipulation):
+            raise Exception("The specified manipulation '" + request['manipulation'] + "' is not a manipulation.")
+    except KeyError:
+        raise Exception("The specified manipulation '" + request['manipulation'] + "' does not exist.")
+    except TypeError:
+        raise Exception("The specified manipulation '" + request['manipulation'] + "' is a special object in python.")
+    # Get the manipulation #
+    manip = globals()[request['manipulation']]()
+    # Copy vars #
+    manip.request = request
+    manip.req_tracks = tracks
+    manip.output_dir = output_dir        
+    # Run it #
+    manip.run()
+    # Report success # 
+    return [t['location'] for t in manip.output_tracks]
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

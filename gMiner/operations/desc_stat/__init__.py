@@ -7,64 +7,6 @@ from ... import common
 from .. import genomic_manip as manip
 
 ###########################################################################
-class gmOperation(object):
-    def prepare(self):
-        # characteristic #
-        if not self.request.get('characteristic'):
-            raise Exception("There does not seem to be a characteristic specified in the request")
-        if not hasattr(gmCharacteristic, self.request['characteristic']):
-            raise Exception("The '" + object.__name__ + "' object does not seem to have '" + attribute + "'.")
-        # per_chromosome #
-        self.request['per_chromosome'] = self.request.get('per_chromosome', False)
-        self.request['per_chromosome'] = bool(self.request['per_chromosome'])
-        # compare_parents #
-        if not self.request['selected_regions']: self.request['compare_parents'] = False
-        self.request['compare_parents'] = self.request.get('compare_parents', False)
-        self.request['compare_parents'] = bool(self.request['compare_parents'])
-        # Create subtracks #
-        self.subtracks = [subtrack for track in self.tracks for subtrack in self.track_cut_down(track)]
-        # Create graph #
-        self.graph = graphs.gmGraph(self.request, self.subtracks, self.tracks, self.output_dir)
-         
-    def track_cut_down(self, track):
-        regions = self.request['selected_regions']
-        if not regions:
-            #--- NO SELECTION ---#
-            if not self.request['per_chromosome']:
-               yield gmSubtrack(self.request, track, {'type': 'all'})
-            else:
-               for chr in track.chrs: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr})
-        elif type(regions) == list:
-            #--- STRING SELECTION ---#
-            if not self.request['per_chromosome']:
-                yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': regions}, False)
-                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'}, True)
-            else:
-                for chr in track.chrs:
-                    subregions = [subr for subr in regions if subr['chr'] == chr]
-                    if subregions == []: continue
-                    yield gmSubtrack(self.request, track, {'type': 'regions', 'regions': subregions}, False)
-                    if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr}, True)
-        else:
-            #--- TRACK SELECTION ---#
-            if not self.request['per_chromosome']:
-                yield gmSubtrack(self.request, track, {'type': 'track', 'track': self.request['selected_regions']}, False)
-                if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'all'}, True)
-            else:
-                with Track(self.request['selected_regions']) as t:
-                    for chr in track.chrs:
-                        if chr not in t: continue
-                        yield gmSubtrack(self.request, track, {'type': 'trackchr', 'chr': chr}, False)
-                        if self.request['compare_parents']: yield gmSubtrack(self.request, track, {'type': 'chr', 'chr': chr}, True)
-
-    def run(self):
-        # Compute characterisitcs #
-        for track in self.tracks:
-            [gm_get_characteristic(subtrack, self.request['characteristic']) for subtrack in self.subtracks if subtrack.track == track]
-        # Generate the graph #
-        return self.graph.generate()
-
-###########################################################################
 class gmSubtrack(object):
     def __init__(self, request, track, selection, parent=None):
         self.request = request
@@ -99,6 +41,37 @@ class gmSubtrack(object):
         yield manip.overlap_track()(orig_feats, sel_feats)
         
 ###########################################################################
+def track_cut_down(request, track):
+    regions = request['selected_regions']
+    if not regions:
+        #--- NO SELECTION ---#
+        if not request['per_chromosome']:
+           yield gmSubtrack(request, track, {'type': 'all'})
+        else:
+           for chr in track.chrs: yield gmSubtrack(request, track, {'type': 'chr', 'chr': chr})
+    elif type(regions) == list:
+        #--- STRING SELECTION ---#
+        if not request['per_chromosome']:
+            yield gmSubtrack(request, track, {'type': 'regions', 'regions': regions}, False)
+            if request['compare_parents']: yield gmSubtrack(request, track, {'type': 'all'}, True)
+        else:
+            for chr in track.chrs:
+                subregions = [subr for subr in regions if subr['chr'] == chr]
+                if subregions == []: continue
+                yield gmSubtrack(request, track, {'type': 'regions', 'regions': subregions}, False)
+                if request['compare_parents']: yield gmSubtrack(request, track, {'type': 'chr', 'chr': chr}, True)
+    else:
+        #--- TRACK SELECTION ---#
+        if not request['per_chromosome']:
+            yield gmSubtrack(request, track, {'type': 'track', 'track': request['selected_regions']}, False)
+            if request['compare_parents']: yield gmSubtrack(request, track, {'type': 'all'}, True)
+        else:
+            with Track(request['selected_regions']) as t:
+                for chr in track.chrs:
+                    if chr not in t: continue
+                    yield gmSubtrack(request, track, {'type': 'trackchr', 'chr': chr}, False)
+                    if request['compare_parents']: yield gmSubtrack(request, track, {'type': 'chr', 'chr': chr}, True)
+
 def gm_get_characteristic(subtrack, chara):
     # Variables #
     result = False
@@ -187,6 +160,30 @@ class gmCharacteristic(object):
         '''Returns the score distribution'''
         iterable = list(iterable)
         return [x[0] for x in iterable]
+
+###########################################################################
+def run(request, tracks, output_dir):
+    # characteristic #
+    if not request.get('characteristic'):
+        raise Exception("There does not seem to be a characteristic specified in the request")
+    if not hasattr(gmCharacteristic, request['characteristic']):
+        raise Exception("The '" + object.__name__ + "' object does not seem to have '" + attribute + "'.")
+    # per_chromosome #
+    request['per_chromosome'] = request.get('per_chromosome', False)
+    request['per_chromosome'] = bool(request['per_chromosome'])
+    # compare_parents #
+    if not request['selected_regions']: request['compare_parents'] = False
+    request['compare_parents'] = request.get('compare_parents', False)
+    request['compare_parents'] = bool(request['compare_parents'])
+    # Create subtracks #
+    subtracks = [subtrack for track in tracks for subtrack in track_cut_down(request, track)]
+    # Create graph #
+    graph = graphs.gmGraph(request, subtracks, tracks, output_dir)
+    # Compute characterisitcs #
+    for track in tracks:
+        [gm_get_characteristic(subtrack, request['characteristic']) for subtrack in subtracks if subtrack.track == track]
+    # Generate the graph #
+    return graph.generate()
 
 # Avoid circular imports #
 from . import graphs

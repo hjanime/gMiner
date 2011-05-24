@@ -46,24 +46,6 @@ class Test(unittest.TestCase):
         self.assertEqual(data, expected)
         #---------------------------------------------------------------------------------------#
 
-        files = gMiner.run(
-           track1          = track_collections['Scores'][3]['path_sql'],
-           track1_name     = 'Validation score track 3',
-           track1_chrs     = yeast_chr_file,
-           operation_type  = 'genomic_manip',
-           manipulation    = 'neighborhood',
-           before_start    = 2,
-           after_end       = 2,
-           output_location = '/tmp/gMiner',
-        )
-        with Track(files[0], chrfile=yeast_chr_file) as t:
-            data = list(t.read('chr1'))
-        os.remove(files[0])
-
-        expected = [( 22,  52,  20.0),
-                    ( 52,  82, 300.0)]
-        self.assertEqual(data, expected)
-
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #
