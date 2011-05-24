@@ -2,7 +2,7 @@
 import sys
 
 # Importing #
-from . import gmManipulation as Manip
+from . import Manipulation as Manip
 from ... import common
 
 #-------------------------------------------------------------------------------------------#

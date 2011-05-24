@@ -15,7 +15,7 @@ class TrackCollection(object):
     def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
 
 ############################################################################################# 
-class gmManipulation(object):
+class Manipulation(object):
     def make_input_tracks(self):
         # Number of tracks #
         if not 'list of tracks' in [t['type'] for t in self.input_tracks]:
@@ -149,7 +149,7 @@ def run(request, tracks, output_dir):
         raise Exception("There does not seem to be a manipulation specified in the request")
     # Manipulation exists #
     try:
-        if not issubclass(globals()[request['manipulation']], gmManipulation):
+        if not issubclass(globals()[request['manipulation']], Manipulation):
             raise Exception("The specified manipulation '" + request['manipulation'] + "' is not a manipulation.")
     except KeyError:
         raise Exception("The specified manipulation '" + request['manipulation'] + "' does not exist.")
