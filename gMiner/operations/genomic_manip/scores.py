@@ -8,15 +8,16 @@ from ... import common
 #-------------------------------------------------------------------------------------------#
 class merge_scores(Manip):
     '''Merges N quantitative streams using the average fucntion'''
-    
-    name               = 'Merge scores'
-    input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
-    input_constraints  = []
-    input_other        = []
-    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Merge scores'
+        self.input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
+        self.input_constraints  = []
+        self.input_other        = []
+        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def __call__(self, list_of_tracks, stop_val):
@@ -60,15 +61,17 @@ class mean_score_by_feature(Manip):
        The output consits of a qualitative stream simliar to Y but
        with a new score value proprety for every feature.'''
 
-    name               = 'Mean score by feature'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
-                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    input_constraints  = []
-    input_other        = []
-    input_extras       = []
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Mean score by feature'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
+                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.input_constraints  = []
+        self.input_other        = []
+        self.input_extras       = []
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def __call__(self, X, Y):
@@ -105,14 +108,16 @@ class window_smoothing(Manip):
        Border cases are handled by zero padding and the signal's
        support is invariant.'''
 
-    name               = 'Smooth scores'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
-    input_constraints  = []
-    input_other        = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
-    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Smooth scores'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
+        self.input_constraints  = []
+        self.input_other        = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
+        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def __call__(self, X, L, stop_val):

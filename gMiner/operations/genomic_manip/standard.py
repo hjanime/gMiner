@@ -10,14 +10,16 @@ class complement(Manip):
     '''The result consists of all intervals that were not
        covered by a feature in the original stream'''
 
-    name               = 'Complement'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end']}]
-    input_constraints  = []
-    input_other        = []
-    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Complement'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+        self.input_constraints  = []
+        self.input_other        = []
+        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
     
     def __call__(self, X, stop_val):
@@ -35,14 +37,16 @@ class complement(Manip):
 class internal_merge(Manip):
     '''Merges features that are adjacent or overlapping in one stream'''
 
-    name               = 'Internal merge'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    input_constraints  = []
-    input_other        = []
-    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Internal merge'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.input_constraints  = []
+        self.input_other        = []
+        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
     
     def __call__(self, X, stop_val):
@@ -70,15 +74,17 @@ class overlap_track(Manip):
     '''Computes the overlap of the first stream against the second stream
        returning only complete features from the first stream'''
 
-    name               = 'Overlap by track'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
-                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end']}]
-    input_constraints  = ['ordered']
-    input_other        = []
-    input_extras       = []
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Overlap by track'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
+                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+        self.input_constraints  = ['ordered']
+        self.input_other        = []
+        self.input_extras       = []
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
    
     def __call__(self, X, Y):
@@ -112,15 +118,17 @@ class overlap_pieces(Manip):
     '''Computes the overlap between both streams returning
        new features that exacly match the overlaping zones'''
 
-    name               = 'Overlap by pieces'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
-                          {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    input_constraints  = ['ordered']
-    input_other        = []
-    input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Overlap by pieces'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
+                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.input_constraints  = ['ordered']
+        self.input_other        = []
+        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
     def __call__(self, X, Y, stop_val):
@@ -163,15 +171,17 @@ class bounded(Manip):
        this manipulation will output every feature untouched unless one of the
        features exceeds the specified bounds, in which case it is cropped.'''
 
-    name               = 'Neighborhood regions'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
-    input_constraints  = []
-    input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
-                          {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
-    input_extras       = []
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Neighborhood regions'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
+        self.input_constraints  = []
+        self.input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
+                                   {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
+        self.input_extras       = []
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
 
     def __call__(self, X, min_bound, max_bound):
@@ -207,18 +217,20 @@ class neighborhood(Manip):
        * If the inputed stream is quantitative, only 'before_start' and 'after_end'
          are taken into consideration and must be equal.'''
 
-    name               = 'Neighborhood regions'
-    input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
-    input_constraints  = []
-    input_other        = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
-                          {'type': int, 'key': 'after_end',    'name': 'after_end',    'default': None},
-                          {'type': int, 'key': 'after_start',  'name': 'after_start',  'default': None},
-                          {'type': int, 'key': 'before_end',   'name': 'before_end',   'default': None}]
-    input_extras       = [{'type': 'datatype', 'name': 'datatype'},
-                          {'type': 'stop_val', 'name': 'stop_val'}]
-    output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
-    output_constraints = []
-    output_other       = []
+    def __init__(self): 
+        self.name               = 'Neighborhood regions'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
+        self.input_constraints  = []
+        self.input_other        = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
+                                   {'type': int, 'key': 'after_end',    'name': 'after_end',    'default': None},
+                                   {'type': int, 'key': 'after_start',  'name': 'after_start',  'default': None},
+                                   {'type': int, 'key': 'before_end',   'name': 'before_end',   'default': None}]
+        self.input_extras       = [{'type': 'datatype', 'name': 'datatype'},
+                                   {'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
+        self.output_constraints = []
+        self.output_other       = []
+
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
 
     def qual(self, stop_val, **kwargs):
