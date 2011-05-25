@@ -89,8 +89,25 @@ class Test(unittest.TestCase):
                             (68,  70,  200.0),
                             (70,  80,  100.0),
                             (90,  110,   3.0),
-                            (120, 130,  10.)]}
-                 ]
+                            (120, 130,  10.)]},
+                {'fn':    genomic_manip.scores.merge_scores(),
+                 'input':  {'stop_val': 200,
+                            'geometric': True,
+                            'list_of_tracks': [track_collections['Scores'][1]['path_sql'],
+                                               track_collections['Scores'][2]['path_sql'],
+                                               track_collections['Scores'][3]['path_sql']]},
+ 
+                 'output':  [(0,     5, 2.0),
+                             (5,    10, 2.2894284851066637),
+                             (20,   30, 3.1072325059538586),
+                             (30,   40, 4.481404746557164),
+                             (40,   50, 4.3088693800637667),
+                             (50,   60, 7.1137866089801252),
+                             (60,   68, 6.6943295008216941),
+                             (68,   70, 8.4343266530174912),
+                             (70,   80, 6.6943295008216941),
+                             (90,  110, 2.0800838230519041),
+                             (120, 130, 3.1072325059538586)]}]
 
         for t in tests:
             for i,v in enumerate(t['input']['list_of_tracks']):

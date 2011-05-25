@@ -29,9 +29,9 @@ class merge_scores(Manip):
         tracks = [common.sentinelize(x, sentinel) for x in list_of_tracks]
         elements = [x.next() for x in tracks]
         # Declare meaning functions #
-        tracks_denom = 1.0/len(tracks)
         def arithmetic_mean(scores): return sum(scores)*tracks_denom
         def geometric_mean(scores):  return sum(scores)**tracks_denom
+        tracks_denom = 1.0/len(tracks)
         # Choose meaning function #
         if not geometric: mean_fn = arithmetic_mean
         else:             mean_fn = geometric_mean
