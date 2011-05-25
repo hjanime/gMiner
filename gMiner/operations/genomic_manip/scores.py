@@ -7,12 +7,15 @@ from ... import common
 
 #-------------------------------------------------------------------------------------------#
 class merge_scores(Manip):
-    '''Merges N quantitative streams using the average fucntion'''
+    '''Merges N quantitative streams using the some average function.
+       If the boolean value 'geometric' is false, the arithmetic mean
+       is used, otherwise the geometric mean is used'''
+
     def __init__(self): 
         self.name               = 'Merge scores'
         self.input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
         self.input_constraints  = []
-        self.input_other        = []
+        self.input_other        = [{'type': bool, 'key': 'geometric', 'name': 'geometric', 'default': False}]
         self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
         self.output_constraints = []
@@ -20,12 +23,18 @@ class merge_scores(Manip):
 
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
-    def __call__(self, list_of_tracks, stop_val):
+    def __call__(self, list_of_tracks, stop_val, geometric=False):
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)
         tracks = [common.sentinelize(x, sentinel) for x in list_of_tracks]
         elements = [x.next() for x in tracks]
+        # Declare meaning functions #
         tracks_denom = 1.0/len(tracks)
+        def arithmetic_mean(scores): return sum(scores)*tracks_denom
+        def geometric_mean(scores):  return sum(scores)**tracks_denom
+        # Choose meaning function #
+        if not geometric: mean_fn = arithmetic_mean
+        else:             mean_fn = geometric_mean
         # Check empty #
         for i in xrange(len(tracks)-1, -1, -1):
             if elements[i] == sentinel:
@@ -38,9 +47,7 @@ class merge_scores(Manip):
             end = min([x[0] for x in elements if x[0] > start] + [x[1] for x in elements])
             # Scores between boundaries #
             scores = [x[2] for x in elements if x[1] > start and x[0] < end]
-            if scores:
-                score = sum(scores)*tracks_denom
-                if abs(score) > 1e-10: yield (start, end, score)
+            if scores: yield (start, end, mean_fn(scores))
             # Iterate over elements #
             for i in xrange(len(tracks)-1, -1, -1):
                 # Change all starts #

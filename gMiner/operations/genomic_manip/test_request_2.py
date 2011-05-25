@@ -17,7 +17,6 @@ except ImportError:
 ################################################################################### 
 class Test(unittest.TestCase):
     def runTest(self):
-        self.maxDiff = None
         files = gMiner.run(
            track1          = track_collections['Validation'][1]['path_sql'],
            track1_name     = 'Validation feature track 1',
