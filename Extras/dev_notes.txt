@@ -21,6 +21,6 @@ To run the automated graph tests, you can simply enter ipython and type the two 
 The version number needs to be incremented in the following files:
 
 /setup.py
-/gMiner/gm_constants.py
+/gMiner/constants.py
 /CHANGES.txt
 /Documentation/

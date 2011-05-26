@@ -7,13 +7,13 @@ from ... import common
 
 #-------------------------------------------------------------------------------------------#
 class merge_scores(Manip):
-    '''Merges N quantitative streams using the some average function.
-       If the boolean value 'geometric' is false, the arithmetic mean
-       is used, otherwise the geometric mean is used'''
+    '''Merges N quantitative streams using some average function.
+       If the boolean value `geometric` is false, the arithmetic mean
+       is used, otherwise the geometric mean is used.'''
 
     def __init__(self): 
         self.name               = 'Merge scores'
-        self.input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
+        self.input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.input_constraints  = []
         self.input_other        = [{'type': bool, 'key': 'geometric', 'name': 'geometric', 'default': False}]
         self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
@@ -63,19 +63,19 @@ class merge_scores(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class mean_score_by_feature(Manip):
-    '''Given a quantitative stream "X" and a qualititive stream "Y"
+    '''Given a quantitative stream "X" and a qualitative stream "Y"
        computes the mean of scores in X for every feature in Y.
-       The output consits of a qualitative stream simliar to Y but
-       with a new score value proprety for every feature.'''
+       The output consists of a qualitative stream similar to Y but
+       with a new score value property for every feature.'''
 
     def __init__(self): 
         self.name               = 'Mean score by feature'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']},
-                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']},
+                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start','end','name','score','strand']}]
         self.input_constraints  = []
         self.input_other        = []
         self.input_extras       = []
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -108,16 +108,56 @@ class mean_score_by_feature(Manip):
             yield (y[0], y[1], y[2], score/(y[1]-y[0]), y[4])
 
 #-------------------------------------------------------------------------------------------#
+class threshold(Manip):
+    '''Given a stream "X", a real number "s" and an optional output type
+       defaulting to the input type (`quantitative` or `qualitative`),
+       will threshold the stream according to the scores of
+       every feature and base pair. Four behaviors are possible:
+
+       * The input is `quantitative` and the output should be `quantitative`:
+            Any base pair having a score below `s` is set to a score of 0.0.
+      
+       * The input is `quantitative` and the output should be `qualitative`:
+            The result is a stream where continuous regions which had
+            a score equal or above `s` become a feature that has a score
+            equal to the mean of the scores in that region.
+
+       * The input is `qualitative` and the output should be `qualitative`:
+            Features having a score below `s` are removed. 
+
+       * The input is `qualitative` and the output should be `quantitative`:
+            Features having a score below `s` are removed.
+            Remaining features are converted to regions with a
+            score equal to the mean of the features that covered
+            that region.
+     '''
+
+    def __init__(self):
+        self.name               = 'Threshold with a value'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
+        self.input_constraints  = []
+        self.input_other        = [{'type': int, 'key': 'threshold', 'name': 's'}],
+        self.input_extras       = [{'type': 'out_type', 'name': 'out_type'}],
+        self.output_tracks      = [{'type': 'track', 'kind': 'various'}]
+        self.output_constraints = []
+        self.output_other       = []
+
+    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
+    
+    def __call__(self, X, s):
+        pass
+
+#-------------------------------------------------------------------------------------------#
 class window_smoothing(Manip):
-    '''Given a quantiative stream and a window size in base pairs,
-       will output a new quantiative stream with, at each position
+    '''Given a quantitative stream and a window size in base pairs,
+       will output a new quantitative stream with, at each position
        p, the mean of the scores in the window [p-L, p+L].
        Border cases are handled by zero padding and the signal's
        support is invariant.'''
 
     def __init__(self): 
         self.name               = 'Smooth scores'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantiative', 'fields': ['start', 'end', 'score']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.input_constraints  = []
         self.input_other        = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
         self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]

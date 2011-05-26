@@ -12,11 +12,11 @@ class complement(Manip):
 
     def __init__(self): 
         self.name               = 'Complement'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end']}]
         self.input_constraints  = []
         self.input_other        = []
         self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -39,11 +39,11 @@ class internal_merge(Manip):
 
     def __init__(self): 
         self.name               = 'Internal merge'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.input_constraints  = []
         self.input_other        = []
         self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -76,8 +76,8 @@ class overlap_track(Manip):
 
     def __init__(self): 
         self.name               = 'Overlap by track'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
-                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']},
+                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start','end']}]
         self.input_constraints  = ['ordered']
         self.input_other        = []
         self.input_extras       = []
@@ -120,12 +120,12 @@ class overlap_pieces(Manip):
 
     def __init__(self): 
         self.name               = 'Overlap by pieces'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']},
-                                   {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
+                                   {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
         self.input_constraints  = ['ordered']
         self.input_other        = []
         self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -167,13 +167,13 @@ class overlap_pieces(Manip):
 
 #-------------------------------------------------------------------------------------------# 
 class bounded(Manip):
-    '''Given a stream of features and two integers 'min_bound', 'max_bound',
-       this manipulation will output every feature untouched unless one of the
-       features exceeds the specified bounds, in which case it is cropped.'''
+    '''Given a stream of features and two integers `min_bound`, `max_bound`,
+       this manipulation will output every feature unmodified unless one of the
+       features exceed the specified bounds, in which case it is cropped.'''
 
     def __init__(self): 
         self.name               = 'Neighborhood regions'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
         self.input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
                                    {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
@@ -191,41 +191,46 @@ class bounded(Manip):
 
 #-------------------------------------------------------------------------------------------# 
 class neighborhood(Manip):
-    '''Given a stream of features and four integers 'before_start', 'after_end',
-       'after_start' and 'before_end', this manipulation will output,
+    '''Given a stream of features and four integers `before_start`, `after_end`,
+       `after_start` and `before_end`, this manipulation will output,
        for every feature in the input stream, one or two features
        in the neighboorhod of the orginal feature.
 
-       * Only 'before_start' and 'after_end' are given:
+       * Only `before_start` and `after_end` are given::
+
              (start, end, ...) -> (start+before_start, end+after_end, ...)
 
-       * Only 'before_start' and 'after_start' are given:
+       * Only `before_start` and `after_start` are given::
+
              (start, end, ...) -> (start+before_start, start+after_start, ...)
 
-       * Only 'after_end' and 'before_end' are given:
+       * Only `after_end` and `before_end` are given::
+
              (start, end, ...) -> (end+before_end, end+after_end, ...)
 
-       * If all four parameters are given, a pair of features is outputed:
+       * If all four parameters are given, a pair of features is outputed::
+
              (start, end, ...) -> (start+before_start, start+after_start, ...)
                                   (end+before_end, end+after_end, ...)
 
-       * If the boolean parameter 'on_strand' is set to True,
-         features on the negative strand are inverted as such:
+       * If the boolean parameter `on_strand` is set to True,
+         features on the negative strand are inverted as such::
+
              (start, end, ...) -> (start-after_end, start-before_end, ...)
                                   (end-after_start, end-before_start, ...)
 
-       * If the inputed stream is quantitative, only 'before_start' and 'after_end'
+       * If the inputed stream is quantitative, only `before_start` and `after_end`
          are taken into consideration and must be equal.'''
 
     def __init__(self): 
         self.name               = 'Neighborhood regions'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start', 'end', '...']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
         self.input_other        = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
                                    {'type': int, 'key': 'after_end',    'name': 'after_end',    'default': None},
                                    {'type': int, 'key': 'after_start',  'name': 'after_start',  'default': None},
                                    {'type': int, 'key': 'before_end',   'name': 'before_end',   'default': None}]
-        self.input_extras       = [{'type': 'datatype', 'name': 'datatype'},
+        self.input_extras       = [{'type': 'in_type', 'name': 'in_type'},
                                    {'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
         self.output_constraints = []

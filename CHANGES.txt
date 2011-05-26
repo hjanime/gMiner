@@ -11,4 +11,5 @@ v1.0.3, 01.04.2011 -- Fixed a bug that would affect manipulations taking as inpu
 v1.1.0, 26.04.2011 -- gFeatMiner is now more of a standalone tool: it can take BED and WIG as inputs (it converts them to SQL always).
 v1.1.1, 26.04.2011 -- Small bugfix.
 v1.2.0, 04.05.2011 -- The library has changed. No more server. All of the track functionality has been moved to bbcflib.
-v1.3.0, 16.05.2011 -- Selection can now be a track. More manipulations included.
+v1.3.0, 26.05.2011 -- Selection can now be a track. More manipulations included.
+v1.3.1, 01.06.2011 -- More operations.

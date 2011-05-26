@@ -65,6 +65,8 @@ class Manipulation(object):
 
     def make_output_tracks(self):
         for t in self.output_tracks:
+            if t['kind'] == 'various':
+                t['kind'] = ''
             t['name']     = self.name + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
             t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
             t['obj']      = new(t['location'], 'sql', t['kind'], t['name'])
@@ -91,15 +93,21 @@ class Manipulation(object):
         for chrom in self.chrmeta:
             if chrom['name'] == chr_name: return chrom['length']
 
-    def get_special_parameter_datatype(self, chr_name):
+    def get_special_parameter_in_type(self, chr_name):
+        return self.input_tracks[0]['obj'].datatype
+
+    def get_special_parameter_out_type(self, chr_name):
         return self.input_tracks[0]['obj'].datatype
 
     #-------------------------------------------------------------------------------------------#
-    def __call__(self, datatype='qualitative', **kwargs):
+    def __call__(self, in_type=None, out_type=None, **kwargs):
         if datatype == 'qualitative':
             for x in self.qual(**kwargs): yield x
         if datatype == 'quantitative':
             for x in self.quan(**kwargs): yield x
+
+    def qual(self): raise NotImplementedError
+    def quan(self): raise NotImplementedError
 
     #-------------------------------------------------------------------------------------------#
     def run(self):
