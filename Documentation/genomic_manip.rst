@@ -59,3 +59,31 @@ Scores
 """"""
 .. automodule:: gMiner.operations.genomic_manip.scores
    :members:
+
+Using the library in 'manual' mode
+----------------------------------
+Instead of calling gFeatMiner's via the ``gMiner.run()`` function, you can directly import the wanted manipluation and call it manually with your own queries. Here is a short example where, a new track containing the ``mean_score_by_feature`` computed on two other tracks is created::
+
+    from gMiner.operations.genomic_manip.scores import mean_score_by_feature
+    from bbcflib.track import Track
+    with Track('a.sql') as a:
+        with Track('b.sql') as b:
+            with new('r.sql') as r:
+                for chrom in a:
+                    r.write(chrom, mean_score_by_feature(a.read(chrom), b.read(chrom)))
+
+Now you are only one step away from modifying the input of your manipulation on the fly. You just need to write a function taking a generator object and returning a generator object::
+
+    def create_bins(X, num_of_bins=10):
+        for x in X:
+            length = (x[1] - x[0]) / num_of_bins
+            for i in range(num_of_bins):
+                yield (x[0]+i*length, x[0]+(i+1)*length, x[2], x[3], x[4])
+
+    from gMiner.operations.genomic_manip.scores import mean_score_by_feature
+    from bbcflib.track import Track
+    with Track('a.sql') as a:
+        with Track('b.sql') as b:
+            with new('r.sql') as r:
+                for chrom in a:
+                    r.write(chrom, mean_score_by_feature(create_bins(a.read(chrom)), b.read(chrom)))
