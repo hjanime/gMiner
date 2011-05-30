@@ -63,7 +63,7 @@ class Test(unittest.TestCase):
                               (270, 275, 'Name13 with NameL', 0.0, 0)]}
                 ,
                 {'fn':     genomic_manip.standard.neighborhood(),
-                 'input':  {'stop_val': 135, 'before_start':-2, 'after_end':2},
+                 'input':  {'stop_val': 135, 'before_start':-2, 'after_end':2, 'in_type': 'qualitative'},
                  'tracks': {'X': track_collections['Validation'][1]['path_sql']},
                  'expected': [( 0,   12,  u'Validation feature 1',  10.0),
                               ( 0,   10,  u'Validation feature 2',   0.0),

@@ -13,11 +13,12 @@ class merge_scores(Manip):
 
     def __init__(self): 
         self.name               = 'Merge scores'
-        self.input_tracks       = [{'type': 'list of tracks', 'name': 'list_of_tracks', 'kind': 'quantitative', 'fields': ['start','end','score']}]
+        self.input_tracks       = [{'type':'list of tracks', 'name':'list_of_tracks', 'kind':'quantitative', 'fields':['start','end','score']}]
         self.input_constraints  = []
-        self.input_other        = [{'type': bool, 'key': 'geometric', 'name': 'geometric', 'default': False}]
-        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
-        self.output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start', 'end', 'score']}]
+        self.input_request      = [{'type': bool, 'key': 'geometric', 'name': 'geometric', 'default': False}]
+        self.input_special      = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -73,8 +74,9 @@ class mean_score_by_feature(Manip):
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']},
                                    {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start','end','name','score','strand']}]
         self.input_constraints  = []
-        self.input_other        = []
-        self.input_extras       = []
+        self.input_request      = []
+        self.input_special      = []
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
@@ -136,16 +138,28 @@ class threshold(Manip):
         self.name               = 'Threshold with a value'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
-        self.input_other        = [{'type': int, 'key': 'threshold', 'name': 's'}],
-        self.input_extras       = [{'type': 'out_type', 'name': 'out_type'}],
+        self.input_request      = [{'type': int, 'key': 'threshold', 'name': 's'}],
+        self.input_special      = [{'type': 'in_datatype', 'name': 'in_type'},
+                                   {'type': 'out_datatype', 'name': 'out_type'}]
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'various'}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
-    def __call__(self, X, s):
-        pass
+    def qual_to_qual(self, X, s):
+        yield ()
+
+    def qual_to_quan(self, X, s):
+        yield ()
+
+    def quan_to_qual(self, X, s):
+        yield ()
+
+    def quan_to_quan(self, X, s):
+        yield ()
+
 
 #-------------------------------------------------------------------------------------------#
 class window_smoothing(Manip):
@@ -159,8 +173,9 @@ class window_smoothing(Manip):
         self.name               = 'Smooth scores'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.input_constraints  = []
-        self.input_other        = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
-        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_request      = [{'type': int, 'key': 'window_size', 'name': 'L', 'default': 200}]
+        self.input_special      = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'score']}]
         self.output_constraints = []
         self.output_other       = []

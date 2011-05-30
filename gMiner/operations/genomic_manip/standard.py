@@ -14,8 +14,9 @@ class complement(Manip):
         self.name               = 'Complement'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end']}]
         self.input_constraints  = []
-        self.input_other        = []
-        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_request      = []
+        self.input_special      = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
@@ -41,8 +42,9 @@ class internal_merge(Manip):
         self.name               = 'Internal merge'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.input_constraints  = []
-        self.input_other        = []
-        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_request      = []
+        self.input_special      = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
@@ -79,8 +81,9 @@ class overlap_track(Manip):
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']},
                                    {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start','end']}]
         self.input_constraints  = ['ordered']
-        self.input_other        = []
-        self.input_extras       = []
+        self.input_request      = []
+        self.input_special      = []
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
         self.output_constraints = []
         self.output_other       = []
@@ -123,8 +126,9 @@ class overlap_pieces(Manip):
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
         self.input_constraints  = ['ordered']
-        self.input_other        = []
-        self.input_extras       = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_request      = []
+        self.input_special      = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
@@ -175,9 +179,10 @@ class bounded(Manip):
         self.name               = 'Neighborhood regions'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
-        self.input_other        = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
+        self.input_request      = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
                                    {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
-        self.input_extras       = []
+        self.input_special      = []
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
         self.output_constraints = []
         self.output_other       = []
@@ -226,12 +231,12 @@ class neighborhood(Manip):
         self.name               = 'Neighborhood regions'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
-        self.input_other        = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
+        self.input_request      = [{'type': int, 'key': 'before_start', 'name': 'before_start', 'default': None},
                                    {'type': int, 'key': 'after_end',    'name': 'after_end',    'default': None},
                                    {'type': int, 'key': 'after_start',  'name': 'after_start',  'default': None},
                                    {'type': int, 'key': 'before_end',   'name': 'before_end',   'default': None}]
-        self.input_extras       = [{'type': 'in_type', 'name': 'in_type'},
-                                   {'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_special      = [{'type': 'in_datatype', 'name': 'in_type'}]
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
         self.output_constraints = []
         self.output_other       = []
