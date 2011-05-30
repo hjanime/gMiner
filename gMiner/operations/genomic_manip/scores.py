@@ -138,7 +138,7 @@ class threshold(Manip):
         self.name               = 'Threshold with a value'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
-        self.input_request      = [{'type': int, 'key': 'threshold', 'name': 's'}],
+        self.input_request      = [{'type': int, 'key': 'threshold', 'name': 's'}]
         self.input_special      = [{'type': 'in_datatype', 'name': 'in_type'},
                                    {'type': 'out_datatype', 'name': 'out_type'}]
         self.input_by_chrom     = []

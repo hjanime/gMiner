@@ -116,8 +116,9 @@ class Test(unittest.TestCase):
         #--------------------------------------------------------------------------#
 
         tests  = [{'fn':   genomic_manip.scores.mean_score_by_feature(),
-                 'tracks':  {'X': track_collections['Scores'    ][4]['path_sql'],
-                             'Y': track_collections['Validation'][2]['path_sql']},
+                 'tracks': {'X': track_collections['Scores'    ][4]['path_sql'],
+                            'Y': track_collections['Validation'][2]['path_sql']},
+                 'input':   {},
                  'output': [(10,  20,  u'Name1',  15.0, 1),
                             (30,  40,  u'Name2',  50.0, 1),
                             (50,  60,  u'Name3',  30.0, 1),
@@ -131,13 +132,20 @@ class Test(unittest.TestCase):
                             (230, 240, u'Name11',  0.0, 1),
                             (250, 260, u'Name12',  0.0, 1),
                             (270, 280, u'Name13',  0.0, 1),
-                            (290, 300, u'Name14',  0.0, 1)]}
+                            (290, 300, u'Name14',  0.0, 1)]},
+                {'fn':   genomic_manip.scores.threshold(),
+                 'tracks': {'X': track_collections['Validation'][1]['path_sql']},
+                 'input':  {'s': 100,
+                            'in_type' : 'qualitative',
+                            'out_type': 'qualitative'},
+                 'output': [()]},
                  ]
 
         for t in tests:
             for k,v in t['tracks'].items():
                 with Track(v) as x: t['tracks'][k] = list(x.read('chr1'))
-            self.assertEqual(list(t['fn'](**t['tracks'])), t['output'])
+            t['input'].update(t['tracks'])
+            self.assertEqual(list(t['fn'](**t['input'])), t['output'])
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
