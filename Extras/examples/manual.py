@@ -7,7 +7,7 @@ def create_bins(X, num_of_bins=10):
 from bbcflib.track import Track, new
 from gMiner.operations.genomic_manip.scores import mean_score_by_feature
 manip = mean_score_by_feature()
-with Track('/scratch/genomic/tracks/rap1.sql') as a:
+with Track('/scratch/genomic/tracks/pol2.sql') as a:
     with Track('/scratch/genomic/tracks/ribosome_proteins.sql') as b:
         with new('/tmp/manual.sql') as r:
             for chrom in a:
