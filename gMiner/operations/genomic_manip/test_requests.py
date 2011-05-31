@@ -115,7 +115,7 @@ class Test(unittest.TestCase):
            output_location = outdir,
         )
 
-        expected = [()]
+        expected = [(0,0,0.0)]
 
         with Track(files[0], chrfile=yeast_chr_file) as t:
             data = list(t.read('chr1'))

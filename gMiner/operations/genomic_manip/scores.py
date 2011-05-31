@@ -140,7 +140,7 @@ class threshold(Manip):
         self.input_constraints  = []
         self.input_request      = [{'type': int, 'key': 'threshold', 'name': 's'}]
         self.input_special      = [{'type': 'in_datatype', 'name': 'in_type'},
-                                   {'type': 'out_datatype', 'name': 'out_type'}]
+                                   {'type': 'out_datatype', 'name': 'out_type', 'fields': ['start','end', '...']}]
         self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'various'}]
         self.output_constraints = []
@@ -149,17 +149,16 @@ class threshold(Manip):
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def qual_to_qual(self, X, s):
-        yield ()
+        yield (0,0,0)
 
     def qual_to_quan(self, X, s):
-        yield ()
+        yield (0,0,0)
 
     def quan_to_qual(self, X, s):
-        yield ()
+        yield (0,0,0)
 
     def quan_to_quan(self, X, s):
-        yield ()
-
+        yield (0,0,0)
 
 #-------------------------------------------------------------------------------------------#
 class window_smoothing(Manip):

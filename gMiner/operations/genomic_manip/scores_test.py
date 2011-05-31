@@ -138,7 +138,7 @@ class Test(unittest.TestCase):
                  'input':  {'s': 100,
                             'in_type' : 'qualitative',
                             'out_type': 'qualitative'},
-                 'output': [()]},
+                 'output': [(0,0,0.0)]},
                  ]
 
         for t in tests:

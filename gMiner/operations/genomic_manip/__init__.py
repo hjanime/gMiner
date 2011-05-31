@@ -1,5 +1,5 @@
 # Other modules #
-from bbcflib.track import new
+from bbcflib.track import Track, new
 
 # Internal modules #
 from ... import common
@@ -95,7 +95,12 @@ class Manipulation(object):
         base_kwargs = {}
         for i in self.input_special:
             if i['type'] == 'in_datatype':  base_kwargs[i['name']] = self.input_tracks[0]['obj'].datatype
-            if i['type'] == 'out_datatype': base_kwargs[i['name']] = self.input_tracks[0]['obj'].datatype
+            if i['type'] == 'out_datatype':
+                if self.request.has_key(i['type']): datatype = self.request[i['type']] 
+                else:                               datatype = self.input_tracks[0]['obj'].datatype
+                base_kwargs[i['name']]                 = datatype
+                for t in self.output_tracks: t['kind'] = datatype
+                if datatype == 'quantitative': t['fields'] = Track.quantitative_fields
         ##### Output chromosomes #####
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
         ##### Output tracks #####
