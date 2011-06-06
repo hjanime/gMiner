@@ -40,36 +40,52 @@ class internal_merge(Manip):
 
     def __init__(self): 
         self.name               = 'Internal merge'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
         self.input_request      = []
-        self.input_special      = []
-        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
+        self.input_special      = [{'type': 'in_datatype', 'name': 'in_type'}]
+        self.input_by_chrom     = []
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
-    
-    def __call__(self, X, stop_val):
-        sentinel = (sys.maxint, sys.maxint)
-        X = common.sentinelize(X, sentinel)
-        x = X.next()
-        if x != sentinel:
-            while True:
-                x_next = X.next()
-                if x_next == sentinel:
-                    yield tuple(x)
-                    break
-                if (x_next[0] <= x[1]):
-                    x = list(x)
-                    x[1] = max(x[1], x_next[1])
-                    x[2] = x[2] + ' + ' + x_next[2]
-                    x[3] = x[3] + x_next[3]
-                    x[4] = x[4] == x_next[4] and x[4] or 0
-                else:
-                    yield tuple(x) 
-                    x = x_next
+   
+    def quan(self, X):
+        # Setup #
+        for x in X: break
+        if 'x' not in locals(): return
+        # Core loop #
+        for y in X:
+            if y[0] == x[1]:
+                x = list(x)
+                l_x = x[1] - x[0]
+                l_y = y[1] - y[0]
+                x[2] = (l_x*x[2] + l_y*y[2])  / (l_x+l_y) 
+                x[1] = y[1]
+            else:
+                yield tuple(x)
+                x = y
+        # Last feature #
+        yield tuple(x)
+        
+    def qual(self, X):
+        # Setup #
+        for x in X: break
+        if 'x' not in locals(): return
+        # Core loop #
+        for y in X:
+            if y[0] == x[1]:
+                x = list(x)
+                x[1] = max(x[1], y[1])
+                x[2] = x[2] + ' + ' + y[2]
+                x[3] = x[3] + y[3]
+                x[4] = x[4] == y[4] and x[4] or 0
+            else:
+                yield tuple(x)
+                x = y
+        # Last feature #
+        yield tuple(x)
 
 #-------------------------------------------------------------------------------------------# 
 class overlap_track(Manip):

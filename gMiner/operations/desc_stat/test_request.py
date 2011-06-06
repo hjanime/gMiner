@@ -12,8 +12,18 @@ except ImportError:
 
 ################################################################################### 
 class Test(unittest.TestCase):
+    def setUp(self):
+        try:
+            import Tkinter
+            window = Tkinter.Tk()
+            window.destroy()
+        except Tkinter.TclError:
+            self.skipTest("You don't have access to a DISPLAY, skipping appropriate tests")
+        
     def runTest(self):
         outdir = '/tmp/gMiner/'
+
+        # Simple boxplot
         files = gMiner.run(
            track1          = track_collections['Yeast']['All genes']['path_sql'],
            track1_name     = 'All genes from SGD',
@@ -25,6 +35,19 @@ class Test(unittest.TestCase):
            characteristic  = 'length',
            output_location = outdir,
         )
+
+        # Track selection
+        files = gMiner.run(
+           track1           = track_collections['Validation'][2]['path_sql'],
+           track1_name      = 'Validation track two',
+           operation_type   = 'desc_stat',
+           characteristic   = 'base_coverage',
+           selected_regions = track_collections['Validation'][3]['path_sql'],
+           per_chromosome   = True,
+           compare_parents  = True,
+           output_location  = outdir,
+        )
+        # Result should be 120 / 150
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

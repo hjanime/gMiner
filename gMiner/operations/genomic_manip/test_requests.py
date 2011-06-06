@@ -19,6 +19,7 @@ class Test(unittest.TestCase):
     def runTest(self):
         outdir = tempfile.mkdtemp(prefix='gMiner')
 
+        self.maxDiff = None
         #---------------------------------------------------------------------------------------#
         files = gMiner.run(
            track1          = track_collections['Scores'][1]['path'],
@@ -103,20 +104,17 @@ class Test(unittest.TestCase):
 
         #---------------------------------------------------------------------------------------#
         files = gMiner.run(
-           track1          = track_collections['Scores'][3]['path'],
-           track1_name     = 'Validation score track 3',
+           track1          = track_collections['Scores'][3]['path_sql'],
+           track1_name     = 'Validation scores track 3',
            track1_chrs     = yeast_chr_file,
            operation_type  = 'genomic_manip',
            manipulation    = 'threshold',
-           threshold       = 100,
-           out_datatype    = 'quantitative',
-           before_start    = 2,
-           after_end       = 2,
+           threshold       = 4.0,
+           out_datatype    = 'qualitative',
            output_location = outdir,
         )
 
-        expected = [(0,0,0.0)]
-
+        expected = [(20, 80, 160.0)]
         with Track(files[0], chrfile=yeast_chr_file) as t:
             data = list(t.read('chr1'))
         os.remove(files[0])

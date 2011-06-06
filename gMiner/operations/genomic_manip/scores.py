@@ -111,10 +111,10 @@ class mean_score_by_feature(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class threshold(Manip):
-    '''Given a stream "X", a real number "s" and an optional output type
-       defaulting to the input type (`quantitative` or `qualitative`),
-       will threshold the stream according to the scores of
-       every feature and base pair. Four behaviors are possible:
+    '''Given a stream "X", a real number "s" and an optional output datatype
+       defaulting to the input datatype (`quantitative` or `qualitative`),
+       will threshold the stream according to the scores of every feature
+       and base pair. Four behaviors are possible:
 
        * The input is `quantitative` and the output should be `quantitative`:
             Any base pair having a score below `s` is set to a score of 0.0.
@@ -122,25 +122,26 @@ class threshold(Manip):
        * The input is `quantitative` and the output should be `qualitative`:
             The result is a stream where continuous regions which had
             a score equal or above `s` become a feature that has a score
-            equal to the mean of the scores in that region.
+            equal to the mean of the scores in that region weighted
+            by base pair.
 
        * The input is `qualitative` and the output should be `qualitative`:
             Features having a score below `s` are removed. 
 
        * The input is `qualitative` and the output should be `quantitative`:
-            Features having a score below `s` are removed.
-            Remaining features are converted to regions with a
-            score equal to the mean of the features that covered
-            that region.
+            Features having a score below `s` are removed. Remaining features
+            are converted to regions with a score equal to the score of the
+            feature. Where features overlap, the mean of the scores of every
+            feature is computed on a per base pair basis.
      '''
 
     def __init__(self):
         self.name               = 'Threshold with a value'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end','score', '...']}]
         self.input_constraints  = []
         self.input_request      = [{'type': int, 'key': 'threshold', 'name': 's'}]
         self.input_special      = [{'type': 'in_datatype', 'name': 'in_type'},
-                                   {'type': 'out_datatype', 'name': 'out_type', 'fields': ['start','end', '...']}]
+                                   {'type': 'out_datatype', 'name': 'out_type', 'fields': {'same': 0}}]
         self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'various'}]
         self.output_constraints = []
@@ -149,16 +150,20 @@ class threshold(Manip):
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
     def qual_to_qual(self, X, s):
-        yield (0,0,0)
+        for x in X:
+            if x[2] >= s: yield x
 
     def qual_to_quan(self, X, s):
-        yield (0,0,0)
-
-    def quan_to_qual(self, X, s):
-        yield (0,0,0)
+        #TODO (carefull with overlap zones)
+        for x in []: yield x
 
     def quan_to_quan(self, X, s):
-        yield (0,0,0)
+        for x in X:
+            if x[2] >= s: yield x
+
+    def quan_to_qual(self, X, s):
+        from .standard import internal_merge
+        for x in internal_merge().quan(self.quan_to_quan(X, s)): yield x
 
 #-------------------------------------------------------------------------------------------#
 class window_smoothing(Manip):

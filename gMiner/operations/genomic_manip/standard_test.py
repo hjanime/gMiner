@@ -77,11 +77,29 @@ class Test(unittest.TestCase):
                               (88,  112,  u'Validation feature 10', 10.0),
                               (118, 132,  u'Validation feature 11', 10.0),
                               (123, 135,  u'Validation feature 12',  5.0)]},
+                {'fn':     genomic_manip.standard.internal_merge().quan,
+                 'tracks': {'X': track_collections['Scores'][4]['path_sql']},
+                 'expected': [(10,   20,   15.0),
+                              (25,   35,  100.0),
+                              (45,   65,   30.0),
+                              (72,   77,   50.0),
+                              (85,  105,    8.0),
+                              (120, 122, 9000.0),
+                              (130, 131,   20.0),
+                              (180, 183,   10.0),
+                              (188, 193,   10.0),
+                              (198, 200,   40.0)]},
+                {'fn':     genomic_manip.standard.internal_merge().quan,
+                 'tracks': {'X': [(10, 40, 10.0), (40, 50, 20.0)]},
+                 'expected': [(10, 50, 12.5)]},
                  ]
 
         for t in tests:
             for k,v in t['tracks'].items():
-                with Track(v) as x: t['tracks'][k] = list(x.read('chr1'))
+                if type(v) == list:
+                    t['tracks'][k] = iter(v)
+                else:
+                    with Track(v) as x: t['tracks'][k] = iter(list(x.read('chr1')))
             dict = t.get('input', {})
             dict.update(t['tracks'])
             self.assertEqual(list(t['fn'](**dict)), t['expected'])

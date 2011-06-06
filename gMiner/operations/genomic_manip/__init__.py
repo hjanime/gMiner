@@ -9,10 +9,10 @@ def track_matches_desc(track, info):
     # Datatype #
     if not info['kind'] == 'any' and track.datatype != info['kind']: return False
     # Fields #
-    if track.fields[-1] == '...':
-        if set(track.fields[:-1]) < set(info['fields']): return False
-    else:
-        if set(track.fields)      < set(info['fields']): return False
+    if info['fields'][-1] == '...':
+        if set(info['fields'][:-1]) > set(track.fields): return False
+    else:                           
+        if set(info['fields'])      > set(track.fields): return False
     # Default case #
     return True
 
@@ -78,7 +78,10 @@ class Manipulation(object):
         if not self.req_tracks == []: raise Exception("You provided too many tracks for the manipulation '" + self.request['manipulation'] + "'. The track '" + self.req_tracks[0].name + "' was not used.")
         ##### Input fields #####
         for t in self.input_tracks:
-            if t['fields'][-1] == '...': t['fields'] = t['fields'][:-1] + [f for f in t['obj'].fields if not f in t['fields']]             
+            if t['fields'][-1] == '...':
+                t['fields'] = t['fields'][:-1]
+                t['fields'] += [f for f in Track.qualitative_fields if f in t['obj'].fields and not f in t['fields']]
+                t['fields'] += [f for f in t['obj'].fields if not f in t['fields']]
         ##### Input request #####
         for t in self.input_request:
             if self.request.has_key(t['key']):
@@ -101,6 +104,7 @@ class Manipulation(object):
                 base_kwargs[i['name']]                 = datatype
                 for t in self.output_tracks: t['kind'] = datatype
                 if datatype == 'quantitative': t['fields'] = Track.quantitative_fields
+                if datatype == 'qualitative':  t['fields'] = {'same': 0}
         ##### Output chromosomes #####
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
         ##### Output tracks #####
@@ -120,8 +124,7 @@ class Manipulation(object):
         ##### Output fields #####
         for t in self.output_tracks:
             if type(t['fields']) == dict:
-                if t['fields'].has_key('same'): t['fields'] = self.input_tracks[t['fields']['same']]['obj'].fields
-
+                if t['fields'].has_key('same'): t['fields'] = self.input_tracks[t['fields']['same']]['fields']
         self.chrmeta = []
         for chrom in self.chrs: self.chrmeta.append({'name': chrom, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].meta_chr if m['length'] and m['name'] == chrom])})
         for t in self.output_tracks: t['obj'].meta_chr = self.chrmeta

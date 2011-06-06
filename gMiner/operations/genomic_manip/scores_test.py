@@ -15,36 +15,34 @@ try:
 except ImportError:
     import unittest
 
+#----------------------------------------------------------------------------------#
+def flatten_score(start, stop, X):
+    sentinel = [sys.maxint, sys.maxint, 0.0]
+    X = common.sentinelize(X, sentinel)
+    x = [start-2, start-1, 0.0]
+    for i in xrange(start, stop):
+        if i >= x[1]: x = X.next()
+        if i >= x[0]: yield x[2]
+        else: yield 0.0
+
+def smooth_signal(data, L):
+    window = L*2+1
+    weightings    = numpy.repeat(1.0, window) / window
+    extended_data = numpy.hstack([[0] * L, data, [0] * L])
+    smoothed = numpy.convolve(extended_data, weightings)[window-1:-(window-1)]
+    return smoothed.tolist()
+
+def check_both_methods(self, X, L, stop_val, expected_output):
+    computed_output      = list(genomic_manip.scores.window_smoothing()(stop_val=stop_val, L=L, X=X))
+    self.assertEqual(computed_output, expected_output)
+    flat_X               = list(flatten_score(0, stop_val, X.__iter__()))
+    flat_expected_output = list(flatten_score(0, stop_val, expected_output.__iter__()))
+    flat_computed_output = smooth_signal(flat_X, L) 
+    self.assertEqual(flat_computed_output, flat_expected_output)
+
 ################################################################################### 
 class Test(unittest.TestCase):
     def runTest(self):
-        self.maxDiff = None
-       
-        #--------------------------------------------------------------------------#
-        def flatten_score(start, stop, X):
-            sentinel = [sys.maxint, sys.maxint, 0.0]
-            X = common.sentinelize(X, sentinel)
-            x = [start-2, start-1, 0.0]
-            for i in xrange(start, stop):
-                if i >= x[1]: x = X.next()
-                if i >= x[0]: yield x[2]
-                else: yield 0.0
-
-        def smooth_signal(data, L):
-            window = L*2+1
-            weightings    = numpy.repeat(1.0, window) / window
-            extended_data = numpy.hstack([[0] * L, data, [0] * L])
-            smoothed = numpy.convolve(extended_data, weightings)[window-1:-(window-1)]
-            return smoothed.tolist()
-
-        def check_both_methods():
-            computed_output      = list(genomic_manip.scores.window_smoothing()(stop_val=stop_val, L=L, X=X))
-            self.assertEqual(computed_output, expected_output)
-            flat_X               = list(flatten_score(0, stop_val, X.__iter__()))
-            flat_expected_output = list(flatten_score(0, stop_val, expected_output.__iter__()))
-            flat_computed_output = smooth_signal(flat_X, L) 
-            self.assertEqual(flat_computed_output, flat_expected_output)
-
         stop_val = 9
         L = 2
         X = [[0,2,10],[2,4,20],[6,8,10]]
@@ -53,7 +51,7 @@ class Test(unittest.TestCase):
                            (3,  5,  10.0),
                            (5,  6,   8.0),
                            (6,  9,   4.0),]
-        check_both_methods()
+        check_both_methods(self, X, L, stop_val, expected_output)
 
         stop_val = 12
         expected_output = [(0,  1,   8.0),
@@ -62,7 +60,7 @@ class Test(unittest.TestCase):
                            (5,  6,   8.0),
                            (6,  9,   4.0),
                            (9,  10,  2.0),]
-        check_both_methods()
+        check_both_methods(self, X, L, stop_val, expected_output)
 
         #--------------------------------------------------------------------------#
         tests = [{'fn':    genomic_manip.scores.merge_scores(),
@@ -96,7 +94,6 @@ class Test(unittest.TestCase):
                             'list_of_tracks': [track_collections['Scores'][1]['path_sql'],
                                                track_collections['Scores'][2]['path_sql'],
                                                track_collections['Scores'][3]['path_sql']]},
- 
                  'output':  [(0,     5, 2.0),
                              (5,    10, 2.2894284851066637),
                              (20,   30, 3.1072325059538586),
@@ -113,8 +110,8 @@ class Test(unittest.TestCase):
             for i,v in enumerate(t['input']['list_of_tracks']):
                 with Track(v) as x: t['input']['list_of_tracks'][i] = list(x.read('chr1'))
             self.assertEqual(list(t['fn'](**t['input'])), t['output'])
-        #--------------------------------------------------------------------------#
 
+        #--------------------------------------------------------------------------#
         tests  = [{'fn':   genomic_manip.scores.mean_score_by_feature(),
                  'tracks': {'X': track_collections['Scores'    ][4]['path_sql'],
                             'Y': track_collections['Validation'][2]['path_sql']},
@@ -135,15 +132,27 @@ class Test(unittest.TestCase):
                             (290, 300, u'Name14',  0.0, 1)]},
                 {'fn':   genomic_manip.scores.threshold(),
                  'tracks': {'X': track_collections['Validation'][1]['path_sql']},
-                 'input':  {'s': 100,
+                 'fields': {'X': ['start', 'end', 'score', 'name']},
+                 'input':  {'s': 4.0,
                             'in_type' : 'qualitative',
                             'out_type': 'qualitative'},
-                 'output': [(0,0,0.0)]},
+                 'output': [( 0,   10,  10.0, u'Validation feature 1'),
+                            (20,   30,  10.0, u'Validation feature 3'),
+                            (40,   50,  10.0, u'Validation feature 6'),
+                            (60,   70,  10.0, u'Validation feature 7'),
+                            (70,   80,  10.0, u'Validation feature 8'),
+                            (90,  100,  10.0, u'Validation feature 9'),
+                            (90,  110,  10.0, u'Validation feature 10'),
+                            (120, 130,  10.0, u'Validation feature 11'),
+                            (125, 135,   5.0, u'Validation feature 12')]},
                  ]
 
         for t in tests:
             for k,v in t['tracks'].items():
-                with Track(v) as x: t['tracks'][k] = list(x.read('chr1'))
+                if t.get('fields') and t['fields'].get(k):
+                    with Track(v) as x: t['tracks'][k] = iter(list(x.read('chr1', fields=t['fields'][k])))
+                else:                                      
+                    with Track(v) as x: t['tracks'][k] = iter(list(x.read('chr1')))
             t['input'].update(t['tracks'])
             self.assertEqual(list(t['fn'](**t['input'])), t['output'])
 
