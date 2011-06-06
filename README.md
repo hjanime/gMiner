@@ -20,7 +20,7 @@ To install it just type:
 Typical usage often looks like this:
 
     import gMiner
-    result = gMiner.run(
+    files = gMiner.run(
         track1          = '/scratch/genomic/tracks/ribosome_proteins.sql',
         track1_name     = 'RP genes',
         operation_type  = 'desc_stat',
@@ -29,7 +29,6 @@ Typical usage often looks like this:
         compare_parents = 'False',
         gm_encoding     = 'image/png'
     )
-    with open('/tmp/graph.png', 'w') as file: file.write(result)
     
 Full documentation
 ==================
