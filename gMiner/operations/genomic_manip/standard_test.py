@@ -1,9 +1,9 @@
 # Other modules #
-from bbcflib.track import Track
 from bbcflib.track.test_variables import track_collections
 
 # Internal modules #
 from .. import genomic_manip
+from .tests import run_one
 
 # Unittesting #
 try:
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
                               (110, 120, None, None, 0),
                               (135, 200, None, None, 0)]}
                 ,
-                {'fn':     genomic_manip.standard.overlap_track(),
+                {'fn':     genomic_manip.standard.overlap(),
                  'tracks': {'X': track_collections['Validation'][2]['path_sql'],
                             'Y': track_collections['Validation'][3]['path_sql']},
                  'expected': [(10,  20,  u'Name1',  0.1, 1),
@@ -41,26 +41,6 @@ class Test(unittest.TestCase):
                               (230, 240, u'Name11', 0.1, 1),
                               (250, 260, u'Name12', 0.2, 1),
                               (270, 280, u'Name13', 0.0, 1)]}
-                ,
-                {'fn':     genomic_manip.standard.overlap_pieces(),
-                 'input':  {'stop_val': 400},
-                 'tracks': {'X': track_collections['Validation'][2]['path_sql'],
-                            'Y': track_collections['Validation'][3]['path_sql']},
-                 'expected': [(15,  20,  'NameA with Name1',  0.0, 0),
-                              (32,  38,  'NameB with Name2',  0.0, 0),
-                              (95,  100, 'NameD with Name5',  0.0, 0),
-                              (110, 115, 'Name6 with NameD',  0.0, 0),
-                              (130, 135, 'Name7 with NameE',  0.0, 0),
-                              (140, 145, 'NameF with Name7',  0.0, 0),
-                              (185, 190, 'NameG with Name8',  0.0, 0),
-                              (185, 195, 'NameG with Name9',  0.0, 0),
-                              (210, 215, 'Name10 with NameH', 0.0, 0),
-                              (215, 220, 'NameI with Name10', 0.0, 0),
-                              (235, 240, 'NameJ with Name11', 0.0, 0),
-                              (250, 254, 'Name12 with NameJ', 0.0, 0),
-                              (252, 258, 'NameK with Name12', 0.0, 0),
-                              (256, 260, 'NameL with Name12', 0.0, 0),
-                              (270, 275, 'Name13 with NameL', 0.0, 0)]}
                 ,
                 {'fn':     genomic_manip.standard.neighborhood(),
                  'input':  {'stop_val': 135, 'before_start':-2, 'after_end':2, 'in_type': 'qualitative'},
@@ -76,7 +56,8 @@ class Test(unittest.TestCase):
                               (88,  102,  u'Validation feature 9',  10.0),
                               (88,  112,  u'Validation feature 10', 10.0),
                               (118, 132,  u'Validation feature 11', 10.0),
-                              (123, 135,  u'Validation feature 12',  5.0)]},
+                              (123, 135,  u'Validation feature 12',  5.0)]}
+                ,
                 {'fn':     genomic_manip.standard.internal_merge().quan,
                  'tracks': {'X': track_collections['Scores'][4]['path_sql']},
                  'expected': [(10,   20,   15.0),
@@ -88,21 +69,14 @@ class Test(unittest.TestCase):
                               (130, 131,   20.0),
                               (180, 183,   10.0),
                               (188, 193,   10.0),
-                              (198, 200,   40.0)]},
+                              (198, 200,   40.0)]}
+                ,
                 {'fn':     genomic_manip.standard.internal_merge().quan,
                  'tracks': {'X': [(10, 40, 10.0), (40, 50, 20.0)]},
                  'expected': [(10, 50, 12.5)]},
                  ]
 
-        for t in tests:
-            for k,v in t['tracks'].items():
-                if type(v) == list:
-                    t['tracks'][k] = iter(v)
-                else:
-                    with Track(v) as x: t['tracks'][k] = iter(list(x.read('chr1')))
-            dict = t.get('input', {})
-            dict.update(t['tracks'])
-            self.assertEqual(list(t['fn'](**dict)), t['expected'])
+        for t in tests: run_one(self, t)
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
