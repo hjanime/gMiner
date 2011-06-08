@@ -4,6 +4,7 @@ from bbcflib.track.test_variables import track_collections
 
 # Internal modules #
 from .. import genomic_manip
+from .tests import run_one
 
 # Unittesting #
 try:
@@ -16,7 +17,7 @@ class Test(unittest.TestCase):
     def runTest(self):
         tests = [{'fn':    genomic_manip.scores.merge_scores(),
                  'input':  {'stop_val': 200,
-                            'list_of_tracks': [[],[]]},
+                            'list_of_tracks': [(),()]},
                  'expected': []}]
 
         for t in tests:
@@ -24,6 +25,11 @@ class Test(unittest.TestCase):
                  
         #--------------------------------------------------------------------------#
         tests = [{'fn':    genomic_manip.scores.merge_scores(),
+                 'input':  {'stop_val': 200,
+                            'list_of_tracks': [[],[]]},
+                 'expected': []}
+                 ,
+                {'fn':    genomic_manip.scores.merge_scores(),
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [track_collections['Scores'][1]['path_sql'],
                                                track_collections['Scores'][2]['path_sql'],
@@ -38,7 +44,8 @@ class Test(unittest.TestCase):
                             (68,  70,  200.0),
                             (70,  80,  100.0),
                             (90,  110,   3.0),
-                            (120, 130,  10.)]},
+                            (120, 130,  10.)]}
+                ,
                 {'fn':    genomic_manip.scores.merge_scores(),
                  'input':  {'stop_val': 200,
                             'geometric': True,
@@ -55,15 +62,9 @@ class Test(unittest.TestCase):
                               (68,   70, 8.4343266530174912),
                               (70,   80, 6.6943295008216941),
                               (90,  110, 2.0800838230519041),
-                              (120, 130, 3.1072325059538586)]}]
-
-        for t in tests:
-            for i,v in enumerate(t['input']['list_of_tracks']):
-                with Track(v) as x: t['input']['list_of_tracks'][i] = list(x.read('chr1'))
-            self.assertEqual(list(t['fn'](**t['input'])), t['expected'])
-
-        #--------------------------------------------------------------------------#
-        tests  = [{'fn':   genomic_manip.scores.mean_score_by_feature(),
+                              (120, 130, 3.1072325059538586)]}
+                ,
+                {'fn':   genomic_manip.scores.mean_score_by_feature(),
                  'tracks': {'X': track_collections['Scores'    ][4]['path_sql'],
                             'Y': track_collections['Validation'][2]['path_sql']},
                  'input':   {},
@@ -98,14 +99,7 @@ class Test(unittest.TestCase):
                              (125, 135,   5.0, u'Validation feature 12')]},
                  ]
 
-        for t in tests:
-            for k,v in t['tracks'].items():
-                if t.get('fields') and t['fields'].get(k):
-                    with Track(v) as x: t['tracks'][k] = iter(list(x.read('chr1', fields=t['fields'][k])))
-                else:                                      
-                    with Track(v) as x: t['tracks'][k] = iter(list(x.read('chr1')))
-            t['input'].update(t['tracks'])
-            self.assertEqual(list(t['fn'](**t['input'])), t['expected'])
+        for t in tests: run_one(self, t)
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

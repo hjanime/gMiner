@@ -36,7 +36,7 @@ def check_both_smooths(self, X, L, stop_val, expected_output):
     flat_computed_output = smooth_signal(flat_X, L) 
     self.assertEqual(flat_computed_output, flat_expected_output)
 
-################################################################################### 
+###################################################################################
 class Test(unittest.TestCase):
     def test_window_smoothing(self):
         stop_val = 9
