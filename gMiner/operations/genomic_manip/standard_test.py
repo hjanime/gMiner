@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
                               (118, 132,  u'Validation feature 11', 10.0),
                               (123, 135,  u'Validation feature 12',  5.0)]}
                 ,
-                {'fn':     genomic_manip.standard.internal_merge().quan,
+                {'fn':     genomic_manip.standard.merge().quan,
                  'tracks': {'X': track_collections['Scores'][4]['path_sql']},
                  'expected': [(10,   20,   15.0),
                               (25,   35,  100.0),
@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
                               (188, 193,   10.0),
                               (198, 200,   40.0)]}
                 ,
-                {'fn':     genomic_manip.standard.internal_merge().quan,
+                {'fn':     genomic_manip.standard.merge().quan,
                  'tracks': {'X': [(10, 40, 10.0), (40, 50, 20.0)]},
                  'expected': [(10, 50, 12.5)]},
                  ]

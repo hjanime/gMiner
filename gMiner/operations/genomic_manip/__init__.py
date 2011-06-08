@@ -147,8 +147,10 @@ class Manipulation(object):
 
 #############################################################################################
 # Submodules #
+from .basic import *
 from .standard import *
 from .scores import *
+from .boolean import *
  
 def run(request, tracks, output_dir):
     # Manipulation specified #

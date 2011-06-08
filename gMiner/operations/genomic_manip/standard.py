@@ -35,7 +35,7 @@ class complement(Manip):
             yield (last_end, stop_val, None, None, 0)
 
 #-------------------------------------------------------------------------------------------# 
-class internal_merge(Manip):
+class merge(Manip):
     '''Merges features that are adjacent or overlapping in one stream'''
 
     def __init__(self): 
@@ -133,31 +133,6 @@ class overlap(Manip):
                     break
 
 #-------------------------------------------------------------------------------------------# 
-class bounded(Manip):
-    '''Given a stream of features and two integers `min_bound`, `max_bound`,
-       this manipulation will output every feature unmodified unless one of the
-       features exceed the specified bounds, in which case it is cropped.'''
-
-    def __init__(self): 
-        self.name               = 'Neighborhood regions'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
-        self.input_constraints  = []
-        self.input_request      = [{'type': int, 'key': 'min_bound', 'name': 'min_bound', 'default': -sys.maxint},
-                                   {'type': int, 'key': 'max_bound', 'name': 'max_bound', 'default':  sys.maxint}]
-        self.input_special      = []
-        self.input_by_chrom     = []
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
-        self.output_constraints = []
-        self.output_other       = []
-
-    def chr_collapse(self, *args): return common.collapse.by_appending(*args)
-
-    def __call__(self, X, min_bound, max_bound):
-        for x in X: 
-            if not x[1] < min_bound and not x[0] > max_bound and x[0] < x[1]:
-                yield (max(x[0],min_bound), min(x[1],max_bound)) + x[2:]
-
-#-------------------------------------------------------------------------------------------# 
 class neighborhood(Manip):
     '''Given a stream of features and four integers `before_start`, `after_end`,
        `after_start` and `before_end`, this manipulation will output,
@@ -236,7 +211,8 @@ class neighborhood(Manip):
                     for x in X: yield (x[0]-after_end,    x[0]-before_end) + x[2:]
                 if before_start and after_end:
                     for x in X: yield (x[0]-after_end,    x[1]-before_start) + x[2:]
-        X = generate(**kwargs) 
+        X = generate(**kwargs)
+        from .basic import bounded
         for x in bounded()(X, 0, stop_val): yield x
 
     def quan(self, stop_val, **kwargs):
@@ -251,6 +227,7 @@ class neighborhood(Manip):
                 raise Exception("As the track is quantitative, 'before_start' and 'after_start' need to be equal")
             for x in X: yield (x[0]+before_start, x[1]+before_start) + x[2:]
         X = generate(**kwargs)
+        from .basic import bounded
         for x in bounded()(X, 0, stop_val): yield x
 
 #-----------------------------------------#

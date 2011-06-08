@@ -60,6 +60,12 @@ Scores
 .. automodule:: gMiner.operations.genomic_manip.scores
    :members:
 
+Boolean
+"""""""
+.. automodule:: gMiner.operations.genomic_manip.boolean
+   :members:
+
+
 Using the library in 'manual' mode
 ----------------------------------
 Instead of accessing gFeatMiner services via the ``gMiner.run()`` function, you can directly import the wanted manipulation and call it manually with your own queries. Here is a short example where a new track containing the ``mean_score_by_feature`` (computed on two other tracks) is created::

@@ -17,14 +17,14 @@ class bool_and(Manip):
         self.input_constraints  = ['ordered']
         self.input_request      = []
         self.input_special      = []
-        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
-    def __call__(self, X, Y, stop_val):
+    def __call__(self, X, Y):
         def scan(f, Wf, g, Wg, lastPick):
             g_index = 0
             while g_index < len(Wg):

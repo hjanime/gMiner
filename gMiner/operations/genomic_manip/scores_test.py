@@ -1,5 +1,4 @@
 # Other modules #
-from bbcflib.track import Track
 from bbcflib.track.test_variables import track_collections
 
 # Internal modules #
@@ -15,15 +14,6 @@ except ImportError:
 ################################################################################### 
 class Test(unittest.TestCase):
     def runTest(self):
-        tests = [{'fn':    genomic_manip.scores.merge_scores(),
-                 'input':  {'stop_val': 200,
-                            'list_of_tracks': [(),()]},
-                 'expected': []}]
-
-        for t in tests:
-            self.assertEqual(list(t['fn'](**t['input'])), t['expected'])
-                 
-        #--------------------------------------------------------------------------#
         tests = [{'fn':    genomic_manip.scores.merge_scores(),
                  'input':  {'stop_val': 200,
                             'list_of_tracks': [[],[]]},

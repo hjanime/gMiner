@@ -17,14 +17,14 @@ class merge_scores(Manip):
         self.input_constraints  = []
         self.input_request      = [{'type': bool, 'key': 'geometric', 'name': 'geometric', 'default': False}]
         self.input_special      = []
-        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_union(*args) 
     
-    def __call__(self, list_of_tracks, stop_val, geometric=False):
+    def __call__(self, list_of_tracks, geometric=False):
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)
         tracks = [common.sentinelize(x, sentinel) for x in list_of_tracks]
@@ -162,8 +162,8 @@ class threshold(Manip):
             if x[2] >= s: yield x
 
     def quan_to_qual(self, X, s):
-        from .standard import internal_merge
-        for x in internal_merge().quan(self.quan_to_quan(X, s)): yield x
+        from .standard import merge
+        for x in merge().quan(self.quan_to_quan(X, s)): yield x
 
 #-------------------------------------------------------------------------------------------#
 class window_smoothing(Manip):
