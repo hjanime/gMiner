@@ -36,7 +36,7 @@ class bool_and(Manip):
                     if overlaps(g_current, f):
                         yield (max(f[0],g_current[0]),
                                min(f[1],g_current[1]),
-                               f[2] + " with " + g_current[2],
+                               f[2] + " + " + g_current[2],
                                (f[3]+g_current[3])/2.0,
                                f[4] and g_current[4] or 0)
             if not left_of(f, g):
