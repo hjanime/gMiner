@@ -112,7 +112,8 @@ class Manipulation(object):
             if t['kind'] == 'various':
                 t['kind'] = ''
             t['name']     = self.name + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
-            t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
+            if self.request.get('output_name'): t['location'] = self.output_dir + '/' + self.request['output_name'] + '.sql'
+            else: t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
             t['obj']      = new(t['location'], 'sql', t['kind'], t['name'])
         ##### Output meta track #####
         for t in self.output_tracks:

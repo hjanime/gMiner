@@ -75,7 +75,7 @@ class merge(Manip):
         if 'x' not in locals(): return
         # Core loop #
         for y in X:
-            if y[0] == x[1]:
+            if y[0] <= x[1]:
                 x = list(x)
                 x[1] = max(x[1], y[1])
                 x[2] = x[2] + ' + ' + y[2]

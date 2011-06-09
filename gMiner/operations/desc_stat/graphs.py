@@ -120,7 +120,7 @@ class gmGraph(object):
         fig.text(rightcorner, toprightcorner, time.asctime(), horizontalalignment='right', fontsize=self.fontsize0)
         fig.text(leftcorner, topleftcorner, gm_project_name + ' generated graph', horizontalalignment='left', fontsize=self.fontsize0)
 
-        # Return a PNG  vrequest['output_name']#
+        # Return a PNG #
         if self.request.get('output_name'): self.path = self.output_dir + '/' + self.request['output_name'] + '.png'
         else: self.path = self.output_dir + '/gminer_' + self.request['characteristic']           + '.png'
         with open(self.path, 'w') as f:

@@ -14,7 +14,7 @@ class bool_and(Manip):
         self.name               = 'Overlap by pieces'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
-        self.input_constraints  = ['ordered']
+        self.input_constraints  = []
         self.input_request      = []
         self.input_special      = []
         self.input_by_chrom     = []
@@ -34,7 +34,11 @@ class bool_and(Manip):
                 else:
                     g_index += 1
                     if overlaps(g_current, f):
-                        yield (max(f[0],g_current[0]), min(f[1],g_current[1]), f[2] + " with " + g_current[2], 0.0, 0)
+                        yield (max(f[0],g_current[0]),
+                               min(f[1],g_current[1]),
+                               f[2] + " with " + g_current[2],
+                               (f[3]+g_current[3])/2.0,
+                               f[4] and g_current[4] or 0)
             if not left_of(f, g):
                 Wf.append(f)
         def left_of(a, b):
@@ -60,25 +64,27 @@ class bool_and(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class bool_or(Manip):
-    '''Lorem'''
+    '''Concatenates two streams together and subsequently performs
+       the merge operation on the result'''
 
     def __init__(self): 
         self.name               = 'Overlap by pieces'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
-        self.input_constraints  = ['ordered']
+        self.input_constraints  = []
         self.input_request      = []
         self.input_special      = []
-        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
-    def __call__(self, X, Y, stop_val):
-        return
-        yield X
+    def __call__(self, X, Y):
+        from .basic import concatenate
+        from .standard import merge
+        for x in merge().qual(concatenate()([X,Y])): yield x
 
 #-------------------------------------------------------------------------------------------#
 class bool_xor(Manip):
@@ -88,16 +94,16 @@ class bool_xor(Manip):
         self.name               = 'Overlap by pieces'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
-        self.input_constraints  = ['ordered']
+        self.input_constraints  = []
         self.input_request      = []
         self.input_special      = []
-        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.input_by_chrom     = []
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
-    def __call__(self, X, Y, stop_val):
+    def __call__(self, X, Y):
         return
         yield X
