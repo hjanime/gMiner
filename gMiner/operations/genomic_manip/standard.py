@@ -5,35 +5,6 @@ import sys
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------#
-class complement(Manip):
-    '''The result consists of all intervals that were not
-       covered by a feature in the original stream'''
-
-    def __init__(self): 
-        self.name               = 'Complement'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end']}]
-        self.input_constraints  = []
-        self.input_request      = []
-        self.input_special      = []
-        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
-        self.output_constraints = []
-        self.output_other       = []
-
-    def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
-    
-    def __call__(self, X, stop_val):
-        last_end = 0
-        for x in X:
-            if x[0] > last_end:
-                yield (last_end, x[0], None, None, 0)
-                last_end = x[1]
-            else:
-                last_end = max(x[1], last_end)
-        if last_end < stop_val:
-            yield (last_end, stop_val, None, None, 0)
-
 #-------------------------------------------------------------------------------------------# 
 class merge(Manip):
     '''Merges features that are adjacent or overlapping in one stream'''

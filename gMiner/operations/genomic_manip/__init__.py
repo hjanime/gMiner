@@ -83,19 +83,19 @@ class Manipulation(object):
                 t['fields'] += [f for f in Track.qualitative_fields if f in t['obj'].fields and not f in t['fields']]
                 t['fields'] += [f for f in t['obj'].fields if not f in t['fields']]
         ##### Input request #####
+        base_kwargs = {}
         for t in self.input_request:
             if self.request.has_key(t['key']):
                 try:
-                    t['value'] = t['type'](self.request[t['key']])
+                    base_kwargs[t['name']] = t['type'](self.request[t['key']])
                 except ValueError as err:
                     raise Exception("The '" + t['key'] + "' parameter is not of type: " + t['type'].__name__, err)
             else:
                 if t.has_key('default'):
-                    t['value'] = t['default']
+                    base_kwargs[t['name']] = t['default']
                 else:
                     raise Exception("A required parameter for the manipulation " + self.request['manipulation'] + " is missing." + " You should include a '" + t['key'] + "' paramater that must be of type: " + t['type'].__name__)
         ##### Input special #####
-        base_kwargs = {}
         for i in self.input_special:
             if i['type'] == 'in_datatype':  base_kwargs[i['name']] = self.input_tracks[0]['obj'].datatype
             if i['type'] == 'out_datatype':
@@ -138,10 +138,11 @@ class Manipulation(object):
             kwargs = base_kwargs.copy()
             for t in self.input_by_chrom:
                 kwargs[t['name']] = getattr(self, 'get_parameter_' + t['type'])(chrom)
-            for t in self.input_request:
-                kwargs[t['name']] = t['value']
             for t in self.input_tracks:
-                kwargs[t['name']] = t['obj'].read(chrom, t['fields'])
+                if type(t['name']) != list:
+                    kwargs[t['name']] = t['obj'].read(chrom, t['fields'])
+                else:
+                    for n in t['name']: kwargs[n] = t['obj'].read(chrom, t['fields'], cursor=True)
             T['obj'].write(chrom, self(**kwargs), T['fields'])
         self.output_tracks[0]['obj'].unload()
         return [t['location'] for t in self.output_tracks]

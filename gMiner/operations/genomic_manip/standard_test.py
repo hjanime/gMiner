@@ -17,16 +17,6 @@ class Test(unittest.TestCase):
         self.maxDiff = None
 
         tests  = [
-                {'fn':     genomic_manip.standard.complement(),
-                 'input':  {'stop_val': 200},
-                 'tracks': {'X': track_collections['Validation'][1]['path_sql']},
-                 'expected': [( 10, 20,  None, None, 0),
-                              ( 30, 40,  None, None, 0),
-                              ( 50, 60,  None, None, 0),
-                              ( 80, 90,  None, None, 0),
-                              (110, 120, None, None, 0),
-                              (135, 200, None, None, 0)]}
-                ,
                 {'fn':     genomic_manip.standard.overlap(),
                  'tracks': {'X': track_collections['Validation'][2]['path_sql'],
                             'Y': track_collections['Validation'][3]['path_sql']},

@@ -17,6 +17,16 @@ class Test(unittest.TestCase):
         self.maxDiff = None
 
         tests  = [
+                {'fn':     genomic_manip.boolean.bool_not(),
+                 'input':  {'stop_val': 200},
+                 'tracks': {'X': track_collections['Validation'][1]['path_sql']},
+                 'expected': [( 10, 20, '', 0.0, 0),
+                              ( 30, 40, '', 0.0, 0),
+                              ( 50, 60, '', 0.0, 0),
+                              ( 80, 90, '', 0.0, 0),
+                              (110, 120,'', 0.0, 0),
+                              (135, 200,'', 0.0, 0)]}
+                ,
                 {'fn':     genomic_manip.boolean.bool_and(),
                  'tracks': {'X': track_collections['Validation'][2]['path_sql'],
                             'Y': track_collections['Validation'][3]['path_sql']},
@@ -52,14 +62,16 @@ class Test(unittest.TestCase):
                               (310, 330, u'NameM',  0.3, 1)]}
                  ,
                 {'fn':     genomic_manip.boolean.bool_xor(),
-                 'tracks': {'X': [ (5,10,'GeneA1'),  (5,10,'GeneA2'), (5,10,'GeneA3')],
-                            'Y': [(15,20,'GeneB1'),(25,35,'GeneB2'),(45,65,'GeneB3')]},
-                 'expected': [(  5,  10, u'GeneA1',           0.2, 1),
-                              ( 15,  20, u'GeneB1',           0.4, 1),
-                              ( 20,  25, u'GeneA2 + GeneB2',  0.4, 1),
-                              ( 30,  35, u'GeneA2 + GeneB2',  0.4, 1),
-                              ( 40,  45, u'GeneA3 + GeneB3',  0.7, 1),
-                              ( 50,  65, u'GeneA3 + GeneB3',  0.3, 1)]} 
+                 'input':  {'stop_val': 135},
+                 'tracks': {'X1': [( 5,10,'GeneA1',0.0,-1),  (20,30,'GeneA2',0.0,0), (40,50,'GeneA3',0.0,1)],
+                            'X2': [( 5,10,'GeneA1',0.0,-1),  (20,30,'GeneA2',0.0,0), (40,50,'GeneA3',0.0,1)],
+                            'Y1': [(15,20,'GeneB1',0.0,0),   (25,35,'GeneB2',0.0,0), (45,65,'GeneB3',0.0,1)],
+                            'Y2': [(15,20,'GeneB1',0.0,0),   (25,35,'GeneB2',0.0,0), (45,65,'GeneB3',0.0,1)]},
+                 'expected': [(  5,  10, 'GeneA1',                    0.0, 0),
+                              ( 15,  25, 'GeneB1 + GeneA2 + GeneB2',  0.0, 0),
+                              ( 30,  35, 'GeneB1 + GeneA2 + GeneB2',           0.0, 0),
+                              ( 40,  45, 'GeneA3 + GeneB3',           0.0, 0),
+                              ( 50,  65, 'GeneA3 + GeneB3',           0.0, 0)]} 
                  ]
 
         for t in tests: run_one(self, t)

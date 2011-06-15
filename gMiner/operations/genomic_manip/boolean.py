@@ -6,12 +6,42 @@ from . import Manipulation as Manip
 from ... import common
 
 #-------------------------------------------------------------------------------------------#
-class bool_and(Manip):
-    '''Computes the overlap between both streams returning
-       new features that exacly match the overlaping zones'''
+class bool_not(Manip):
+    '''The result consists of all intervals that were not
+       covered by a feature in the original stream'''
 
     def __init__(self): 
-        self.name               = 'Overlap by pieces'
+        self.name               = 'Boolean NOT'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end']}]
+        self.input_constraints  = []
+        self.input_request      = []
+        self.input_special      = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
+        self.output_constraints = []
+        self.output_other       = []
+
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
+    
+    def __call__(self, X, stop_val):
+        last_end = 0
+        for x in X:
+            if x[0] > last_end:
+                yield (last_end, x[0], '', 0.0, 0)
+                last_end = x[1]
+            else:
+                last_end = max(x[1], last_end)
+        if last_end < stop_val:
+            yield (last_end, stop_val, '', 0.0, 0)
+
+#-------------------------------------------------------------------------------------------#
+class bool_and(Manip):
+    '''Computes the overlap between both streams returning
+       new features that exacly match the overlaping zones.
+       This is equivalent to the boolean `AND` operation.'''
+
+    def __init__(self): 
+        self.name               = 'Boolean AND'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
         self.input_constraints  = []
@@ -25,6 +55,10 @@ class bool_and(Manip):
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
     def __call__(self, X, Y):
+        def make_name(a, b):
+            if a and b: return a + ' + ' + b
+            elif a: return a
+            return b
         def scan(f, Wf, g, Wg, lastPick):
             g_index = 0
             while g_index < len(Wg):
@@ -36,7 +70,7 @@ class bool_and(Manip):
                     if overlaps(g_current, f):
                         yield (max(f[0],g_current[0]),
                                min(f[1],g_current[1]),
-                               f[2] + " + " + g_current[2],
+                               make_name(f[2], g_current[2]),
                                (f[3]+g_current[3])/2.0,
                                f[4] and g_current[4] or 0)
             if not left_of(f, g):
@@ -65,10 +99,11 @@ class bool_and(Manip):
 #-------------------------------------------------------------------------------------------#
 class bool_or(Manip):
     '''Concatenates two streams together and subsequently performs
-       the merge operation on the result'''
+       the merge operation on the result.
+       This is equivalent to the boolean `OR` operation.'''
 
     def __init__(self): 
-        self.name               = 'Overlap by pieces'
+        self.name               = 'Boolean OR'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
         self.input_constraints  = []
@@ -88,22 +123,27 @@ class bool_or(Manip):
 
 #-------------------------------------------------------------------------------------------#
 class bool_xor(Manip):
-    '''Lorem'''
+    '''Concatenates two streams together and subsequently performs
+       the merge operation on the result. Form this result is removed
+       any regions that were present in both of the original streams.
+       This is equivalent to the boolean `XOR` operation.'''
 
-    def __init__(self): 
-        self.name               = 'Overlap by pieces'
-        self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
-                                   {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
+    def __init__(self):
+        self.name               = 'Boolean XOR'
+        self.input_tracks       = [{'type':'track','name':['X1','X2'],'kind':'qualitative','fields':['start','end','name','score','strand']},
+                                   {'type':'track','name':['Y1','Y2'], 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
         self.input_constraints  = []
         self.input_request      = []
         self.input_special      = []
-        self.input_by_chrom     = []
+        self.input_by_chrom     = [{'type': 'stop_val', 'name': 'stop_val'}]
         self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
     def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
     
-    def __call__(self, X, Y):
-        return
-        yield X
+    def __call__(self, X1, X2, Y1, Y2, stop_val):
+        a = bool_and()
+        o = bool_or()
+        n = bool_not()
+        for x in a(o(X1,Y1), n(a(X2,Y2), stop_val)): yield x
