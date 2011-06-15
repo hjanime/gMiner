@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
         self.maxDiff = None
 
         tests  = [
-                {'fn':     genomic_manip.standard.overlap(),
+                {'fn':     genomic_manip.standard.filter(),
                  'tracks': {'X': track_collections['Validation'][2]['path_sql'],
                             'Y': track_collections['Validation'][3]['path_sql']},
                  'expected': [( 10,  20, u'Name1',  0.1, 1),

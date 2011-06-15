@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     def runTest(self):
         outdir = '/tmp/gMiner/'
 
-        # Simple boxplot
+        # Simple boxplot #
         files = gMiner.run(
            track1          = track_collections['Yeast']['All genes']['path_sql'],
            track1_name     = 'All genes from SGD',
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
            output_location = outdir,
         )
 
-        # Track selection
+        # Track selection #
         files = gMiner.run(
            track1           = track_collections['Validation'][2]['path_sql'],
            track1_name      = 'Validation track two',
@@ -47,7 +47,21 @@ class Test(unittest.TestCase):
            compare_parents  = True,
            output_location  = outdir,
         )
-        # Result should be 120 / 150
+        # Result should be 120 / 150 or 80%
+
+        # Field test via filter #
+        files = gMiner.run(
+           track1          = track_collections['Yeast']['All genes']['path_sql'],
+           track1_name     = 'S. cer refseq genes',
+           track2          = track_collections['Yeast']['RP genes']['path_sql'],
+           track2_name     = 'RP genes',
+           operation_type   = 'desc_stat',
+           characteristic   = 'number_of_features',
+           selected_regions = track_collections['Yeast']['Ribi genes']['path_sql'],
+           per_chromosome   = True,
+           compare_parents  = False,
+           output_location  = outdir,
+        )
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

@@ -59,19 +59,19 @@ class merge(Manip):
         yield tuple(x)
 
 #-------------------------------------------------------------------------------------------# 
-class overlap(Manip):
+class filter(Manip):
     '''Computes the overlap of the first stream against the second stream
        returning only complete features from the first stream'''
 
     def __init__(self): 
-        self.name               = 'Overlap by track'
-        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']},
+        self.name               = 'Filter features'
+        self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','...']},
                                    {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start','end']}]
         self.input_constraints  = ['ordered']
         self.input_request      = []
         self.input_special      = []
         self.input_by_chrom     = []
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start', 'end', 'name', 'score', 'strand']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': {'same': 0}}]
         self.output_constraints = []
         self.output_other       = []
 

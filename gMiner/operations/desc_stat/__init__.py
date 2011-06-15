@@ -38,7 +38,7 @@ class gmSubtrack(object):
     def make_overlap(self, t, chrom):
         sel_feats  = t.read(chrom, ['start', 'end'])
         orig_feats = self.track.read(chrom, self.fields)
-        yield manip.overlap_track()(orig_feats, sel_feats)
+        yield manip.filter()(orig_feats, sel_feats)
         
 ###########################################################################
 def track_cut_down(request, track):
@@ -99,7 +99,7 @@ class gmCharacteristic(object):
 
     def num_of_features_options(func):
         func.title        = '''Number of features'''
-        func.fields       = ['start']
+        func.fields       = ['start','end']
         func.shortcutable = True
         func.storable     = True
         func.units        = 'Count'
@@ -109,7 +109,9 @@ class gmCharacteristic(object):
     @num_of_features_options
     def number_of_features(cls, iterable):
         '''Returns the number of features'''
-        return sum(1 for _ in iterable)
+        sum = 0
+        for x in iterable: sum +=1
+        return sum
 
     def base_coverage_options(func):
         func.title        = '''Base coverage'''
@@ -148,7 +150,7 @@ class gmCharacteristic(object):
 
     def score_options(func):
         func.title        = '''Score distribution'''
-        func.fields       = ['score']
+        func.fields       = ['start','end','score']
         func.shortcutable = False
         func.storable     = False
         func.units        = 'Undefined'
@@ -159,7 +161,7 @@ class gmCharacteristic(object):
     def score(cls, iterable):
         '''Returns the score distribution'''
         iterable = list(iterable)
-        return [x[0] for x in iterable]
+        return [x[2] for x in iterable]
 
 ###########################################################################
 def run(request, tracks, output_dir):
