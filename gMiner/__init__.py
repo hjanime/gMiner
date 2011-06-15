@@ -42,7 +42,7 @@ def run(**request):
     parse_chrlist(request)
     # Prepare the tracks #
     track_dicts = parse_tracks(request)
-    contexts = [Track(t['path'], name=t['name'], chrfile=t.get('chrs')) for t in track_dicts]
+    contexts = [Track(t['path'], name=t['name'], chrfile=t.get('chrs'), readonly=True) for t in track_dicts]
     with nested(*contexts) as tracks:
         # Assign numbers #
         for i, t in enumerate(tracks): t.number = i
