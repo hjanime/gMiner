@@ -2,11 +2,8 @@
 import time
 
 # Change backend #
-if 'matplotlib' in globals():
-    import matplotlib
-    matplotlib.use('Agg')
-else:
-    import matplotlib
+import matplotlib
+matplotlib.use('Agg', warn=False)
 
 # Plotting module #
 import matplotlib.pyplot as pyplot
