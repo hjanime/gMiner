@@ -1,9 +1,9 @@
 # General modules #
-import sys, numpy
+import numpy
 
 # Internal modules #
-from ... import common
 from .. import genomic_manip
+from .basic import flatten
 
 # Unittesting #
 try:
@@ -12,15 +12,6 @@ except ImportError:
     import unittest
 
 #----------------------------------------------------------------------------------#
-def flatten_score(start, stop, X):
-    sentinel = [sys.maxint, sys.maxint, 0.0]
-    X = common.sentinelize(X, sentinel)
-    x = [start-2, start-1, 0.0]
-    for i in xrange(start, stop):
-        if i >= x[1]: x = X.next()
-        if i >= x[0]: yield x[2]
-        else: yield 0.0
-
 def smooth_signal(data, L):
     window = L*2+1
     weightings    = numpy.repeat(1.0, window) / window
@@ -31,8 +22,8 @@ def smooth_signal(data, L):
 def check_both_smooths(self, X, L, stop_val, expected_output):
     computed_output      = list(genomic_manip.scores.window_smoothing()(stop_val=stop_val, L=L, X=X))
     self.assertEqual(computed_output, expected_output)
-    flat_X               = list(flatten_score(0, stop_val, X.__iter__()))
-    flat_expected_output = list(flatten_score(0, stop_val, expected_output.__iter__()))
+    flat_X               = list(flatten()(iter(X), stop_val))
+    flat_expected_output = list(flatten()(iter(expected_output), stop_val))
     flat_computed_output = smooth_signal(flat_X, L) 
     self.assertEqual(flat_computed_output, flat_expected_output)
 

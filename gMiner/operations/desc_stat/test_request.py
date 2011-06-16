@@ -65,6 +65,17 @@ class Test(unittest.TestCase):
            output_location  = outdir,
         )
 
+        # Output name test #
+        files = gMiner.run(
+           track1           = '/scratch/genomic/tracks/locked.sql',
+           track1_name      = 'Permission test',
+           selected_regions = '/scratch/genomic/tracks/locked.sql',
+           operation_type   = 'desc_stat',
+           characteristic   = 'number_of_features',
+           output_location  = outdir,
+           output_name      = 'my_cool_output_name',
+        )
+
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #

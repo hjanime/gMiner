@@ -45,6 +45,20 @@ class Test(unittest.TestCase):
                  'input':  {'list_of_tracks': [[(0,10),(0,10),(5,10)],
                                                [(0,5),(0,12),(5,8)]]},
                  'expected': [(0,5),(0,10),(0,10),(0,12),(5,8),(5,10)]}
+                 ,
+                 {'fn':     genomic_manip.basic.flatten(),
+                 'input':  {'stop_val': 10},
+                 'tracks': {'X': [(0,2,10.0),(2,4,20.0),(6,8,10.0)]},
+                 'expected': [10.0, 10.0, 20.0, 20.0, 0.0, 0.0, 10.0, 10.0, 0.0, 0.0]}
+                 ,
+                 {'fn':     genomic_manip.basic.qual_to_quan(),
+                 'tracks': {'X': track_collections['Validation'][4]['path_sql']},
+                 'fields': {'X': ['start', 'end', 'score']},
+                 'expected': [(10, 20, 1.0), (30, 40, 2.0)]}
+                 ,
+                 {'fn':     genomic_manip.basic.qual_to_quan(),
+                 'tracks': {'X': [(0,2),(2,4),(6,8)]},
+                 'expected': [(0,2,1.0),(2,4,1.0),(6,8,1.0)]}
                  ]
 
         for t in tests: run_one(self, t)
