@@ -12,14 +12,6 @@ except ImportError:
 
 ################################################################################### 
 class Test(unittest.TestCase):
-    def setUp(self):
-        try:
-            import Tkinter
-            window = Tkinter.Tk()
-            window.destroy()
-        except Tkinter.TclError:
-            self.skipTest("You don't have access to a DISPLAY, skipping appropriate tests")
-        
     def runTest(self):
         outdir = '/tmp/gMiner/'
 
