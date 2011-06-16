@@ -51,15 +51,25 @@ class Test(unittest.TestCase):
 
         # Field test via filter #
         files = gMiner.run(
-           track1          = track_collections['Yeast']['All genes']['path_sql'],
-           track1_name     = 'S. cer refseq genes',
-           track2          = track_collections['Yeast']['RP genes']['path_sql'],
-           track2_name     = 'RP genes',
+           track1           = track_collections['Yeast']['All genes']['path_sql'],
+           track1_name      = 'S. cer refseq genes',
+           track2           = track_collections['Yeast']['RP genes']['path_sql'],
+           track2_name      = 'RP genes',
            operation_type   = 'desc_stat',
            characteristic   = 'number_of_features',
            selected_regions = track_collections['Yeast']['Ribi genes']['path_sql'],
            per_chromosome   = True,
            compare_parents  = False,
+           output_location  = outdir,
+        )
+
+        # Permission test #
+        files = gMiner.run(
+           track1           = '/scratch/genomic/tracks/locked.sql',
+           track1_name      = 'Permission test',
+           selected_regions = '/scratch/genomic/tracks/locked.sql',
+           operation_type   = 'desc_stat',
+           characteristic   = 'number_of_features',
            output_location  = outdir,
         )
 
