@@ -75,3 +75,8 @@ class Test(unittest.TestCase):
                  ]
 
         for t in tests: run_one(self, t)
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

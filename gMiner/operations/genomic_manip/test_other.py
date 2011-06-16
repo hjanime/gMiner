@@ -57,3 +57,8 @@ class Test(unittest.TestCase):
                            (6,  9,   4.0),
                            (9,  10,  2.0),]
         check_both_smooths(self, X, L, stop_val, expected_output)
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

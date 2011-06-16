@@ -147,3 +147,8 @@ class bool_xor(Manip):
         o = bool_or()
         n = bool_not()
         for x in a(o(X1,Y1), n(a(X2,Y2), stop_val)): yield x
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

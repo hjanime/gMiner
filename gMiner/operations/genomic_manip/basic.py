@@ -70,3 +70,8 @@ class concatenate(Manip):
             i,f = get_lowest_feature()
             yield f
             advance(i)
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#

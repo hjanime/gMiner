@@ -41,3 +41,8 @@ def run_request(case, t):
         data = list(x.read('chr1'))
     os.remove(files[0])
     case.assertEqual(data, t['expected'])
+
+#-----------------------------------------#
+# This code was written by Lucas Sinclair #
+# Kopimi                                  #
+#-----------------------------------------#
