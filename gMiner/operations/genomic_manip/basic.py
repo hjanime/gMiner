@@ -5,11 +5,11 @@ import sys
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------------#
 class qual_to_quan(Manip):
     '''Convert a qualitative stream to a quantitative one'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Flatten'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','...']}]
         self.input_constraints  = []
@@ -35,7 +35,7 @@ class qual_to_quan(Manip):
 class quan_to_qual(Manip):
     '''Convert a quantitative stream to a qualitative one'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Flatten'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.input_constraints  = []
@@ -51,12 +51,12 @@ class quan_to_qual(Manip):
         # Setup #
         for x in X: yield x
 
-#-------------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------------#
 class flatten(Manip):
     '''From a interval based format create the corresponding
        numeric vector'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Flatten'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.input_constraints  = []
@@ -81,13 +81,13 @@ class flatten(Manip):
         if stop_val:
             for i in xrange(x[1],stop_val): yield 0.0
 
-#-------------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------------#
 class bounded(Manip):
     '''Given a stream of features and two integers `min_bound`, `max_bound`,
        this manipulation will output every feature unmodified unless one of the
        features exceed the specified bounds, in which case it is cropped.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Neighborhood regions'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
@@ -102,7 +102,7 @@ class bounded(Manip):
     def chr_collapse(self, *args): return common.collapse.by_appending(*args)
 
     def __call__(self, X, min_bound, max_bound):
-        for x in X: 
+        for x in X:
             if not x[1] < min_bound and not x[0] > max_bound and x[0] < x[1]:
                 yield (max(x[0],min_bound), min(x[1],max_bound)) + x[2:]
 
@@ -111,7 +111,7 @@ class concatenate(Manip):
     '''Concatenates N streams such as the resulting stream
        contains all the features of every inputed stream.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Merge scores'
         self.input_tracks       = [{'type':'list of tracks', 'name':'list_of_tracks', 'kind':'quantitative', 'fields':['start','end','...']}]
         self.input_constraints  = []
@@ -122,8 +122,8 @@ class concatenate(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_union(*args)
+
     def __call__(self, list_of_tracks):
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)

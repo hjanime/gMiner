@@ -11,7 +11,7 @@ try:
 except ImportError:
     import unittest
 
-################################################################################### 
+###################################################################################
 class Test(unittest.TestCase):
     def runTest(self):
         self.maxDiff = None
@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
                               ( 15,  25, 'GeneB1 + GeneA2 + GeneB2',  0.0, 0),
                               ( 30,  35, 'GeneB1 + GeneA2 + GeneB2',           0.0, 0),
                               ( 40,  45, 'GeneA3 + GeneB3',           0.0, 0),
-                              ( 50,  65, 'GeneA3 + GeneB3',           0.0, 0)]} 
+                              ( 50,  65, 'GeneA3 + GeneB3',           0.0, 0)]}
                  ]
 
         for t in tests: run_one(self, t)

@@ -1,5 +1,5 @@
 '''
-This module will genereate almost every possible graph with the desc_stat module. 
+This module will genereate almost every possible graph with the desc_stat module.
 '''
 
 # General modules #
@@ -38,11 +38,11 @@ chrsuffix = 'Awfully super extra long chromosome denomination string '
 request_selection_regions = ['1:0:50000','2:50000:9999999999999']
 
 # Two name generating functions #
-def make_track_name_path(path): 
+def make_track_name_path(path):
     return path.split('/')[-1]
-def make_track_name_random(path): 
+def make_track_name_random(path):
     name_gen = tempfile._RandomNameSequence()
-    return ' '.join([name_gen.next() for x in range(10)]) + ' ' + path.split('/')[-1] 
+    return ' '.join([name_gen.next() for x in range(10)]) + ' ' + path.split('/')[-1]
 
 # Every collection of data #
 collections = {
@@ -86,8 +86,8 @@ def run(result_path='/tmp/gMiner/'):
     if not os.path.isdir(result_path):
         raise Exception("The result location specified is not a directory")
     max_count = 2*2*2*2*4
-    max_count -= max_count/4 
-    max_count *= len(collections) 
+    max_count -= max_count/4
+    max_count *= len(collections)
     count = 1
     print gm_terminal_colors['bldylw'] + "    Writing graphs in: " + result_path + gm_terminal_colors['end']
     for col_name, col in collections.items():
@@ -109,24 +109,24 @@ def run(result_path='/tmp/gMiner/'):
                             request = {}
                             request['gm_encoding'] = 'image/png'
                             request['operation_type'] = 'desc_stat'
-                            request['characteristic'] = chara 
-                            request['output_location'] = result_path 
+                            request['characteristic'] = chara
+                            request['output_location'] = result_path
                             request['output_name'] = name
                             if b_many:
-                                request['track1'] = col['track_set']['many'][1]['path_sql'] 
+                                request['track1'] = col['track_set']['many'][1]['path_sql']
                                 request['track1_name'] = col['track_name_fn'](col['track_set']['many'][1]['name'])
-                                request['track2'] = col['track_set']['many'][2]['path_sql'] 
-                                request['track2_name'] = col['track_name_fn'](col['track_set']['many'][2]['name']) 
-                                request['track3'] = col['track_set']['many'][3]['path_sql'] 
+                                request['track2'] = col['track_set']['many'][2]['path_sql']
+                                request['track2_name'] = col['track_name_fn'](col['track_set']['many'][2]['name'])
+                                request['track3'] = col['track_set']['many'][3]['path_sql']
                                 request['track3_name'] = col['track_name_fn'](col['track_set']['many'][3]['name'])
                             else:
-                                request['track1'] = col['track_set']['single']['path_sql'] 
-                                request['track1_name'] = col['track_name_fn'](col['track_set']['single']['name']) 
+                                request['track1'] = col['track_set']['single']['path_sql']
+                                request['track1_name'] = col['track_name_fn'](col['track_set']['single']['name'])
                             if b_sel:
                                 request['selected_regions'] = col['request_selection_string']
-                            if b_chr: 
-                                request['per_chromosome'] = 'True' 
-                            if b_comp: 
+                            if b_chr:
+                                request['per_chromosome'] = 'True'
+                            if b_comp:
                                 request['compare_parents'] = 'True'
                             # Executing the request #
                             gMiner.run(**request)

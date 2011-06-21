@@ -10,7 +10,7 @@ try:
 except ImportError:
     import unittest
 
-################################################################################### 
+###################################################################################
 class Test(unittest.TestCase):
     def runTest(self):
         outdir = '/tmp/gMiner/'

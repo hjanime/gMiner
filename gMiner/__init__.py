@@ -34,7 +34,7 @@ def run(**request):
         raise Exception("There does not seem to be an output location specified in the request")
     output_dir = request['output_location'].rstrip('/')
     if not os.path.isdir(output_dir):
-        raise Exception("The output location specified is not a directory")    
+        raise Exception("The output location specified is not a directory")
     # Optional request variables #
     request['selected_regions']   = request.get('selected_regions', '')
     parse_regions(request)
@@ -87,11 +87,11 @@ def parse_regions(request):
     '''
     if os.path.exists(request['selected_regions']): return
     if request['selected_regions']:
-        try: 
+        try:
             request['selected_regions'] = [dict([['chr',p[0]],['start',int(p[1])],['end',int(p[2])]]) for p in [r.split(':') for r in request['selected_regions'].split(';')]]
         except ValueError, IndexError:
             raise Exception("The selected regions are not properly formated.")
-        
+
 def parse_chrlist(request):
     '''
     >>> d = {'wanted_chromosomes': 'chr1;chr2;chr9'}

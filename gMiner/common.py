@@ -1,8 +1,8 @@
-###############################################################################   
+###############################################################################
 def split_thousands(s, tSep='\'', dSep='.'):
     '''
     Splits a number on thousands.
-    
+
     >>> split_thousands(1000012)
     "1'000'012"
     '''
@@ -31,7 +31,7 @@ def split_thousands(s, tSep='\'', dSep='.'):
     return lhs + splt[ :-1 ] + rhs
 
 
-###############################################################################   
+###############################################################################
 def wrap_string(s, width):
     '''
     Wrap a string to the specified width.
@@ -39,13 +39,13 @@ def wrap_string(s, width):
     >>> wrap_string('aaabbb', 3)
     'aaa\\nbbb'
     '''
-   
+
     import textwrap
     wrapper = textwrap.TextWrapper()
     wrapper.width = width
     return '\n'.join(wrapper.wrap(s))
 
-###############################################################################   
+###############################################################################
 def andify_strings(list_of_strings):
     '''
     Given a list of strings will join them with commas
@@ -54,13 +54,13 @@ def andify_strings(list_of_strings):
     >>> andify_strings(['Apples', 'Oranges', 'Mangos'])
     'Apples, Oranges and Mangos'
     '''
-    
+
     result = ', '.join(list_of_strings)
-    comma_index = result.rfind(',')        
+    comma_index = result.rfind(',')
     if comma_index > -1: result = result[:comma_index] + ' and' + result[comma_index+1:]
     return result
 
-###############################################################################   
+###############################################################################
 def natural_sort(item):
     '''
     Will sort strings that contain numbers correctly
@@ -77,11 +77,11 @@ def natural_sort(item):
     return map(try_int, re.findall(r'(\d+|\D+)', item))
 
 
-###############################################################################   
+###############################################################################
 def sort_table(table, cols):
     '''
     Sorts a table by multiple columns
-        table: a list of lists (or tuple of tuples) where each inner list 
+        table: a list of lists (or tuple of tuples) where each inner list
                represents a row
         cols:  a list (or tuple) specifying the column numbers to sort by
                e.g. (1,0) would sort by column 1, then by column 0
@@ -98,10 +98,10 @@ def sort_table(table, cols):
 def sentinelize(iterable, sentinel):
     '''
     Add an item to the end of an iterable
-    
+
     >>> list(sentinelize(range(4), 99))
     [0, 1, 2, 3, 99]
-    ''' 
+    '''
     for item in iterable: yield item
     yield sentinel
 
@@ -110,7 +110,7 @@ def import_module(name, path):
     '''
     Import a module that is not in sys.path
     given it's relative path
-    ''' 
+    '''
     import imp
     file, pathname, description = imp.find_module(name, [path])
     try:
@@ -118,7 +118,7 @@ def import_module(name, path):
     finally:
         if file: file.close()
 
-###############################################################################   
+###############################################################################
 class collapse(object):
     '''
     Collapse lists in specific ways
@@ -143,7 +143,7 @@ class collapse(object):
 
     @staticmethod
     def by_appending(l):
-        return [x for y in l for x in y]     
+        return [x for y in l for x in y]
 
     @staticmethod
     def by_union(l):
@@ -154,7 +154,7 @@ class collapse(object):
         return list(reduce(set.intersection, map(set,l)))
 
 
-###############################################################################   
+###############################################################################
 def integer_to_roman(input):
     '''
     Convert an integer to roman numerals.
@@ -166,7 +166,7 @@ def integer_to_roman(input):
     if type(input) != type(1):
        raise TypeError, "expected integer, got %s" % type(input)
     if not 0 < input < 4000:
-       raise ValueError, "Argument must be between 1 and 3999"   
+       raise ValueError, "Argument must be between 1 and 3999"
     ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1)
     nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
     result = ""
@@ -230,12 +230,12 @@ class memoized_method(object):
     '''Decorator that caches a function's return value the first time
     it is called. If called later, the cached value is returned, and
     not re-evaluated
-    
+
     This class is meant to be used as a decorator of methods. The return value
     from a given method invocation will be cached on the instance whose method
     was invoked. All arguments passed to a method decorated with memoize must
     be hashable.
-    
+
     If a memoized method is invoked directly on its class the result will not
     be cached. Instead the method will be invoked like a static method:
     class Obj(object):
@@ -266,7 +266,7 @@ class memoized_method(object):
         return res
 
 
-###############################################################################  
+###############################################################################
 def get_this_module_path():
     ''' Will return the absolute path of the file containing
         this function'''
@@ -275,7 +275,7 @@ def get_this_module_path():
     return os.path.abspath(getfile(currentframe()))
     return os.path.realpath(__file__)
 
-###############################################################################  
+###############################################################################
 def make_latex_string(string):
     '''
     >>> make_latex_string('lorem_ipsum dolor_sit')
@@ -287,7 +287,7 @@ def make_latex_string(string):
     string = re.sub(' ', '\ ', string)
     return string
 
-###############################################################################   
+###############################################################################
 def number_to_color(num=0):
     '''
     Takes a number, returns a color
@@ -295,7 +295,7 @@ def number_to_color(num=0):
     >>> number_to_color(7)
     'pink'
     '''
-    
+
     num = int(num) % 8
     return {
         0: 'blue',

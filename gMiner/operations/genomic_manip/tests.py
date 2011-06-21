@@ -8,7 +8,7 @@ from bbcflib.track.test_variables import yeast_chr_file
 # Internal modules #
 import gMiner
 
-################################################################################### 
+###################################################################################
 def run_one(case, t):
     # Input variables #
     # Input tracks #
@@ -20,7 +20,7 @@ def run_one(case, t):
                 if t.get('fields') and t['fields'].get(k):
                     with Track(v) as x:
                         t['tracks'][k] = iter(list(x.read('chr1', fields=t['fields'][k])))
-                else:                                      
+                else:
                     with Track(v) as x:
                         t['tracks'][k] = iter(list(x.read('chr1')))
         kwargs = t.get('input', {})

@@ -24,7 +24,7 @@ def check_both_smooths(self, X, L, stop_val, expected_output):
     self.assertEqual(computed_output, expected_output)
     flat_X               = list(flatten()(iter(X), stop_val))
     flat_expected_output = list(flatten()(iter(expected_output), stop_val))
-    flat_computed_output = smooth_signal(flat_X, L) 
+    flat_computed_output = smooth_signal(flat_X, L)
     self.assertEqual(flat_computed_output, flat_expected_output)
 
 ###################################################################################

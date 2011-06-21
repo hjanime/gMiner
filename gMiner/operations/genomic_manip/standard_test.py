@@ -11,7 +11,7 @@ try:
 except ImportError:
     import unittest
 
-################################################################################### 
+###################################################################################
 class Test(unittest.TestCase):
     def runTest(self):
         self.maxDiff = None

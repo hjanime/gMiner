@@ -21,9 +21,9 @@ gm_default_plot_color      = 'magenta'
 gm_default_color_selection = 'green'
 gm_default_color_parent    = 'blue'
 
-########################################################################### 
+###########################################################################
 class gmGraph(object):
-    def __init__(self, request, subtracks, tracks, output_dir):    
+    def __init__(self, request, subtracks, tracks, output_dir):
         self.request = request
         self.subtracks = subtracks
         self.tracks = tracks
@@ -33,7 +33,7 @@ class gmGraph(object):
         # Size variables #
         self.graph_width = 12.0
         ideal_height = float(len(self.subtracks))/2.0
-        self.graph_height = min([ max([3.0, ideal_height]) , 10.0 ])    
+        self.graph_height = min([ max([3.0, ideal_height]) , 10.0 ])
         self.hjump = 0.8
         self.fontsize0 = 7.0
         self.fontsize1 = 9.0
@@ -47,7 +47,7 @@ class gmGraph(object):
 
         # Type of graph #
         self.request['gm_graph_type'] =  map(lambda x: isinstance(x,list) and 'boxplot' or 'barplot', [self.subtracks[0].stat])[0]
- 
+
         # Empty variables #
         self.elements = []
         self.ylabels = []
@@ -55,7 +55,7 @@ class gmGraph(object):
         self.upper_left_text = False
         self.xlabel = ''
 
-        #---------------------------#   
+        #---------------------------#
         self.gen_bool_cases()
         self.gen_legend()
         self.gen_graph_title()
@@ -63,12 +63,12 @@ class gmGraph(object):
         self.gen_plot_elements()
         self.gen_ylabels()
         self.gen_xlabel()
-        #---------------------------#   
- 
+        #---------------------------#
+
         # Interactive mode #
         # if 'gm_interactive' in self.request: pyplot.ion()
         # else: pyplot.ioff()
-        
+
         # Create figure #
         figprops = dict(figsize=(self.graph_width, self.graph_height))
         fig = pyplot.figure(**figprops)
@@ -84,12 +84,12 @@ class gmGraph(object):
         adjustprops = dict(left=leftspace, right=rightspace, bottom=bottomspace, top=topspace)
         fig.subplots_adjust(**adjustprops)
         axes = fig.add_subplot(111)
-      
+
         # Draw all we can now #
         if self.graph_legend:
             self.graph_legend.reverse()
             for label in self.graph_legend: axes.plot([-1.0, -1.0], color=label[0], label=label[1])
-            axes.legend(prop={'size': self.fontsize2}, fancybox=True, labelspacing=0.3)    
+            axes.legend(prop={'size': self.fontsize2}, fancybox=True, labelspacing=0.3)
         axes.set_title(self.graph_title)
         for e in self.elements: e.plot(axes)
         axes.set_yticks(zip(*self.ylabels)[0])
@@ -111,7 +111,7 @@ class gmGraph(object):
         axes.axis([0.0, rightmost_value, bottom_value, highest_value])
 
         # Corner texts #
-        if self.upper_left_text:          
+        if self.upper_left_text:
             axes.annotate(self.upper_left_text,xy=(8,-38), xycoords='axes pixels', fontsize=self.fontsize1)
         topleftcorner = 1.0 - 0.2/self.graph_height
         leftcorner = 0.1/self.graph_width
@@ -152,7 +152,7 @@ class gmGraph(object):
             if self.b_sel: self.graph_title += 'selection on '
             self.graph_title += '"' + self.tracks[0].name  + '"'
         else:
-            if self.b_sel and not self.b_comp: self.graph_title += '\n of selection on multiple tracks' 
+            if self.b_sel and not self.b_comp: self.graph_title += '\n of selection on multiple tracks'
 
     def gen_upper_left_text(self):
         if self.b_comp:
@@ -198,11 +198,11 @@ class gmGraph(object):
         unit_name = getattr(gmCharacteristic, self.request['characteristic']).units
         self.xlabel = unit_name
 
-########################################################################### 
+###########################################################################
 class gmPlotElement(object):
     @classmethod
-    def Factory(cls, *args): 
-        switch_var = args[0]['gm_graph_type'] 
+    def Factory(cls, *args):
+        switch_var = args[0]['gm_graph_type']
         switch_dict = {
             'barplot': gmBarElement,
             'boxplot': gmBoxElement,
@@ -222,7 +222,7 @@ class gmPlotElement(object):
     def finalize(self, axes, **kwargs):
         pass
 
-#-----------------------------------------------------------------------------#   
+#-----------------------------------------------------------------------------#
 class gmBarElement(gmPlotElement):
     def plot(self, axes):
         if len(self.subtracks) == 0:
@@ -231,10 +231,10 @@ class gmBarElement(gmPlotElement):
             return 0
         if len(self.subtracks) == 2:
             child_stat = [s for s in self.subtracks if not s.parent][0].stat
-            parent_stat = [s for s in self.subtracks if s.parent][0].stat 
+            parent_stat = [s for s in self.subtracks if s.parent][0].stat
             if parent_stat == 0: ratio = 0
             else: ratio = 100.0 * child_stat / parent_stat
-            big_rect = axes.barh(self.position, 100.0, align='edge', height=self.height, color='gray') 
+            big_rect = axes.barh(self.position, 100.0, align='edge', height=self.height, color='gray')
             self.name = str(int(ratio)) + '%'
             self.rect = axes.barh(self.position, ratio, align='edge', height=self.height, color=self.color)[0]
         else:
@@ -256,7 +256,7 @@ class gmBarElement(gmPlotElement):
         if width < cutoff:
             xloc = width + graph_max_value/200.0
             colour = 'black'
-            align = 'left' 
+            align = 'left'
         else:
             xloc = width - graph_max_value/200.0
             colour = 'white'
@@ -264,8 +264,8 @@ class gmBarElement(gmPlotElement):
         axes.text(xloc, yloc, self.name, horizontalalignment=align, verticalalignment='center', color=colour, weight='bold', fontsize=good_fontsize)
         if len(self.subtracks) == 2:
             axes.text(101.0, yloc, "100%", horizontalalignment='left', verticalalignment='center', color='k', weight='bold', fontsize=good_fontsize)
-        
-#-----------------------------------------------------------------------------#   
+
+#-----------------------------------------------------------------------------#
 class gmBoxElement(gmPlotElement):
     def plot(self, axes):
         self.DIQ = 0
@@ -278,7 +278,7 @@ class gmBoxElement(gmPlotElement):
                 comp_selection = axes.boxplot(stat_selection, vert=0, positions=[self.position+self.height/2.0+0.1])
                 box_coord_sel = comp_selection['boxes'][0].get_xdata()
                 diq_sel = max(box_coord_sel) - min(box_coord_sel)
-                if not self.request['per_chromosome'] or not 'track2' in self.request: self.color = gm_default_color_selection 
+                if not self.request['per_chromosome'] or not 'track2' in self.request: self.color = gm_default_color_selection
                 for comp in comp_selection.items(): [pyplot.setp(line, color=self.color) for line in comp[1]]
             else:
                 diq_sel = 0
@@ -287,7 +287,7 @@ class gmBoxElement(gmPlotElement):
                 comp_parent = axes.boxplot(stat_parent, vert=0, positions=[self.position+self.height/2.0-0.1])
                 box_coord_parent = comp_parent['boxes'][0].get_xdata()
                 diq_parent = max(box_coord_parent) - min(box_coord_parent)
-                if not self.request['per_chromosome'] or not 'track2' in self.request: self.color = gm_default_color_parent 
+                if not self.request['per_chromosome'] or not 'track2' in self.request: self.color = gm_default_color_parent
                 for comp in comp_parent.items(): [pyplot.setp(line, color=self.color) for line in comp[1]]
             else:
                 diq_parent = 0
@@ -299,7 +299,7 @@ class gmBoxElement(gmPlotElement):
                 main_box_coord = components['boxes'][0].get_xdata()
                 self.DIQ = max(main_box_coord) - min(main_box_coord)
                 for comp in components.items(): [pyplot.setp(line, color=self.color) for line in comp[1]]
-   
+
     def get_max_value(self, elements):
         maxvalue = 3.0 * max([e.DIQ for e in elements])
         if maxvalue == 0:

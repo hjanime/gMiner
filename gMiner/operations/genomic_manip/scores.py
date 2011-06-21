@@ -11,7 +11,7 @@ class merge_scores(Manip):
        If the boolean value `geometric` is false, the arithmetic mean
        is used, otherwise the geometric mean is used.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Merge scores'
         self.input_tracks       = [{'type':'list of tracks', 'name':'list_of_tracks', 'kind':'quantitative', 'fields':['start','end','score']}]
         self.input_constraints  = []
@@ -22,8 +22,8 @@ class merge_scores(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_union(*args)
+
     def __call__(self, list_of_tracks, geometric=False):
         # Get all iterators #
         sentinel = (sys.maxint, sys.maxint, 0.0)
@@ -69,7 +69,7 @@ class mean_score_by_feature(Manip):
        The output consists of a qualitative stream similar to Y but
        with a new score value property for every feature.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Mean score by feature'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']},
                                    {'type': 'track', 'name': 'Y', 'kind': 'qualitative',  'fields': ['start','end','name','score','strand']}]
@@ -81,22 +81,22 @@ class mean_score_by_feature(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_union(*args)
+
     def __call__(self, X, Y):
         # Sentinel #
         sentinel = (sys.maxint, sys.maxint, 0.0)
         X = common.sentinelize(X, sentinel)
         # Growing and shrinking list of features in X #
-        F = [(-sys.maxint, -sys.maxint, 0.0)] 
+        F = [(-sys.maxint, -sys.maxint, 0.0)]
         # --- Core loop --- #
         for y in Y:
-            # Check that we have all the scores necessary # 
+            # Check that we have all the scores necessary #
             while F[-1][0] < y[1]: F.append(X.next())
             # Throw away the scores that are not needed anymore #
             while True:
                 if F[0][1] <= y[0]: F.pop(0)
-                else: break 
+                else: break
             # Compute the average #
             score = 0.0
             for f in F:
@@ -118,7 +118,7 @@ class threshold(Manip):
 
        * The input is `quantitative` and the output should be `quantitative`:
             Any base pair having a score below `s` is set to a score of 0.0.
-      
+
        * The input is `quantitative` and the output should be `qualitative`:
             The result is a stream where continuous regions which had
             a score equal or above `s` become a feature that has a score
@@ -126,7 +126,7 @@ class threshold(Manip):
             by base pair.
 
        * The input is `qualitative` and the output should be `qualitative`:
-            Features having a score below `s` are removed. 
+            Features having a score below `s` are removed.
 
        * The input is `qualitative` and the output should be `quantitative`:
             Features having a score below `s` are removed. Remaining features
@@ -147,8 +147,8 @@ class threshold(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_union(*args)
+
     def qual_to_qual(self, X, s):
         for x in X:
             if x[2] >= s: yield x
@@ -173,7 +173,7 @@ class window_smoothing(Manip):
        Border cases are handled by zero padding and the signal's
        support is invariant.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Smooth scores'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'quantitative', 'fields': ['start','end','score']}]
         self.input_constraints  = []
@@ -184,8 +184,8 @@ class window_smoothing(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_union(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_union(*args)
+
     def __call__(self, X, L, stop_val):
         # Sentinel #
         sentinel = (sys.maxint, sys.maxint, 0.0)
@@ -195,7 +195,7 @@ class window_smoothing(Manip):
         # Current position counting on nucleotides (first nucleotide is zero) #
         p = -L-2
         # Position since which the mean hasn't changed #
-        same_since = -L-3 
+        same_since = -L-3
         # The current mean and the next mean #
         curt_mean = 0
         next_mean = 0
@@ -211,10 +211,10 @@ class window_smoothing(Manip):
             # Window start and stop #
             s = p-L
             e = p+L+1
-            # Scores entering window # 
+            # Scores entering window #
             if F[-1][1] < e: F.append(X.next())
             if F[-1][0] < e: next_mean += F[-1][2] * f
-            # Scores exiting window # 
+            # Scores exiting window #
             if F[ 0][1] < s: F.pop(0)
             if F[ 0][0] < s: next_mean -= F[ 0][2] * f
             # Border condition on the left #
@@ -222,7 +222,7 @@ class window_smoothing(Manip):
                 curt_mean = 0
                 same_since = p
                 continue
-            # Border condition on the right #                                  
+            # Border condition on the right #
             if p == stop_val:
                 if curt_mean != 0: yield (same_since, p, curt_mean)
                 break

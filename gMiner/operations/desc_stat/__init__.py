@@ -10,36 +10,36 @@ from .. import genomic_manip as manip
 class gmSubtrack(object):
     def __init__(self, request, track, selection, parent=None):
         self.request = request
-        self.track = track 
+        self.track = track
         self.selection = selection
         self.parent = parent
-        
+
         # Unique chromosome #
         self.chr = None
         if self.selection['type'] == 'chr': self.chr = selection['chr']
         if self.selection['type'] == 'regions' and self.request['per_chromosome']: self.chr = selection['regions'][0]['chr']
         if self.selection['type'] == 'trackchr': self.chr = selection['chr']
-    
+
     def __iter__(self):
         if self.selection['type'] == 'chr':
             yield self.track.read(self.selection['chr'], self.fields)
         elif self.selection['type'] == 'all':
             for chr in self.track.chrs: yield self.track.read(chr, self.fields)
-        elif self.selection['type'] == 'regions': 
+        elif self.selection['type'] == 'regions':
             for span in self.selection['regions']: yield self.track.read(span, self.fields)
-        elif self.selection['type'] == 'trackchr': 
+        elif self.selection['type'] == 'trackchr':
             with Track(self.request['selected_regions'], readonly=True) as t:
                 for x in self.make_overlap(t, self.selection['chr']): yield x
         elif self.selection['type'] == 'track':
             with Track(self.request['selected_regions'], readonly=True) as t:
                 for chrom in self.track.chrs:
                     for x in self.make_overlap(t, chrom): yield x
- 
+
     def make_overlap(self, t, chrom):
         sel_feats  = t.read(chrom, ['start', 'end'])
         orig_feats = self.track.read(chrom, self.fields)
         yield manip.filter()(orig_feats, sel_feats)
-        
+
 ###########################################################################
 def track_cut_down(request, track):
     regions = request['selected_regions']
@@ -105,7 +105,7 @@ class gmCharacteristic(object):
         func.units        = 'Count'
         func.collapse     = 'by_adding'
         return func
-    @classmethod 
+    @classmethod
     @num_of_features_options
     def number_of_features(cls, iterable):
         '''Returns the number of features'''
@@ -121,11 +121,11 @@ class gmCharacteristic(object):
         func.units        = 'Base pairs'
         func.collapse     = 'by_adding'
         return func
-    @classmethod 
+    @classmethod
     @base_coverage_options
     def base_coverage(cls, iterable):
         '''Returns the base coverage'''
-        sum = 0 
+        sum = 0
         position = -1
         for x in iterable:
             if x[1] > position:

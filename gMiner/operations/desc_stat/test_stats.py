@@ -11,7 +11,7 @@ try:
 except ImportError:
     import unittest
 
-################################################################################### 
+###################################################################################
 class Test_Stats(unittest.TestCase):
     def runTest(self):
         track = track_collections['Validation'][1]

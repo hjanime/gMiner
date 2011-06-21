@@ -13,12 +13,12 @@ try:
 except ImportError:
     import unittest
 
-################################################################################### 
+###################################################################################
 class Test(unittest.TestCase):
     def runTest(self):
         outdir = tempfile.mkdtemp(prefix='gMiner')
         self.maxDiff = None
-        
+
         tests = [{'kwargs': {'track1'          : track_collections['Scores'][1]['path'],
                              'track1_name'     : 'Validation score track 1',
                              'track1_chrs'     : yeast_chr_file,
@@ -85,7 +85,7 @@ class Test(unittest.TestCase):
                              'output_location' : outdir},
                    'expected':  [(20, 80, 160.0)]}
                 ]
-        
+
         for t in tests: run_request(self, t)
         os.removedirs(outdir)
 

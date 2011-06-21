@@ -10,7 +10,7 @@ class bool_not(Manip):
     '''The result consists of all intervals that were not
        covered by a feature in the original stream'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Boolean NOT'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end']}]
         self.input_constraints  = []
@@ -21,8 +21,8 @@ class bool_not(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args)
+
     def __call__(self, X, stop_val):
         last_end = 0
         for x in X:
@@ -40,7 +40,7 @@ class bool_and(Manip):
        new features that exacly match the overlaping zones.
        This is equivalent to the boolean `AND` operation.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Boolean AND'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
@@ -52,8 +52,8 @@ class bool_and(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_intersection(*args)
+
     def __call__(self, X, Y):
         def make_name(a, b):
             if a and b: return a + ' + ' + b
@@ -93,8 +93,8 @@ class bool_and(Manip):
                 for z in scan(x, Wx, y, Wy, 0): yield z
                 x = X.next()
             else:
-                for z in scan(y, Wy, x, Wx, 1): yield z 
-                y = Y.next()      
+                for z in scan(y, Wy, x, Wx, 1): yield z
+                y = Y.next()
 
 #-------------------------------------------------------------------------------------------#
 class bool_or(Manip):
@@ -102,7 +102,7 @@ class bool_or(Manip):
        the merge operation on the result.
        This is equivalent to the boolean `OR` operation.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Boolean OR'
         self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
@@ -114,8 +114,8 @@ class bool_or(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_intersection(*args)
+
     def __call__(self, X, Y):
         from .basic import concatenate
         from .standard import merge
@@ -140,8 +140,8 @@ class bool_xor(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
-    
+    def chr_collapse(self, *args): return common.collapse.by_intersection(*args)
+
     def __call__(self, X1, X2, Y1, Y2, stop_val):
         a = bool_and()
         o = bool_or()

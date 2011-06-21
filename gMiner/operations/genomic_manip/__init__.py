@@ -11,7 +11,7 @@ def track_matches_desc(track, info):
     # Fields #
     if info['fields'][-1] == '...':
         if set(info['fields'][:-1]) > set(track.fields): return False
-    else:                           
+    else:
         if set(info['fields'])      > set(track.fields): return False
     # Default case #
     return True
@@ -26,7 +26,7 @@ class TrackCollection(object):
         for chrom in self.chrs: self.meta_chr.append({'name': chrom, 'length': max([m['length'] for n in tracks for m in n.meta_chr if m['length'] and m['name'] == chrom])})
     def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
 
-############################################################################################# 
+#############################################################################################
 class Manipulation(object):
     def __call__(self, in_type=None, out_type=None, **kwargs):
         for x in {('qualitative'  , None):           self.qual,
@@ -45,7 +45,7 @@ class Manipulation(object):
     def qual_to_qual(self): raise NotImplementedError
     def quan_to_qual(self): raise NotImplementedError
     def quan_to_quan(self): raise NotImplementedError
-    
+
     #-------------------------------------------------------------------------------------------#
     def get_parameter_stop_val(self, chr_name):
         for chrom in self.chrmeta:
@@ -67,7 +67,7 @@ class Manipulation(object):
                         tracks.append(self.req_tracks[i])
                         self.req_tracks.pop(i)
                 if tracks: t['obj'] = TrackCollection(tracks)
-            else: 
+            else:
                 for req_t in self.req_tracks:
                     if track_matches_desc(req_t, t):
                         t['obj'] = req_t
@@ -99,7 +99,7 @@ class Manipulation(object):
         for i in self.input_special:
             if i['type'] == 'in_datatype':  base_kwargs[i['name']] = self.input_tracks[0]['obj'].datatype
             if i['type'] == 'out_datatype':
-                if self.request.has_key(i['type']): datatype = self.request[i['type']] 
+                if self.request.has_key(i['type']): datatype = self.request[i['type']]
                 else:                               datatype = self.input_tracks[0]['obj'].datatype
                 base_kwargs[i['name']]                 = datatype
                 for t in self.output_tracks: t['kind'] = datatype
@@ -133,7 +133,7 @@ class Manipulation(object):
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
         # Only one output track #
-        T = self.output_tracks[0] 
+        T = self.output_tracks[0]
         for chrom in self.chrs:
             kwargs = base_kwargs.copy()
             for t in self.input_by_chrom:
@@ -153,7 +153,7 @@ from .basic import *
 from .standard import *
 from .scores import *
 from .boolean import *
- 
+
 def run(request, tracks, output_dir):
     # Manipulation specified #
     if not request.get('manipulation'):
@@ -171,7 +171,7 @@ def run(request, tracks, output_dir):
     # Automatically run it #
     manip.request    = request
     manip.req_tracks = tracks
-    manip.output_dir = output_dir        
+    manip.output_dir = output_dir
     return manip.auto_prepare()
 
 #-----------------------------------------#

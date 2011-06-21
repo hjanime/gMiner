@@ -5,11 +5,11 @@ import sys
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------------#
 class merge(Manip):
     '''Merges features that are adjacent or overlapping in one stream'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Internal merge'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
@@ -20,8 +20,8 @@ class merge(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_appending(*args) 
-   
+    def chr_collapse(self, *args): return common.collapse.by_appending(*args)
+
     def quan(self, X):
         # Setup #
         for x in X: break
@@ -32,14 +32,14 @@ class merge(Manip):
                 x = list(x)
                 l_x = x[1] - x[0]
                 l_y = y[1] - y[0]
-                x[2] = (l_x*x[2] + l_y*y[2])  / (l_x+l_y) 
+                x[2] = (l_x*x[2] + l_y*y[2])  / (l_x+l_y)
                 x[1] = y[1]
             else:
                 yield tuple(x)
                 x = y
         # Last feature #
         yield tuple(x)
-        
+
     def qual(self, X):
         # Setup #
         for x in X: break
@@ -58,12 +58,12 @@ class merge(Manip):
         # Last feature #
         yield tuple(x)
 
-#-------------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------------#
 class filter(Manip):
     '''Computes the overlap of the first stream against the second stream
        returning only complete features from the first stream'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Filter features'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'qualitative', 'fields': ['start','end','...']},
                                    {'type': 'track', 'name': 'Y', 'kind': 'qualitative', 'fields': ['start','end']}]
@@ -75,8 +75,8 @@ class filter(Manip):
         self.output_constraints = []
         self.output_other       = []
 
-    def chr_collapse(self, *args): return common.collapse.by_intersection(*args) 
-   
+    def chr_collapse(self, *args): return common.collapse.by_intersection(*args)
+
     def __call__(self, X, Y):
         sentinel = (sys.maxint, sys.maxint)
         X = common.sentinelize(X, sentinel)
@@ -103,7 +103,7 @@ class filter(Manip):
                     continue_loop = False
                     break
 
-#-------------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------------#
 class neighborhood(Manip):
     '''Given a stream of features and four integers `before_start`, `after_end`,
        `after_start` and `before_end`, this manipulation will output,
@@ -136,7 +136,7 @@ class neighborhood(Manip):
        * If the inputed stream is quantitative, only `before_start` and `after_end`
          are taken into consideration and must be equal.'''
 
-    def __init__(self): 
+    def __init__(self):
         self.name               = 'Neighborhood regions'
         self.input_tracks       = [{'type': 'track', 'name': 'X', 'kind': 'any', 'fields': ['start','end', '...']}]
         self.input_constraints  = []
