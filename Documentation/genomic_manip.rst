@@ -43,6 +43,8 @@ Key                      Value
 
 **output_location**      Specifies the location at which the newly created track will be written.
 
+**output_name**          Optionally specifies the name of the file to be created in ``output_location``.
+
 *[Extra parameters ...]* Depending on the manipulation requested, you may need to provide extra parameters like a window size or a threashold value. Refer to the manipulation documentation for more details.
 ======================== =====
 

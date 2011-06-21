@@ -56,6 +56,8 @@ Key                    Value
 **wanted_chromosomes** An optional list of chromosomes present in the inputed tracks. If such a list is provided, the resulting graph will only contain the specified chromosomes and will ignore those not in the list.
 
 **output_location**    Specifies the location at which the newly created image will be written.
+
+**output_name**          Optionally specifies the name of the file to be created in ``output_location``.
 ====================== =====
 
 Characteristics
