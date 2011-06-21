@@ -50,6 +50,11 @@ Manipulations
 -------------
 Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifiing ``manipulation=`` followed by one of the values in bold below:
 
+Basic
+""""""""
+.. automodule:: gMiner.operations.genomic_manip.basic
+    :members:
+
 Standard
 """"""""
 .. automodule:: gMiner.operations.genomic_manip.standard
