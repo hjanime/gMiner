@@ -130,7 +130,7 @@ class bool_xor(Manip):
 
     def __init__(self):
         self.name               = 'Boolean XOR'
-        self.input_tracks       = [{'type':'track','name':['X1','X2'],'kind':'qualitative','fields':['start','end','name','score','strand']},
+        self.input_tracks       = [{'type':'track','name':['X1','X2'], 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
                                    {'type':'track','name':['Y1','Y2'], 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
         self.input_constraints  = []
         self.input_request      = []

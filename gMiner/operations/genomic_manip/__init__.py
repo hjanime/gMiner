@@ -24,7 +24,7 @@ class TrackCollection(object):
         self.chrs = common.collapse.by_intersection([t.chrs for t in tracks])
         self.meta_chr = []
         for chrom in self.chrs: self.meta_chr.append({'name': chrom, 'length': max([m['length'] for n in tracks for m in n.meta_chr if m['length'] and m['name'] == chrom])})
-    def read(self, selection, fields): return [t.read(selection, fields) for t in self.tracks]
+    def read(self, selection, fields, cursor): return [t.read(selection, fields, cursor=cursor) for t in self.tracks]
 
 #############################################################################################
 class Manipulation(object):
@@ -60,6 +60,8 @@ class Manipulation(object):
                 raise Exception("The number of tracks inputed does not suit the manipulation requested")
         # Find tracks #
         for t in self.input_tracks:
+            if not self.req_tracks:
+                raise Exception("A required track for the manipulation '" + self.request['manipulation'] + "' is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
             if t['type'] == 'list of tracks':
                 tracks = []
                 for i in xrange(len(self.req_tracks) - 1, -1, -1):
@@ -73,7 +75,10 @@ class Manipulation(object):
                         t['obj'] = req_t
                         self.req_tracks.remove(req_t)
                         break
-            if not t.has_key('obj'): raise Exception("A required track for the manipulation '" + self.request['manipulation'] + "' is missing." + " You should include a " + t['kind'] + " track with at least the following fields: " + str(t['fields']))
+                if not t.has_key('obj'):
+                    t['obj'] = self.req_tracks.pop()
+                    if t['obj'].datatype == 'quantitative' and t['kind'] == 'qualitative':
+                        t['convert'] = quan_to_qual()
         # Check all used #
         if not self.req_tracks == []: raise Exception("You provided too many tracks for the manipulation '" + self.request['manipulation'] + "'. The track '" + self.req_tracks[0].name + "' was not used.")
         ##### Input fields #####
@@ -132,6 +137,10 @@ class Manipulation(object):
         ##### Run it #####
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
+        # Maybe convert stream #
+        def read_and_convert(track, chrom, fields, cursor, func=None):
+            if not func: return      track.read(chrom, fields, cursor=cursor)
+            else:        return func(track.read(chrom,         cursor=cursor))
         # Only one output track #
         T = self.output_tracks[0]
         for chrom in self.chrs:
@@ -140,9 +149,9 @@ class Manipulation(object):
                 kwargs[t['name']] = getattr(self, 'get_parameter_' + t['type'])(chrom)
             for t in self.input_tracks:
                 if type(t['name']) != list:
-                    kwargs[t['name']] = t['obj'].read(chrom, t['fields'])
+                    kwargs[t['name']] = read_and_convert(t['obj'], chrom, t['fields'], cursor=True, func=t.get('convert', None))
                 else:
-                    for n in t['name']: kwargs[n] = t['obj'].read(chrom, t['fields'], cursor=True)
+                    for n in t['name']: kwargs[n] = read_and_convert(t['obj'], chrom, t['fields'], cursor=True, func=t.get('convert', None))
             T['obj'].write(chrom, self(**kwargs), T['fields'])
         self.output_tracks[0]['obj'].unload()
         return [t['location'] for t in self.output_tracks]

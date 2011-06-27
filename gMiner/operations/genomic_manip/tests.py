@@ -37,7 +37,7 @@ def run_one(case, t):
 
 def run_request(case, t):
     files = gMiner.run(**t['kwargs'])
-    with Track(files[0], chrfile=yeast_chr_file) as x:
+    with Track(files[0], chrmeta=yeast_chr_file) as x:
         data = list(x.read('chr1'))
     os.remove(files[0])
     case.assertEqual(data, t['expected'])

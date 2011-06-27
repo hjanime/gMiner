@@ -84,6 +84,17 @@ class Test(unittest.TestCase):
                              'out_datatype'    : 'qualitative',
                              'output_location' : outdir},
                    'expected':  [(20, 80, 160.0)]}
+                 ,
+                 {'kwargs': {'track1'          : track_collections['Signals'][1]['path'],
+                             'track1_name'     : 'Validation signal track 3',
+                             'track1_chrs'     : yeast_chr_file,
+                             'track2'          : track_collections['Signals'][2]['path'],
+                             'track2_name'     : 'Validation signal track 2',
+                             'track2_chrs'     : yeast_chr_file,
+                             'operation_type'  : 'genomic_manip',
+                             'manipulation'    : 'bool_and',
+                             'output_location' : outdir},
+                   'expected':  [(5, 10, u'Unnamed + Unnamed', 0.0, 0), (25, 30, u'Unnamed + Unnamed', 0.0, 0)]}
                 ]
 
         for t in tests: run_request(self, t)

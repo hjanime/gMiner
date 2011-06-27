@@ -41,7 +41,7 @@ class quan_to_qual(Manip):
         self.input_constraints  = []
         self.input_request      = []
         self.input_special      = []
-        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','score']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'qualitative', 'fields': ['start','end','name','score','strand']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -49,7 +49,7 @@ class quan_to_qual(Manip):
 
     def __call__(self, X):
         # Setup #
-        for x in X: yield x
+        for x in X: yield (x[0], x[1], 'Unnamed', x[2], 0)
 
 #-------------------------------------------------------------------------------------------#
 class flatten(Manip):
