@@ -4,12 +4,10 @@ import time
 # Change backend #
 import matplotlib
 matplotlib.use('Agg', warn=False)
-# If this continues to cause trouble,
-# use the following experimental feature:
-# matplotlib.pyplot.switch_backend('Agg')
 
 # Plotting module #
 import matplotlib.pyplot as pyplot
+# experimental feature: pyplot.switch_backend('Agg')
 
 # gMiner Modules #
 from ...constants import *

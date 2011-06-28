@@ -12,6 +12,13 @@ except ImportError:
 
 ###################################################################################
 class Test(unittest.TestCase):
+    def setUp(self):
+        import matplotlib
+        matplotlib.use('Agg', warn=False)
+        import matplotlib.pyplot as pyplot
+        if pyplot.get_backend() != 'agg':
+            self.skipTest("The backend for matplotlib was not set correctly.")
+
     def runTest(self):
         outdir = '/tmp/gMiner/'
 

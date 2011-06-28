@@ -1,6 +1,5 @@
 # General modules #
 import scipy
-import matplotlib.pyplot as p
 
 # Other modules #
 from bbcflib.track import Track
@@ -23,6 +22,7 @@ def get_signal(T, chrom):
         return s, t.name
 
 def correlate(X, Y, chrom):
+    import matplotlib.pyplot as p
     x, x_name = get_signal(X, chrom)
     y, y_name = get_signal(Y, chrom)
     print x
