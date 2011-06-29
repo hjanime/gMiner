@@ -59,28 +59,13 @@ class bool_and(Manip):
             if a and b: return a + ' + ' + b
             elif a: return a
             return b
-        def scan(f, Wf, g, Wg, lastPick):
-            g_index = 0
-            while g_index < len(Wg):
-                g_current = Wg[g_index]
-                if left_of(g_current, f):
-                    Wg.pop(g_index)
-                else:
-                    g_index += 1
-                    if overlaps(g_current, f):
-                        yield (max(f[0],g_current[0]),
-                               min(f[1],g_current[1]),
-                               make_name(f[2], g_current[2]),
-                               (f[3]+g_current[3])/2.0,
-                               f[4] and g_current[4] or 0)
-            if not left_of(f, g):
-                Wf.append(f)
-        def left_of(a, b):
-            return (a[1] < b[0])
-        def overlaps(a, b):
-            return min(a[1],b[1]) - max(a[0],b[0]) > 0
-        # fjoin: Simple and Efficient Computation of Feature Overlap #
-        # J. Comp. Bio., 13(8), Oct. 2006, pp 1457-1464. #
+        def make_feature(a, b):
+            return (max(a[0],b[0]),
+                    min(a[1],b[1]),
+                    make_name(a[2], b[2]),
+                    (a[3]+b[3])/2.0,
+                    a[4]==b[4] and b[4] or 0)
+        # Preparation #
         sentinel = (sys.maxint, sys.maxint)
         X = common.sentinelize(X, sentinel)
         Y = common.sentinelize(Y, sentinel)
@@ -88,13 +73,30 @@ class bool_and(Manip):
         y = Y.next()
         Wx = []
         Wy = []
+        # Core loop stops when both x and y are at the sentinel
         while x[0] != sentinel or y[0] != sentinel:
+            # Take the leftmost current feature and scan it against the other window
             if x[0] < y[0]:
-                for z in scan(x, Wx, y, Wy, 0): yield z
+                # Remove features from the y window that are left of x
+                Wy = [f for f in Wy if f[1] > x[0]]
+                # Yield new features with all overlaps of x in Wy
+                for f in [f for f in Wy if f[1] > x[0] and x[1] > f[0]]: yield make_feature(x, f)
+                # Put x in the window only if it is not left of y
+                if x[1] >= y[0]: Wx.append(x)
+                # Advance current x feature
                 x = X.next()
             else:
-                for z in scan(y, Wy, x, Wx, 1): yield z
+                # Remove features from the x window that are left of y
+                Wx = [f for f in Wx if f[1] > y[0]]
+                # Yield new features with all overlaps of y in Wx
+                for f in [f for f in Wx if f[1] > y[0] and y[1] > f[0]]: yield make_feature(y, f)
+                # Put y in the window only if it is not left of x
+                if y[1] >= x[0]: Wy.append(y)
+                # Advance current y feature
                 y = Y.next()
+        # Inspired from: #
+        # fjoin: Simple and Efficient Computation of Feature Overlap #
+        # Journal of Computational Biology, 13(8), Oct. 2006, pp 1457-1464. #
 
 #-------------------------------------------------------------------------------------------#
 class bool_or(Manip):
