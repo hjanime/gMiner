@@ -1,3 +1,6 @@
+# General modules #
+import os
+
 # Other modules #
 from bbcflib.track.test_variables import track_collections
 
@@ -21,6 +24,7 @@ class Test(unittest.TestCase):
 
     def runTest(self):
         outdir = '/tmp/gMiner/'
+        if not os.path.exists(outdir): os.mkdir(outdir)
 
         # Simple boxplot #
         files = gMiner.run(
