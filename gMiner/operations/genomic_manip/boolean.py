@@ -37,7 +37,7 @@ class bool_not(Manip):
 #-------------------------------------------------------------------------------------------#
 class bool_and(Manip):
     '''Computes the overlap between both streams returning
-       new features that exacly match the overlaping zones.
+       new features that exactly match the overlapping zones.
        This is equivalent to the boolean `AND` operation.'''
 
     def __init__(self):
