@@ -34,15 +34,17 @@ If you are missing the ``easy_install`` utility just enter one of the following 
 
      $ sudo apt-get install python-setuptools
      $ sudo yum install python-setuptools
+     $ sudo port install python-setuptools
 
 Requirements
 """"""""""""
-gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the three following packages: ``matplotlib, cherrypy, python-magic``. These package dependencies will automatically be resolved if you use the ``pip`` command.
+gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the two following packages: ``matplotlib, python-magic``. These package dependencies will automatically be resolved if you use the ``pip`` command.
 
 If you get strange errors when ``pip`` tries to install matplotlib (because of the ft2font extension for instance), just type one of the following commands::
 
      $ sudo apt-get install python-matplotlib
      $ sudo yum install python-matplotlib
+     $ sudo port install python-setuptools
 
 Upgrading
 """""""""
@@ -62,15 +64,26 @@ To download a copy of the gFeatMiner code to your computer, simply use the follo
 
 Developement copy
 """""""""""""""""
-Executing the previous command enables you to play with a second copy of gFeatMiner while leaving the one installed in the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory the git repository root::
+Executing the previous command enables you to play with a second copy of gFeatMiner while leaving the one installed in the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory to the git repository root::
 
     $ cd gMiner
     $ python -c "import gMiner; print gMiner.__file__"
 
+Manual install
+""""""""""""""
+If you have downloaded the source code, you can switch to the git repository root and manually install gMiner like so::
+
+    $ sudo python setup.py install
+
+If you need to install it in a particular directory, use::
+
+    $ sudo python setup.py install --prefix=/prefix/path
+
+
 How do I use it ?
 -----------------
 Once gFeatMiner is installed, you use it in a python script by importing it and running a job, like so::
-     
+
     import gMiner
     files = gMiner.run(
         track1          = '/scratch/genomic/tracks/all_yeast_genes.sql',
@@ -82,11 +95,11 @@ Once gFeatMiner is installed, you use it in a python script by importing it and 
         output_location = '/tmp/',
     )
 
-The ``files`` varaible now contains the a list of file paths. In this case:: 
+The ``files`` varaible now contains the a list of file paths. In this case::
 
     ['/tmp/gminer_number_of_features.png']
 
-Other types of job, for instance, might create new tracks instead of image files. Here is an exemple that creates a new genomic track in the temporary directory::
+Other types of job, for instance, might create new tracks instead of image files. Here is an example that creates a new genomic track in the temporary directory::
 
     import gMiner
     files = gMiner.run(
@@ -95,7 +108,7 @@ Other types of job, for instance, might create new tracks instead of image files
        track2          = '/scratch/genomic/tracks/hiv_bushman.sql',
        track2_name     = 'hg19 HIV integration sites from liftOver',
        operation_type  = 'genomic_manip',
-       manipulation    = 'overlap_track',
+       manipulation    = 'overlap',
        output_location = '/tmp/',
     )
 
