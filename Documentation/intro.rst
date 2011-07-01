@@ -38,7 +38,7 @@ If you are missing the ``easy_install`` utility just enter one of the following 
 
 Requirements
 """"""""""""
-gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the two following packages: ``matplotlib, python-magic``. These package dependencies will automatically be resolved if you use the ``pip`` command.
+gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the two following packages: ``matplotlib, python-magic, bbcflib``. These package dependencies will automatically be resolved if you use the ``pip`` command.
 
 If you get strange errors when ``pip`` tries to install matplotlib (because of the ft2font extension for instance), just type one of the following commands::
 
