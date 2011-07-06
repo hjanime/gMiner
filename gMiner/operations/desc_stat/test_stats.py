@@ -1,9 +1,9 @@
-# Other modules #
-from bbcflib.track import Track
-from bbcflib.track.test_variables import track_collections
-
 # Internal modules #
 from .. import desc_stat
+
+# Other modules #
+from bbcflib import track
+from bbcflib.track.track_collection import track_collections
 
 # Unittesting #
 try:
@@ -11,32 +11,35 @@ try:
 except ImportError:
     import unittest
 
+# Nosetest flag #
+__test__ = True
+
 ###################################################################################
 class Test_Stats(unittest.TestCase):
     def runTest(self):
-        track = track_collections['Validation'][1]
-        with Track(track['path_sql']) as track['track']:
-            track['data'] = list(track['track'].read('chr1'))
+        t = track_collections['Validation'][1]
+        with track.load(t['path_sql']) as t['track']:
+            t['data'] = list(t['track'].read('chr1'))
         tests  = [
                 {'fn':       desc_stat.gmCharacteristic.number_of_features,
-                 'input':    track['data'],
+                 'input':    t['data'],
                  'expected': 12},
 
                 {'fn':       desc_stat.gmCharacteristic.base_coverage,
-                 'input':    track['data'],
+                 'input':    t['data'],
                  'expected': 85},
 
                 {'fn':       desc_stat.gmCharacteristic.length,
-                 'input':    track['data'],
+                 'input':    t['data'],
                  'expected': [10, 6, 10, 5, 5, 10, 10, 10, 10, 20, 10, 10]},
 
                 {'fn':       desc_stat.gmCharacteristic.score,
-                 'input':    track['data'],
+                 'input':    t['data'],
                  'expected': [10.0, 0.0, 10.0, 0.0, 0.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 5.0]},
                 ]
 
-        for t in tests:
-            self.assertEqual(t['fn']([[d[Track.qualitative_fields.index(f)] for f in t['fn'].fields] for d in t['input']]), t['expected'])
+        for case in tests:
+            self.assertEqual(case['fn']([[d[track.Track.qualitative_fields.index(f)] for f in case['fn'].fields] for d in case['input']]), case['expected'])
 
 #-----------------------------------------#
 # This code was written by Lucas Sinclair #

@@ -3,11 +3,10 @@ This module will genereate almost every possible graph with the desc_stat module
 '''
 
 # General modules #
-import os, sys, tempfile
+import os, tempfile
 
 # Other modules #
-from bbcflib.track import Track
-from bbcflib.track.test_variables import track_collections
+from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
 import gMiner

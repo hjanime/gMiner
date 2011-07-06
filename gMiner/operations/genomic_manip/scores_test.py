@@ -1,5 +1,5 @@
 # Other modules #
-from bbcflib.track.test_variables import track_collections
+from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
 from .. import genomic_manip
@@ -10,6 +10,9 @@ try:
     import unittest2 as unittest
 except ImportError:
     import unittest
+
+# Nosetest flag #
+__test__ = True
 
 ###################################################################################
 class Test(unittest.TestCase):

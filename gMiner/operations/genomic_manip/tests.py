@@ -1,12 +1,12 @@
-# General modules #
+# Built-in modules #
 import os
-
-# Other modules #
-from bbcflib.track import Track
-from bbcflib.track.test_variables import yeast_chr_file
 
 # Internal modules #
 import gMiner
+
+# Other modules #
+from bbcflib import track
+from bbcflib.track.track_collection import yeast_chr_file
 
 ###################################################################################
 def run_one(case, t):
@@ -18,10 +18,10 @@ def run_one(case, t):
                 t['tracks'][k] = iter(v)
             else:
                 if t.get('fields') and t['fields'].get(k):
-                    with Track(v) as x:
+                    with track.load(v) as x:
                         t['tracks'][k] = iter(list(x.read('chr1', fields=t['fields'][k])))
                 else:
-                    with Track(v) as x:
+                    with track.load(v) as x:
                         t['tracks'][k] = iter(list(x.read('chr1')))
         kwargs = t.get('input', {})
         kwargs.update(t['tracks'])
@@ -30,14 +30,14 @@ def run_one(case, t):
             if type(v) == list:
                 t['input']['list_of_tracks'][i] = iter(v)
             else:
-                with Track(v) as x: t['input']['list_of_tracks'][i] = iter(list(x.read('chr1')))
+                with track.load(v) as x: t['input']['list_of_tracks'][i] = iter(list(x.read('chr1')))
         kwargs = t['input']
     # Run it #
     case.assertEqual(list(t['fn'](**kwargs)), t['expected'])
 
 def run_request(case, t):
     files = gMiner.run(**t['kwargs'])
-    with Track(files[0], chrmeta=yeast_chr_file) as x:
+    with track.load(files[0], chrmeta=yeast_chr_file) as x:
         data = list(x.read('chr1'))
     os.remove(files[0])
     case.assertEqual(data, t['expected'])

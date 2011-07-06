@@ -1,4 +1,4 @@
-# General modules #
+# Built-in modules #
 import numpy
 
 # Internal modules #
@@ -10,6 +10,9 @@ try:
     import unittest2 as unittest
 except ImportError:
     import unittest
+
+# Nosetest flag #
+__test__ = True
 
 #----------------------------------------------------------------------------------#
 def smooth_signal(data, L):
