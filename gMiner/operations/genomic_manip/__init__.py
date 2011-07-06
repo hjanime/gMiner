@@ -1,5 +1,5 @@
 # Other modules #
-from bbcflib.track import Track, new
+from bbcflib import track
 
 # Internal modules #
 from ... import common
@@ -85,7 +85,7 @@ class Manipulation(object):
         for t in self.input_tracks:
             if t['fields'][-1] == '...':
                 t['fields'] = t['fields'][:-1]
-                t['fields'] += [f for f in Track.qualitative_fields if f in t['obj'].fields and not f in t['fields']]
+                t['fields'] += [f for f in track.Track.qualitative_fields if f in t['obj'].fields and not f in t['fields']]
                 t['fields'] += [f for f in t['obj'].fields if not f in t['fields']]
         ##### Input request #####
         base_kwargs = {}
@@ -108,7 +108,7 @@ class Manipulation(object):
                 else:                               datatype = self.input_tracks[0]['obj'].datatype
                 base_kwargs[i['name']]                 = datatype
                 for t in self.output_tracks: t['kind'] = datatype
-                if datatype == 'quantitative': t['fields'] = Track.quantitative_fields
+                if datatype == 'quantitative': t['fields'] = track.Track.quantitative_fields
                 if datatype == 'qualitative':  t['fields'] = {'same': 0}
         ##### Output chromosomes #####
         self.chrs = self.chr_collapse([t['obj'].chrs for t in self.input_tracks])
@@ -116,10 +116,10 @@ class Manipulation(object):
         for t in self.output_tracks:
             if t['kind'] == 'various':
                 t['kind'] = ''
-            t['name']     = self.name + ' on ' + common.andify_strings([track['obj'].name for track in self.input_tracks])
+            t['name']     = self.name + ' on ' + common.andify_strings([i['obj'].name for i in self.input_tracks])
             if self.request.get('output_name'): t['location'] = self.output_dir + '/' + self.request['output_name'] + '.sql'
             else: t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
-            t['obj']      = new(t['location'], 'sql', t['kind'], t['name'])
+            t['obj']      = track.new(t['location'], 'sql', t['kind'], t['name'])
         ##### Output meta track #####
         for t in self.output_tracks:
             t['obj'].meta_track = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}
@@ -138,9 +138,9 @@ class Manipulation(object):
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
         # Maybe convert stream #
-        def read_and_convert(track, chrom, fields, cursor, func=None):
-            if not func: return      track.read(chrom, fields, cursor=cursor)
-            else:        return func(track.read(chrom,         cursor=cursor))
+        def read_and_convert(t, chrom, fields, cursor, func=None):
+            if not func: return      t.read(chrom, fields, cursor=cursor)
+            else:        return func(t.read(chrom,         cursor=cursor))
         # Only one output track #
         T = self.output_tracks[0]
         for chrom in self.chrs:

@@ -2,7 +2,7 @@
 import scipy
 
 # Other modules #
-from bbcflib.track import Track
+from bbcflib import track
 
 # Internal modules #
 from ..genomic_manip.basic import flatten
@@ -10,7 +10,7 @@ from ..genomic_manip.basic import qual_to_quan
 
 #############################################################################################
 def get_signal(T, chrom):
-    with Track(T) as t:
+    with track.load(T) as t:
         manip = flatten()
         if t.datatype == 'quantitative':
             s = list(manip(t.read(chrom)))

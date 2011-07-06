@@ -5,7 +5,7 @@ import os
 from contextlib import nested
 
 # Other modules #
-from bbcflib.track import Track
+from bbcflib import track
 
 # Internal modules #
 from constants import *
@@ -42,15 +42,15 @@ def run(**request):
     parse_chrlist(request)
     # Prepare the tracks #
     track_dicts = parse_tracks(request)
-    contexts = [Track(t['path'], name=t['name'], chrmeta=t.get('chrs'), readonly=True) for t in track_dicts]
+    contexts = [track.load(t['path'], name=t['name'], chrmeta=t.get('chrs'), readonly=True) for t in track_dicts]
     with nested(*contexts) as tracks:
         # Assign numbers #
         for i, t in enumerate(tracks): t.number = i
         # Determine final chromosome list #
         if request['wanted_chromosomes']:
-            for track in tracks: track.chrs = (set(track.all_chrs) & set(request['wanted_chromosomes']))
+            for t in tracks: t.chrs = (set(t.all_chrs) & set(request['wanted_chromosomes']))
         else:
-            for track in tracks: track.chrs = track.all_chrs
+            for t in tracks: t.chrs = t.all_chrs
         # Run it #
         return run_op(request, tracks, output_dir)
 
@@ -73,9 +73,9 @@ def parse_tracks(request_dict):
     except KeyError:
         raise Exception("Every track specified must have a name associated")
     # Chromosome info #
-    for i, track in enumerate(tracks):
+    for i, t in enumerate(tracks):
         if request_dict.has_key("track" + str(i+1) + '_chrs'):
-            track['chrs'] = request_dict["track" + str(i+1) + '_chrs']
+            t['chrs'] = request_dict["track" + str(i+1) + '_chrs']
     return tracks
 
 def parse_regions(request):

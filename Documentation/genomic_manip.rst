@@ -25,7 +25,7 @@ Parameters
 Here are described all the paramaters that can or should be passed to gFeatMiner's run function.
 
 ======================== =====
-Key                      Value   
+Key                      Value
 ======================== =====
 **track_1**              This specifies the location of the first track file. At least one genomic file must be inputted to compute a statistic. Of course, an undefined number of supplementary tracks can be specified. The order in which they are given may or may not influence the output depending on the operation requested.
 
@@ -77,12 +77,12 @@ Using the library in 'manual' mode
 ----------------------------------
 Instead of accessing gFeatMiner services via the ``gMiner.run()`` function, you can directly import the wanted manipulation and call it manually with your own queries. Here is a short example where a new track containing the ``mean_score_by_feature`` (computed on two other tracks) is created::
 
-    from bbcflib.track import Track, new
+    from bbcflib import track
     from gMiner.operations.genomic_manip.scores import mean_score_by_feature
     manip = mean_score_by_feature()
-    with Track('a.sql') as a:
-        with Track('b.sql') as b:
-            with new('r.sql') as r:
+    with track.load('/scratch/genomic/tracks/pol2.sql') as a:
+        with track.load('/scratch/genomic/tracks/ribosome_proteins.sql') as b:
+            with track.new('/tmp/manual.sql') as r:
                 for chrom in a:
                     r.write(chrom, manip(a.read(chrom), b.read(chrom)))
 
@@ -94,16 +94,17 @@ Now you are only one step away from modifying the input of your manipulation on 
             for i in xrange(num_of_bins):
                 yield (x[0]+i*length, x[0]+(i+1)*length, x[2], x[3], x[4])
 
-    from bbcflib.track import Track, new
+    from bbcflib import track
     from gMiner.operations.genomic_manip.scores import mean_score_by_feature
     manip = mean_score_by_feature()
-    with Track('a.sql') as a:
-        with Track('b.sql') as b:
-            with new('r.sql') as r:
+    with track.load('/scratch/genomic/tracks/pol2.sql') as a:
+        with track.load('/scratch/genomic/tracks/ribosome_proteins.sql') as b:
+            with track.new('/tmp/manual.sql') as r:
                 for chrom in a:
                     r.write(chrom, manip(a.read(chrom), create_bins(b.read(chrom))))
 
+
 Of course when you create tracks using this method, the resulting database is missing all its metadata. You probably will want to copy that over at some moment::
 
-    r.meta_chr   = b.meta_chr
+    r.meta_chr   = a.meta_chr
     r.meta_track = {'datatype': 'qualitative', 'name': 'Mean score per bin', 'created_by': 'Custom feature bin script'}

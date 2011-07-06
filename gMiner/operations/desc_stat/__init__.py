@@ -1,5 +1,5 @@
 # Other modules #
-from bbcflib.track import Track
+from bbcflib.track import load
 
 # Internal modules #
 from ...constants import *
@@ -28,10 +28,10 @@ class gmSubtrack(object):
         elif self.selection['type'] == 'regions':
             for span in self.selection['regions']: yield self.track.read(span, self.fields)
         elif self.selection['type'] == 'trackchr':
-            with Track(self.request['selected_regions'], readonly=True) as t:
+            with load(self.request['selected_regions'], readonly=True) as t:
                 for x in self.make_overlap(t, self.selection['chr']): yield x
         elif self.selection['type'] == 'track':
-            with Track(self.request['selected_regions'], readonly=True) as t:
+            with load(self.request['selected_regions'], readonly=True) as t:
                 for chrom in self.track.chrs:
                     for x in self.make_overlap(t, chrom): yield x
 
@@ -66,7 +66,7 @@ def track_cut_down(request, track):
             yield gmSubtrack(request, track, {'type': 'track', 'track': request['selected_regions']}, False)
             if request['compare_parents']: yield gmSubtrack(request, track, {'type': 'all'}, True)
         else:
-            with Track(request['selected_regions'], readonly=True) as t:
+            with load(request['selected_regions'], readonly=True) as t:
                 for chr in track.chrs:
                     if chr not in t: continue
                     yield gmSubtrack(request, track, {'type': 'trackchr', 'chr': chr}, False)
