@@ -1,10 +1,11 @@
 # Other modules #
 from bbcflib import track
+from bbcflib.track.track_bundle import TrackBundle
 
 # Internal modules #
 from ... import common
 
-#############################################################################################
+#------------------------------------------------------------------------------#
 def track_matches_desc(track, info):
     # Datatype #
     if not info['kind'] == 'any' and track.datatype != info['kind']: return False
@@ -16,17 +17,7 @@ def track_matches_desc(track, info):
     # Default case #
     return True
 
-#############################################################################################
-class TrackCollection(object):
-    def __init__(self, tracks):
-        self.tracks = tracks
-        self.name = 'Collection of ' + str(len(tracks)) + ' track' + ((len(tracks) > 1) and 's' or '')
-        self.chrs = common.collapse.by_intersection([t.chrs for t in tracks])
-        self.meta_chr = []
-        for chrom in self.chrs: self.meta_chr.append({'name': chrom, 'length': max([m['length'] for n in tracks for m in n.meta_chr if m['length'] and m['name'] == chrom])})
-    def read(self, selection, fields, cursor): return [t.read(selection, fields, cursor=cursor) for t in self.tracks]
-
-#############################################################################################
+################################################################################
 class Manipulation(object):
     def __call__(self, in_type=None, out_type=None, **kwargs):
         for x in {('qualitative'  , None):           self.qual,
@@ -48,8 +39,7 @@ class Manipulation(object):
 
     #-------------------------------------------------------------------------------------------#
     def get_parameter_stop_val(self, chr_name):
-        for chrom in self.chrmeta:
-            if chrom['name'] == chr_name: return chrom['length']
+        return self.output_tracks[0]['obj'].chrmeta[chr_name]
 
     #-------------------------------------------------------------------------------------------#
     def auto_prepare(self):
@@ -68,7 +58,7 @@ class Manipulation(object):
                     if track_matches_desc(self.req_tracks[i], t):
                         tracks.append(self.req_tracks[i])
                         self.req_tracks.pop(i)
-                if tracks: t['obj'] = TrackCollection(tracks)
+                if tracks: t['obj'] = TrackBundle(tracks)
             else:
                 for req_t in self.req_tracks:
                     if track_matches_desc(req_t, t):
@@ -119,21 +109,18 @@ class Manipulation(object):
             t['name']     = self.name + ' on ' + common.andify_strings([i['obj'].name for i in self.input_tracks])
             if self.request.get('output_name'): t['location'] = self.output_dir + '/' + self.request['output_name'] + '.sql'
             else: t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
-            t['obj']      = track.new(t['location'], 'sql', t['kind'], t['name'])
+            t['obj']      = track.new(t['location'], 'sql', t['name'])
         ##### Output meta track #####
         for t in self.output_tracks:
-            t['obj'].meta_track = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}
-        ##### Output meta chr #####
-        self.chrmeta = []
-        for chrom in self.chrs: self.chrmeta.append({'name': chrom, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].meta_chr if m['length'] and m['name'] == chrom])})
-        for t in self.output_tracks: t['obj'].meta_chr = self.chrmeta
+            t['obj'].attributes = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}
+        ##### Output chrmeta #####
+        for i in self.output_tracks:
+            i['obj'].chrmeta = self.input_tracks[0]['obj'].chrmeta
+            for j in self.input_tracks: i['obj'].chrmeta.choose_max(j['obj'].chrmeta)
         ##### Output fields #####
         for t in self.output_tracks:
             if type(t['fields']) == dict:
                 if t['fields'].has_key('same'): t['fields'] = self.input_tracks[t['fields']['same']]['fields']
-        self.chrmeta = []
-        for chrom in self.chrs: self.chrmeta.append({'name': chrom, 'length': max([m['length'] for n in self.input_tracks for m in n['obj'].meta_chr if m['length'] and m['name'] == chrom])})
-        for t in self.output_tracks: t['obj'].meta_chr = self.chrmeta
         ##### Run it #####
         # Several outputs #
         if len(self.output_tracks) > 1: raise NotImplementedError
@@ -156,7 +143,7 @@ class Manipulation(object):
         self.output_tracks[0]['obj'].unload()
         return [t['location'] for t in self.output_tracks]
 
-#############################################################################################
+################################################################################
 # Submodules #
 from .basic import *
 from .standard import *

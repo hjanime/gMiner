@@ -84,4 +84,3 @@ class Test(unittest.TestCase):
 # This code was written by Lucas Sinclair #
 # Kopimi                                  #
 #-----------------------------------------#
-
