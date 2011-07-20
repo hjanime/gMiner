@@ -103,8 +103,7 @@ Now you are only one step away from modifying the input of your manipulation on 
                 for chrom in a:
                     r.write(chrom, manip(a.read(chrom), create_bins(b.read(chrom))))
 
-
 Of course when you create tracks using this method, the resulting database is missing all its metadata. You probably will want to copy that over at some moment::
 
-    r.meta_chr   = a.meta_chr
-    r.meta_track = {'datatype': 'qualitative', 'name': 'Mean score per bin', 'created_by': 'Custom feature bin script'}
+    r.chrmeta    = a.chrmeta
+    r.attributes = {'datatype': 'qualitative', 'name': 'Mean score per bin', 'created_by': 'Custom feature bin script'}

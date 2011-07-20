@@ -1,6 +1,6 @@
-=================
+============
 Introduction
-=================
+============
 
 What is gFeatMiner?
 -------------------
@@ -117,8 +117,12 @@ gFeatMiner is capable of numerous operations on genomic data. Currently, two mod
 * :doc:`desc_stat`
 * :doc:`genomic_manip`
 
+Warning
+-------
+It is important to note that the general numbering convention of features on a chromosome varies depending on the source of the data. For instance, UCSC and Ensembl differ in this point such that an interval labeled `(start=4,end=8)` will span four base pairs according to UCSC but will span five base pairs according to Ensembl. The representation that the this packages sticks to is explained `here <http://bbcf.epfl.ch/twiki/bin/view/BBCF/NumberingConvention>`_
+
 Reporting bugs
-""""""""""""""
+--------------
 The github repository provides an issue tracking system. You are welcome to open a new ticket in it if you think you have found a bug in gFeatMiner:
 
 https://github.com/bbcf/gMiner/issues
