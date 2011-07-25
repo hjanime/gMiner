@@ -1,3 +1,11 @@
+"""
+================================================
+Submodule: gMiner.operations.genomic_manip.tests
+================================================
+
+Unittesting for the various genomic manipulations.
+"""
+
 # Built-in modules #
 import os
 
@@ -8,7 +16,7 @@ import gMiner
 from bbcflib import track
 from bbcflib.track.track_collection import yeast_chr_file
 
-###################################################################################
+################################################################################
 def run_one(case, t):
     # Input variables #
     # Input tracks #
@@ -42,7 +50,8 @@ def run_request(case, t):
     os.remove(files[0])
     case.assertEqual(data, t['expected'])
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

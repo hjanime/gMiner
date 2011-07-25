@@ -1,25 +1,26 @@
-# General modules #
-import time
+"""
+=============================================
+Submodule: gMiner.operations.desc_stat.graphs
+=============================================
 
-# Change backend #
-import matplotlib
-matplotlib.use('Agg', warn=False)
+Methos that create the 8 different plots according to the type of statistic to represent.
+"""
 
 # Plotting module #
+import matplotlib
+matplotlib.use('Agg', warn=False)
 import matplotlib.pyplot as pyplot
 # experimental feature: pyplot.switch_backend('Agg')
 
-# gMiner Modules #
+# Built-in modules #
+import time
+
+# Internal modules #
 from ...constants import *
 from ... import common
 from ..desc_stat import gmCharacteristic
 
-# Constants #
-gm_default_plot_color      = 'magenta'
-gm_default_color_selection = 'green'
-gm_default_color_parent    = 'blue'
-
-###########################################################################
+################################################################################
 class gmGraph(object):
     def __init__(self, request, subtracks, tracks, output_dir):
         self.request = request
@@ -305,7 +306,8 @@ class gmBoxElement(gmPlotElement):
             if all_values: return max(all_values)
         return maxvalue
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

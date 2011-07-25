@@ -2,8 +2,8 @@
 from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
-from .. import genomic_manip
-from .tests import run_one
+from ... import genomic_manip
+from ..tests import run_one
 
 # Unittesting #
 try:
@@ -14,7 +14,7 @@ except ImportError:
 # Nosetest flag #
 __test__ = True
 
-###################################################################################
+################################################################################
 class Test(unittest.TestCase):
     def runTest(self):
         tests = [{'fn':    genomic_manip.scores.merge_scores(),
@@ -91,7 +91,8 @@ class Test(unittest.TestCase):
 
         for t in tests: run_one(self, t)
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

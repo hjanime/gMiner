@@ -1,9 +1,9 @@
-# Internal modules #
-from .. import desc_stat
-
 # Other modules #
 from bbcflib import track
 from bbcflib.track.track_collection import track_collections
+
+# Internal modules #
+from ... import desc_stat
 
 # Unittesting #
 try:
@@ -41,7 +41,8 @@ class Test_Stats(unittest.TestCase):
         for case in tests:
             self.assertEqual(case['fn']([[d[track.Track.qualitative_fields.index(f)] for f in case['fn'].fields] for d in case['input']]), case['expected'])
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

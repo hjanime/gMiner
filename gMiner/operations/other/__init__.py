@@ -35,7 +35,8 @@ def correlate(X, Y, chrom):
     p.show()
     return corr
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

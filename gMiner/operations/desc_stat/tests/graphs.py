@@ -1,17 +1,22 @@
-'''
-This module will genereate almost every possible graph with the desc_stat module.
-'''
+"""
+===================================================
+Submodule: gMiner.operations.desc_stat.tests.graphs
+===================================================
 
-# General modules #
+This module will genereate almost every possible graph with the desc_stat module. It is not included in the standard test suite.
+"""
+
+# Built-in modules #
 import os, tempfile
 
 # Other modules #
 from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
-import gMiner
-from ...constants import *
+from .... import run
+from ....constants import *
 
+################################################################################
 # A naming convention dictonary #
 name_dict = {
     True: {
@@ -80,6 +85,7 @@ collections = {
     },
 }
 
+#------------------------------------------------------------------------------#
 # Main loops #
 def run(result_path='/tmp/gMiner/'):
     if not os.path.isdir(result_path):
@@ -128,9 +134,10 @@ def run(result_path='/tmp/gMiner/'):
                             if b_comp:
                                 request['compare_parents'] = 'True'
                             # Executing the request #
-                            gMiner.run(**request)
+                            run(**request)
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

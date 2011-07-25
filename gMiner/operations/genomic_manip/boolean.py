@@ -1,11 +1,15 @@
-# Modules #
+"""
+The four boolean genomic manipulations.
+"""
+
+# Built-in modules #
 import sys
 
-# Importing #
+# Internal modules #
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------#
+################################################################################
 class bool_not(Manip):
     '''The result consists of all intervals that were not
        covered by a feature in the original stream'''
@@ -150,7 +154,8 @@ class bool_xor(Manip):
         n = bool_not()
         for x in a(o(X1,Y1), n(a(X2,Y2), stop_val)): yield x
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

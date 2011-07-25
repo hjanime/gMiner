@@ -1,3 +1,11 @@
+"""
+========================
+Module: gMiner.constants
+========================
+
+Constant variables used library wide.
+"""
+
 # Project name #
 gm_project_name = 'gMiner'
 gm_project_long_name = 'gFeatMiner'
@@ -7,47 +15,10 @@ gm_doc_url = 'http://bbcf.epfl.ch/gMiner'
 # Current path #
 gm_path = ''
 
-# Convert formats or not #
-gm_convert_dict = {
-    'bed': 'sql',
-    'gff': 'sql',
-    'wig': 'sql',
-}
-
-# File types to extensions #
-gm_known_extensions = {
-    'SQLite 3.x database':                       'sql',
-    'SQLite database (Version 3)':               'sql',
-    'Hierarchical Data Format (version 5) data': 'hdf5',
-}
-
-# Default track fields #
-gm_qualitative_fields  = ['start', 'end', 'name', 'score', 'strand']
-gm_quantitative_fields = ['start', 'end', 'score']
-
-# Field types #
-gm_field_types = {
-    'start':        'integer',
-    'end':          'integer',
-    'score':        'real',
-    'strand':       'integer',
-    'name':         'text',
-    'thick_start':  'integer',
-    'thick_end':    'integer',
-    'item_rgb':     'text',
-    'block_count':  'integer',
-    'block_sizes':  'text',
-    'block_starts': 'text',
-}
-
-# Chromosome names #
-gm_chromosome_name_dictionary = {
-    'MT':       'Q',
-    'chrMito':  'Q',
-    'chrM':     'Q',
-    '2-micron': 'R',
-    '2micron':  'R',
-}
+# Plot colors #
+gm_default_plot_color      = 'magenta'
+gm_default_color_selection = 'green'
+gm_default_color_parent    = 'blue'
 
 # Terminal colors #
 gm_terminal_colors = {
@@ -94,12 +65,3 @@ gm_terminal_colors = {
     'bakcyn': '\033[46m',   # Cyan
     'bakwht': '\033[47m',   # White
 }
-
-# Debuging #
-def trace(): __import__('IPython').Debugger.Pdb(color_scheme='Linux').set_trace()
-def pudb():  __import__('pudb').set_trace()
-
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#

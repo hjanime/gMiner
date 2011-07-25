@@ -1,11 +1,11 @@
 # Built-in modules #
 import os
 
-# Internal modules #
-import gMiner
-
 # Other modules #
 from bbcflib.track.track_collection import track_collections
+
+# Internal modules #
+from .... import run
 
 # Unittesting #
 try:
@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
         if not os.path.exists(outdir): os.mkdir(outdir)
 
         # Simple boxplot #
-        files = gMiner.run(
+        files = run(
            track1          = track_collections['Yeast']['All genes']['path_sql'],
            track1_name     = 'All genes from SGD',
            track2          = track_collections['Yeast']['Ribi genes']['path_sql'],
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         )
 
         # Track selection #
-        files = gMiner.run(
+        files = run(
            track1           = track_collections['Validation'][2]['path_sql'],
            track1_name      = 'Validation track two',
            operation_type   = 'desc_stat',
@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
         # Result should be 120 / 150 or 80%
 
         # Field test via filter #
-        files = gMiner.run(
+        files = run(
            track1           = track_collections['Yeast']['All genes']['path_sql'],
            track1_name      = 'S. cer refseq genes',
            track2           = track_collections['Yeast']['RP genes']['path_sql'],
@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
 
         # Permission test #
         if os.path.exists('/scratch/genomic/tracks/locked.sql'):
-            files = gMiner.run(
+            files = run(
                track1           = '/scratch/genomic/tracks/locked.sql',
                track1_name      = 'Permission test',
                selected_regions = '/scratch/genomic/tracks/locked.sql',
@@ -80,7 +80,8 @@ class Test(unittest.TestCase):
                output_location  = outdir,
             )
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

@@ -1,11 +1,15 @@
-# Modules #
+"""
+Standard manipulations that are found in many different genomic tools.
+"""
+
+# Built-in modules #
 import sys
 
-# Importing #
+# Internal modules #
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------#
+################################################################################
 class merge(Manip):
     '''Merges features that are adjacent or overlapping in one stream'''
 
@@ -201,7 +205,8 @@ class neighborhood(Manip):
         from .basic import bounded
         for x in bounded()(X, 0, stop_val): yield x
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

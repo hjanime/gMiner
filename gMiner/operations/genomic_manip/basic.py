@@ -1,11 +1,15 @@
-# Modules #
+"""
+Basic manipulations that are used internally by other more complex manipulations.
+"""
+
+# Built-in modules #
 import sys
 
-# Importing #
+# Internal modules #
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------#
+################################################################################
 class qual_to_quan(Manip):
     '''Convert a qualitative stream to a quantitative one'''
 
@@ -51,7 +55,7 @@ class quan_to_qual(Manip):
         # Setup #
         for x in X: yield (x[0], x[1], 'Unnamed', x[2], 0)
 
-#-------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
 class flatten(Manip):
     '''From a interval based format create the corresponding
        numeric vector'''
@@ -81,7 +85,7 @@ class flatten(Manip):
         if stop_val:
             for i in xrange(x[1],stop_val): yield 0.0
 
-#-------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
 class bounded(Manip):
     '''Given a stream of features and two integers `min_bound`, `max_bound`,
        this manipulation will output every feature unmodified unless one of the
@@ -106,7 +110,7 @@ class bounded(Manip):
             if not x[1] < min_bound and not x[0] > max_bound and x[0] < x[1]:
                 yield (max(x[0],min_bound), min(x[1],max_bound)) + x[2:]
 
-#-------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
 class concatenate(Manip):
     '''Concatenates N streams such as the resulting stream
        contains all the features of every inputed stream.'''
@@ -147,7 +151,8 @@ class concatenate(Manip):
             yield f
             advance(i)
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

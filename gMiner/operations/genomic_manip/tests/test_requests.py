@@ -2,7 +2,7 @@
 import os, tempfile
 
 # Internal modules #
-from .tests import run_request
+from ..tests import run_request
 
 # Other modules #
 from bbcflib.track.track_collection import track_collections, yeast_chr_file
@@ -103,7 +103,8 @@ class Test(unittest.TestCase):
         for t in tests: run_request(self, t)
         os.removedirs(outdir)
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

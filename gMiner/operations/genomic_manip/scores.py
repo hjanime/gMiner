@@ -1,11 +1,15 @@
-# Modules #
+"""
+Manipulations that deal with or only make sense with quantitative information.
+"""
+
+# Built-in modules #
 import sys
 
-# Importing #
+# Internal modules #
 from . import Manipulation as Manip
 from ... import common
 
-#-------------------------------------------------------------------------------------------#
+################################################################################
 class merge_scores(Manip):
     '''Merges N quantitative streams using some average function.
        If the boolean value `geometric` is false, the arithmetic mean
@@ -65,7 +69,7 @@ class merge_scores(Manip):
 #-------------------------------------------------------------------------------------------#
 class mean_score_by_feature(Manip):
     '''Given a quantitative stream "X" and a qualitative stream "Y"
-       computes the mean of scores in X for every feature in Y.
+       computes the mean of scores of every of Y's features in X.
        The output consists of a qualitative stream similar to Y but
        with a new score value property for every feature.'''
 
@@ -232,7 +236,8 @@ class window_smoothing(Manip):
                 curt_mean  = next_mean
                 same_since = p
 
-#-----------------------------------------#
-# This code was written by Lucas Sinclair #
-# Kopimi                                  #
-#-----------------------------------------#
+#-----------------------------------#
+# This code was written by the BBCF #
+# http://bbcf.epfl.ch/              #
+# webmaster.bbcf@epfl.ch            #
+#-----------------------------------#

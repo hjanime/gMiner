@@ -1,3 +1,11 @@
+"""
+=====================
+Module: gMiner.common
+=====================
+
+Common stuff used in several places.
+"""
+
 ###############################################################################
 def split_thousands(s, tSep='\'', dSep='.'):
     '''
