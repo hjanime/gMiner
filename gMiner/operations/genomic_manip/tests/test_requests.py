@@ -128,7 +128,7 @@ class Test_Copy_Chrmeta(unittest.TestCase):
            manipulation     = 'bool_not',
            output_location  = tempfile.gettempdir(),
         )
-        with load(sql_path, chrmeta=yeast_chr_file) as sql:
+        with load(sql_path, chrmeta=yeast_chr_file, readonly=True) as sql:
             with load(files[0]) as bed:
                 self.assertEqual(sql.chrmeta, bed.chrmeta)
         os.remove(files[0])
