@@ -3,7 +3,7 @@
 Genomic Manipulations
 =====================
 
-Another functionality provided by gFeatMiner is the ability to manipulate genomic data and craete new tracks from existing ones. To access this functionality you must specify ``operation_type=genomic_manip`` in the job request as seen in this exemple, in addition to a few other parameters that are detailed below::
+Another functionality provided by gFeatMiner is the ability to manipulate genomic data and create new tracks from existing ones. To access this functionality you must specify ``operation_type=genomic_manip`` in the job request as seen in this example, in addition to a few other parameters that are detailed below::
 
     import gMiner
     files = gMiner.run(
@@ -30,9 +30,13 @@ Key                      Value
 
 **track_1_name**         This field is also required. Every track must have a name
 
+**track_1_chrs**         If the track is missing required chromosome meta data, you can specify it here under the form of a chromosome file or an assembly name.
+
 **track_2**              The location of the second track file. This field is optional, for instance, if the operation only requires one genomic file
 
 **track_2_name**         The name of the second track.
+
+**track_2_chrs**         Same as above.
 
 *[More tracks ...]*      Following tracks are specified according to the standard ``track_N`` and ``track_N_name``
 
@@ -44,7 +48,7 @@ Key                      Value
 
 **output_name**          Optionally specifies the name of the file to be created in ``output_location``.
 
-*[Extra parameters ...]* Depending on the manipulation requested, you may need to provide extra parameters like a window size or a threashold value. Refer to the manipulation documentation for more details.
+*[Extra parameters ...]* Depending on the manipulation requested, you may need to provide extra parameters like a window size or a threshold value. Refer to the manipulation documentation for more details.
 ======================== =====
 
 Using the library in 'manual' mode
@@ -84,7 +88,7 @@ Of course when you create tracks using this method, the resulting database is mi
 
 Manipulations
 -------------
-Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifiing ``manipulation=`` followed by one of the values in bold below:
+Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifying ``manipulation=`` followed by one of the values in bold below:
 
 Basic
 """"""""
@@ -146,9 +150,9 @@ class Manipulation(object):
     def quan_to_qual(self): raise NotImplementedError
     def quan_to_quan(self): raise NotImplementedError
 
-    #-------------------------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
     def get_parameter_stop_val(self, chr_name):
-        return self.output_tracks[0]['obj'].chrmeta[chr_name]
+        return self.output_tracks[0]['obj'].chrmeta[chr_name]['length']
 
     #-------------------------------------------------------------------------------------------#
     def auto_prepare(self):
@@ -219,7 +223,7 @@ class Manipulation(object):
             if self.request.get('output_name'): t['location'] = self.output_dir + '/' + self.request['output_name'] + '.sql'
             else: t['location'] = self.output_dir + '/gminer_' + self.__class__.__name__  + '.sql'
             t['obj']      = track.new(t['location'], 'sql', t['name'])
-        ##### Output meta track #####
+        ##### Output attributes #####
         for t in self.output_tracks:
             t['obj'].attributes = {'datatype': t['kind'], 'name': t['name'], 'created_by': __package__}
         ##### Output chrmeta #####

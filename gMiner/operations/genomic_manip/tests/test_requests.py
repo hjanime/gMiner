@@ -3,9 +3,11 @@ import os, tempfile
 
 # Internal modules #
 from ..tests import run_request
+from .... import run
 
 # Other modules #
 from bbcflib.track.track_collection import track_collections, yeast_chr_file
+from bbcflib.track import load
 
 # Unittesting #
 try:
@@ -17,11 +19,9 @@ except ImportError:
 __test__ = True
 
 ###################################################################################
-class Test(unittest.TestCase):
+class Test_Request(unittest.TestCase):
     def runTest(self):
         outdir = tempfile.mkdtemp(prefix='gMiner')
-        self.maxDiff = None
-
         tests = [{'kwargs': {'track1'          : track_collections['Scores'][1]['path'],
                              'track1_name'     : 'Validation score track 1',
                              'track1_chrs'     : yeast_chr_file,
@@ -99,9 +99,39 @@ class Test(unittest.TestCase):
                              'output_location' : outdir},
                    'expected':  [(5, 10, u'Unnamed + Unnamed', 0.0, 0), (25, 30, u'Unnamed + Unnamed', 0.0, 0)]}
                 ]
-
         for t in tests: run_request(self, t)
         os.removedirs(outdir)
+
+#------------------------------------------------------------------------------#
+class Test_No_Chrmeta(unittest.TestCase):
+    def runTest(self):
+        path = track_collections['Validation'][1]['path']
+        files = run(
+           track1           = path,
+           track1_name      = 'Validation track one',
+           operation_type   = 'genomic_manip',
+           manipulation     = 'merge',
+           output_location  = tempfile.gettempdir(),
+        )
+        os.remove(files[0])
+
+#------------------------------------------------------------------------------#
+class Test_Copy_Chrmeta(unittest.TestCase):
+    def runTest(self):
+        sql_path = track_collections['Validation'][2]['path_sql']
+        bed_path = track_collections['Validation'][2]['path']
+        files = run(
+           track1           = bed_path,
+           track1_name      = 'Validation track two',
+           track1_chrs      = yeast_chr_file,
+           operation_type   = 'genomic_manip',
+           manipulation     = 'bool_not',
+           output_location  = tempfile.gettempdir(),
+        )
+        with load(sql_path, chrmeta=yeast_chr_file) as sql:
+            with load(files[0]) as bed:
+                self.assertEqual(sql.chrmeta, bed.chrmeta)
+        os.remove(files[0])
 
 #-----------------------------------#
 # This code was written by the BBCF #

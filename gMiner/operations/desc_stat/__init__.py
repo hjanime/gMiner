@@ -3,7 +3,7 @@
 Descriptive Statistics
 ======================
 
-One of the primary goals of gFeatMiner is to provide simple graphs that help the user describe and explore his genomic datasets. These graphs are generated quickly and on-the-fly as they are requested. To access this functionality you must specify ``operation_type=desc_stat`` in the job request as seen in this exemple, in addition to a few other parameters that are detailed below::
+One of the primary goals of gFeatMiner is to provide simple graphs that help the user describe and explore his genomic datasets. These graphs are generated quickly and on-the-fly as they are requested. To access this functionality you must specify ``operation_type=desc_stat`` in the job request as seen in this example, in addition to a few other parameters that are detailed below::
 
     import gMiner
     files = gMiner.run(
@@ -22,12 +22,12 @@ One of the primary goals of gFeatMiner is to provide simple graphs that help the
         output_location    = '/tmp/',
     )
 
-The ``files`` varaible will now contain the path to the file created in PNG format.
+The ``files`` variable will now contain the path to the file created in PNG format.
 
 Parameters
 ----------
 
-Here are described all the paramaters that can or should be passed to gFeatMiner's run function.
+Here are described all the parameters that can or should be passed to gFeatMiner's run function.
 
 ====================== =====
 Key                    Value
@@ -36,13 +36,17 @@ Key                    Value
 
 **track_1_name**       This field is also required. Without a name, the resulting graph will not have a comprehensive legend associated and the user will get confused. Every track must have a name
 
+**track_1_chrs**       If the track is missing required chromosome meta data, you can specify it here under the form of a chromosome file or an assembly name.
+
 **track_2**            The location of the second track file. This field is optional, for instance, if the operation only requires one genomic file
 
 **track_2_name**       The name of the second track.
 
+**track_2_chrs**       Same as above.
+
 *[More tracks ...]*      Following tracks are specified according to the standard ``track_N`` and ``track_N_name``
 
-**operation_type**     This field must be specified in the request and must take the value of ``desc_stat`` if one wishes to perform descrtiptive statistic operations on the tracks provided.
+**operation_type**     This field must be specified in the request and must take the value of ``desc_stat`` if one wishes to perform descriptive statistic operations on the tracks provided.
 
 **characteristic**     Can take any of the values described in the next section, "Characteristics".
 
@@ -61,7 +65,7 @@ Key                    Value
 
 Characteristics
 ---------------
-Several types of characterisitcs can be used to generate different types of graphs. You can chose which charaterisitc to plot by specifiing ``characteristic=`` followed by one of the values in bold below:
+Several types of characteristics can be used to generate different types of graphs. You can chose which characteristic to plot by specifying ``characteristic=`` followed by one of the values in bold below:
 
 .. automethod:: gmCharacteristic.number_of_features
 .. automethod:: gmCharacteristic.base_coverage
@@ -260,7 +264,7 @@ def run(request, tracks, output_dir):
     subtracks = [subtrack for track in tracks for subtrack in track_cut_down(request, track)]
     # Create graph #
     graph = graphs.gmGraph(request, subtracks, tracks, output_dir)
-    # Compute characterisitcs #
+    # Compute characteristics #
     for track in tracks:
         [gm_get_characteristic(subtrack, request['characteristic']) for subtrack in subtracks if subtrack.track == track]
     # Generate the graph #
