@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = 'gMiner',
-    version          = '1.4.0',
+    version          = '1.4.1',
     packages         = ['gMiner',
                         'gMiner.operations',
                         'gMiner.operations.desc_stat',

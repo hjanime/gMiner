@@ -9,7 +9,7 @@ Constant variables used library wide.
 # Project name #
 gm_project_name = 'gMiner'
 gm_project_long_name = 'gFeatMiner'
-gm_project_version = '1.4.0'
+gm_project_version = '1.4.1'
 gm_doc_url = 'http://bbcf.epfl.ch/gMiner'
 
 # Current path #
