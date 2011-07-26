@@ -88,10 +88,10 @@ class Test_Request(unittest.TestCase):
                              'output_location' : outdir},
                    'expected':  [(20, 80, 160.0)]}
                  ,
-                 {'kwargs': {'track1'          : track_collections['Signals'][1]['path'],
+                 {'kwargs': {'track1'          : track_collections['Signals']['A']['path'],
                              'track1_name'     : 'Validation signal track 3',
                              'track1_chrs'     : yeast_chr_file,
-                             'track2'          : track_collections['Signals'][2]['path'],
+                             'track2'          : track_collections['Signals']['B']['path'],
                              'track2_name'     : 'Validation signal track 2',
                              'track2_chrs'     : yeast_chr_file,
                              'operation_type'  : 'genomic_manip',
