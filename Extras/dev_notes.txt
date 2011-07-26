@@ -23,4 +23,3 @@ The version number needs to be incremented in the following files:
 /setup.py
 /gMiner/constants.py
 /CHANGES.txt
-/Documentation/

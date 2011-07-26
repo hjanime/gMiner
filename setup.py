@@ -2,8 +2,8 @@ from distutils.core import setup
 
 setup(
     name             = 'gMiner',
-    version          = '1.3.1',
-    packages         = ['gMiner', 
+    version          = '1.4.0',
+    packages         = ['gMiner',
                         'gMiner.operations',
                         'gMiner.operations.desc_stat',
                         'gMiner.operations.genomic_manip'],

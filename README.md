@@ -15,7 +15,7 @@ As well as access functionality involving genomic manipulations like:
 
 To install it just type:
 
-    $ pip install gMiner 
+    $ pip install gMiner
 
 Typical usage often looks like this:
 
@@ -29,7 +29,7 @@ Typical usage often looks like this:
         compare_parents = 'False',
         gm_encoding     = 'image/png'
     )
-    
+
 Full documentation
 ==================
 
