@@ -165,18 +165,16 @@ class collapse(object):
 ###############################################################################
 def integer_to_roman(input):
     '''
-    Convert an integer to roman numerals.
+    Convert an integer to a roman numeral.
 
     >>> integer_to_roman(1999)
     'MCMXCIX'
     '''
 
-    if type(input) != type(1):
-       raise TypeError, "expected integer, got %s" % type(input)
-    if not 0 < input < 4000:
-       raise ValueError, "Argument must be between 1 and 3999"
     ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1)
-    nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
+    nums = ('M',  'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
+    if type(input) != type(1): raise TypeError, 'Expected integer, got "%s."' % type(input)
+    if not 0 < input < 4000: raise ValueError, 'Argument must be between 1 and 3999.'
     result = ""
     for i in range(len(ints)):
        count = int(input / ints[i])
@@ -188,22 +186,21 @@ def roman_to_integer(input):
     '''
     Convert a roman numeral to an integer.
 
-    >>> integers = range(1, 4000)
+    >>> orig_integers = range(1, 4000)
     >>> romans = [integer_to_roman(i) for i in integers]
-    >>> back_to_integers = [roman_to_integer(r) for r in romans]
-    >>> print integers == back_to_integers
+    >>> computed_integers = [roman_to_integer(r) for r in romans]
+    >>> print orig_integers == computed_integers
     True
     '''
 
-    if type(input) != type(""):
-        raise TypeError, "expected string, got %s" % type(input)
-    input = input.upper()
-    nums = ['M', 'D', 'C', 'L', 'X', 'V', 'I']
     ints = [1000, 500, 100, 50,  10,  5,   1]
+    nums = ['M', 'D', 'C', 'L', 'X', 'V', 'I']
+    if type(input) != type(""): raise TypeError, 'Expected string, got "%s."' % type(input)
+    input = input.upper()
     places = []
     for c in input:
         if not c in nums:
-            raise ValueError, "input is not a valid roman numeral: %s" % input
+            raise ValueError, 'Input is not a valid roman numeral: "%s."' % input
     for i in range(len(input)):
         c = input[i]
         value = ints[nums.index(c)]
@@ -216,10 +213,8 @@ def roman_to_integer(input):
         places.append(value)
     sum = 0
     for n in places: sum += n
-    if integer_to_roman(sum) == input:
-        return sum
-    else:
-        raise ValueError, 'input is not a valid roman numeral: %s' % input
+    if integer_to_roman(sum) == input: return sum
+    else: raise ValueError, 'Input is not a valid roman numeral: "%s."' % input
 
 ###############################################################################
 def named_temporary_path(suffix=''):
