@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>gMiner.operations.genomic_manip</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="gMiner-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://bbcf.epfl.ch/gMiner">gMiner</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="gMiner-module.html">Package&nbsp;gMiner</a> ::
+        <a href="gMiner.operations-module.html">Package&nbsp;operations</a> ::
+        Package&nbsp;genomic_manip
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="gMiner.operations.genomic_manip-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package genomic_manip</h1><p class="nomargin-top"></p>
+<pre class="literalblock">
+
+=====================
+Genomic Manipulations
+=====================
+
+Another functionality provided by gFeatMiner is the ability to manipulate genomic data and create new tracks from existing ones. To access this functionality you must specify ``operation_type=genomic_manip`` in the job request as seen in this example, in addition to a few other parameters that are detailed below::
+
+    import gMiner
+    files = gMiner.run(
+        track1          = '/scratch/genomic/tracks/refseq_ucsc.sql',
+        track1_name     = 'hg19 refSeq genome-wide from UCSC',
+        track2          = '/scratch/genomic/tracks/hiv_bushman.sql',
+        track2_name     = 'hg19 HIV integration sites from liftOver',
+        operation_type  = 'genomic_manip',
+        manipulation    = 'overlap_track',
+        output_location = '/tmp/',
+    )
+
+After executing these two statements, a new track will be created in the ``/tmp/gMiner/`` directory and its path returned to you.
+
+Parameters
+----------
+
+Here are described all the paramaters that can or should be passed to gFeatMiner's run function.
+
+======================== =====
+Key                      Value
+======================== =====
+**track_1**              This specifies the location of the first track file. At least one genomic file must be inputted to compute a statistic. Of course, an undefined number of supplementary tracks can be specified. The order in which they are given may or may not influence the output depending on the operation requested.
+
+**track_1_name**         This field is also required. Every track must have a name
+
+**track_1_chrs**         If the track is missing required chromosome meta data, you can specify it here under the form of a chromosome file or an assembly name.
+
+**track_2**              The location of the second track file. This field is optional, for instance, if the operation only requires one genomic file
+
+**track_2_name**         The name of the second track.
+
+**track_2_chrs**         Same as above.
+
+*[More tracks ...]*      Following tracks are specified according to the standard ``track_N`` and ``track_N_name``
+
+**operation_type**       This field must be specified in the request and must take the value of ``genomic_manip`` if one wishes to perform genomic manipulation operations on the tracks provided.
+
+**manipulation**         Can take any of the values described in the next section, &quot;Manipulations&quot;.
+
+**output_location**      Specifies the location at which the newly created track will be written.
+
+**output_name**          Optionally specifies the name of the file to be created in ``output_location``.
+
+*[Extra parameters ...]* Depending on the manipulation requested, you may need to provide extra parameters like a window size or a threshold value. Refer to the manipulation documentation for more details.
+======================== =====
+
+Using the library in 'manual' mode
+----------------------------------
+Instead of accessing gFeatMiner services via the ``gMiner.run()`` function, you can directly import the wanted manipulation and call it manually with your own queries. Here is a short example where a new track containing the ``mean_score_by_feature`` (computed on two other tracks) is created::
+
+    from bbcflib import track
+    from gMiner.operations.genomic_manip.scores import mean_score_by_feature
+    manip = mean_score_by_feature()
+    with track.load('/scratch/genomic/tracks/pol2.sql') as a:
+        with track.load('/scratch/genomic/tracks/ribosome_proteins.sql') as b:
+            with track.new('/tmp/manual.sql') as r:
+                for chrom in a:
+                    r.write(chrom, manip(a.read(chrom), b.read(chrom)))
+
+Now you are only one step away from modifying the input of your manipulation on the fly. You just need to write a function taking a generator object and returning a generator object. In this example our generator will yield several new features for every original feature it receives::
+
+    def create_bins(X, num_of_bins=10):
+        for x in X:
+            length = (x[1] - x[0]) / num_of_bins
+            for i in xrange(num_of_bins):
+                yield (x[0]+i*length, x[0]+(i+1)*length, x[2], x[3], x[4])
+
+    from bbcflib import track
+    from gMiner.operations.genomic_manip.scores import mean_score_by_feature
+    manip = mean_score_by_feature()
+    with track.load('/scratch/genomic/tracks/pol2.sql') as a:
+        with track.load('/scratch/genomic/tracks/ribosome_proteins.sql') as b:
+            with track.new('/tmp/manual.sql') as r:
+                for chrom in a:
+                    r.write(chrom, manip(a.read(chrom), create_bins(b.read(chrom))))
+
+Of course when you create tracks using this method, the resulting database is missing all its metadata. You probably will want to copy that over at some moment::
+
+    r.chrmeta    = a.chrmeta
+    r.attributes = {'datatype': 'qualitative', 'name': 'Mean score per bin', 'created_by': 'Custom feature bin script'}
+
+Manipulations
+-------------
+Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifying ``manipulation=`` followed by one of the values in bold below:
+
+Basic
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+.. automodule:: gMiner.operations.genomic_manip.basic
+    :members:
+
+Standard
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+.. automodule:: gMiner.operations.genomic_manip.standard
+    :members:
+
+Scores
+&quot;&quot;&quot;&quot;&quot;&quot;
+.. automodule:: gMiner.operations.genomic_manip.scores
+   :members:
+
+Boolean
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+.. automodule:: gMiner.operations.genomic_manip.boolean
+   :members:
+
+</pre>
+
+<!-- ==================== SUBMODULES ==================== -->
+<a name="section-Submodules"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Submodules</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Submodules"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr><td class="summary">
+  <ul class="nomargin">
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.basic-module.html">gMiner.operations.genomic_manip.basic</a></strong>: <em class="summary">Basic manipulations that are used internally by other more complex 
+        manipulations.</em>    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.boolean-module.html">gMiner.operations.genomic_manip.boolean</a></strong>: <em class="summary">The four boolean genomic manipulations.</em>    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.scores-module.html">gMiner.operations.genomic_manip.scores</a></strong>: <em class="summary">Manipulations that deal with or only make sense with quantitative 
+        information.</em>    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.standard-module.html">gMiner.operations.genomic_manip.standard</a></strong>: <em class="summary">Standard manipulations that are found in many different genomic 
+        tools.</em>    </li>
+  </ul></td></tr>
+</table>
+
+<br />
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="gMiner.operations.genomic_manip.Manipulation-class.html" class="summary-name">Manip</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="gMiner.operations.genomic_manip.Manipulation-class.html" class="summary-name">Manipulation</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="run"></a><span class="summary-sig-name">run</span>(<span class="summary-sig-arg">request</span>,
+        <span class="summary-sig-arg">tracks</span>,
+        <span class="summary-sig-arg">output_dir</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="track_matches_desc"></a><span class="summary-sig-name">track_matches_desc</span>(<span class="summary-sig-arg">track</span>,
+        <span class="summary-sig-arg">info</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'gMiner.operations.genomic_manip'"><code class="variable-quote">'</code><code class="variable-string">gMiner.operations.genomic_manip</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="gMiner-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://bbcf.epfl.ch/gMiner">gMiner</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Aug 23 13:01:18 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

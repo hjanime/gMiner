@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>gMiner.operations.genomic_manip.Manipulation</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="gMiner-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://bbcf.epfl.ch/gMiner">gMiner</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="gMiner-module.html">Package&nbsp;gMiner</a> ::
+        <a href="gMiner.operations-module.html">Package&nbsp;operations</a> ::
+        <a href="gMiner.operations.genomic_manip-module.html">Package&nbsp;genomic_manip</a> ::
+        Class&nbsp;Manipulation
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="gMiner.operations.genomic_manip.Manipulation-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Manipulation</h1><p class="nomargin-top"></p>
+<center>
+<center>  <map id="uml_class_diagram_for_gminer_o_7" name="uml_class_diagram_for_gminer_o_7">
+<area shape="rect" id="node1" href="gMiner.operations.genomic_manip.standard.filter-class.html" title="Computes the overlap of the first stream against the second stream returning only complete features from the first stream" alt="" coords="5,233,123,271"/>
+<area shape="rect" id="node2" href="gMiner.operations.genomic_manip.standard.neighborhood-class.html" title="Given a stream of features and four integers `before_start`, `after_end`, `after_start` and `before_end`, this manipulation will output, for every feature in the input stream, one or two features in the neighboorhod of the orginal feature." alt="" coords="152,233,328,271"/>
+<area shape="rect" id="node3" href="gMiner.operations.genomic_manip.scores.window_smoothing-class.html" title="Given a quantitative stream and a window size in base pairs, will output a new quantitative stream with, at each position p, the mean of the scores in the window [p&#45;L, p+L]." alt="" coords="357,233,552,271"/>
+<area shape="rect" id="node4" href="gMiner.operations.genomic_manip.scores.threshold-class.html" title="Given a stream &quot;X&quot;, a real number &quot;s&quot; and an optional output datatype defaulting to the input datatype (`quantitative` or `qualitative`), will threshold the stream according to the scores of every feature and base pair." alt="" coords="581,233,717,271"/>
+<area shape="rect" id="node5" href="gMiner.operations.genomic_manip.boolean.bool_or-class.html" title="Concatenates two streams together and subsequently performs the merge operation on the result." alt="" coords="747,233,883,271"/>
+<area shape="rect" id="node6" href="gMiner.operations.genomic_manip.scores.merge_scores-class.html" title="Merges N quantitative streams using some average function." alt="" coords="912,233,1080,271"/>
+<area shape="rect" id="node7" href="gMiner.operations.genomic_manip.basic.bounded-class.html" title="Given a stream of features and two integers `min_bound`, `max_bound`, this manipulation will output every feature unmodified unless one of the features exceed the specified bounds, in which case it is cropped." alt="" coords="1109,233,1235,271"/>
+<area shape="rect" id="node8" href="gMiner.operations.genomic_manip.basic.concatenate-class.html" title="Concatenates N streams such as the resulting stream contains all the features of every inputed stream." alt="" coords="1264,233,1411,271"/>
+<area shape="rect" id="node9" href="gMiner.operations.genomic_manip.scores.mean_score_by_feature-class.html" title="Given a quantitative stream &quot;X&quot; and a qualitative stream &quot;Y&quot; computes the mean of scores of every of Y&#39;s features in X." alt="" coords="1440,233,1664,271"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#__call__" title="gMiner.operations.genomic_manip.Manipulation.__call__" alt="" coords="1273,39,1613,57"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#auto_prepare" title="gMiner.operations.genomic_manip.Manipulation.auto_prepare" alt="" coords="1273,57,1613,76"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#get_parameter_stop_val" title="gMiner.operations.genomic_manip.Manipulation.get_parameter_stop_val" alt="" coords="1273,76,1613,95"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#qual" title="gMiner.operations.genomic_manip.Manipulation.qual" alt="" coords="1273,95,1613,113"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#qual_to_qual" title="gMiner.operations.genomic_manip.Manipulation.qual_to_qual" alt="" coords="1273,113,1613,132"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#qual_to_quan" title="gMiner.operations.genomic_manip.Manipulation.qual_to_quan" alt="" coords="1273,132,1613,151"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#quan" title="gMiner.operations.genomic_manip.Manipulation.quan" alt="" coords="1273,151,1613,169"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#quan_to_qual" title="gMiner.operations.genomic_manip.Manipulation.quan_to_qual" alt="" coords="1273,169,1613,188"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.Manipulation-class.html#quan_to_quan" title="gMiner.operations.genomic_manip.Manipulation.quan_to_quan" alt="" coords="1273,188,1613,207"/>
+<area shape="rect" id="node10" href="gMiner.operations.genomic_manip.Manipulation-class.html" title="gMiner.operations.genomic_manip.Manipulation" alt="" coords="1261,6,1624,213"/>
+<area shape="rect" id="node11" href="gMiner.operations.genomic_manip.boolean.bool_not-class.html" title="The result consists of all intervals that were not covered by a feature in the original stream" alt="" coords="1693,233,1835,271"/>
+<area shape="rect" id="node12" href="gMiner.operations.genomic_manip.standard.merge-class.html" title="Merges features that are adjacent or overlapping in one stream" alt="" coords="1864,233,1995,271"/>
+<area shape="rect" id="node13" href="gMiner.operations.genomic_manip.basic.flatten-class.html" title="From a interval based format create the corresponding numeric vector" alt="" coords="2024,233,2131,271"/>
+<area shape="rect" id="node14" href="gMiner.operations.genomic_manip.boolean.bool_xor-class.html" title="Concatenates two streams together and subsequently performs the merge operation on the result." alt="" coords="2160,233,2301,271"/>
+<area shape="rect" id="node15" href="gMiner.operations.genomic_manip.boolean.bool_and-class.html" title="Computes the overlap between both streams returning new features that exactly match the overlapping zones." alt="" coords="2331,233,2477,271"/>
+<area shape="rect" id="node16" href="gMiner.operations.genomic_manip.basic.qual_to_quan-class.html" title="Convert a qualitative stream to a quantitative one" alt="" coords="2507,233,2659,271"/>
+<area shape="rect" id="node17" href="gMiner.operations.genomic_manip.basic.quan_to_qual-class.html" title="Convert a quantitative stream to a qualitative one" alt="" coords="2688,233,2840,271"/>
+</map>
+  <img src="uml_class_diagram_for_gminer_o_7.gif" alt='' usemap="#uml_class_diagram_for_gminer_o_7" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__call__"></a><span class="summary-sig-name">__call__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_type</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">out_type</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="auto_prepare"></a><span class="summary-sig-name">auto_prepare</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_parameter_stop_val"></a><span class="summary-sig-name">get_parameter_stop_val</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">chr_name</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="qual"></a><span class="summary-sig-name">qual</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="qual_to_qual"></a><span class="summary-sig-name">qual_to_qual</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="qual_to_quan"></a><span class="summary-sig-name">qual_to_quan</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="quan"></a><span class="summary-sig-name">quan</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="quan_to_qual"></a><span class="summary-sig-name">quan_to_qual</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="quan_to_quan"></a><span class="summary-sig-name">quan_to_quan</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__init__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="gMiner-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://bbcf.epfl.ch/gMiner">gMiner</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Aug 23 13:01:19 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

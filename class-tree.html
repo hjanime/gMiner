@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class Hierarchy</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="gMiner-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://bbcf.epfl.ch/gMiner">gMiner</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">&nbsp;</td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="class-tree.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<center><b>
+ [ <a href="module-tree.html">Module Hierarchy</a>
+ | <a href="class-tree.html">Class Hierarchy</a> ]
+</b></center><br />
+<h1 class="epydoc">Class Hierarchy</h1>
+<ul class="nomargin-top">
+    <li> <strong class="uidlink">object</strong>:
+      <em class="summary">The most base type</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.Manipulation-class.html">gMiner.operations.genomic_manip.Manipulation</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.boolean.bool_and-class.html">gMiner.operations.genomic_manip.boolean.bool_and</a></strong>:
+      <em class="summary">Computes the overlap between both streams returning new features 
+        that exactly match the overlapping zones.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.boolean.bool_not-class.html">gMiner.operations.genomic_manip.boolean.bool_not</a></strong>:
+      <em class="summary">The result consists of all intervals that were not covered by a 
+        feature in the original stream</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.boolean.bool_or-class.html">gMiner.operations.genomic_manip.boolean.bool_or</a></strong>:
+      <em class="summary">Concatenates two streams together and subsequently performs the 
+        merge operation on the result.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.boolean.bool_xor-class.html">gMiner.operations.genomic_manip.boolean.bool_xor</a></strong>:
+      <em class="summary">Concatenates two streams together and subsequently performs the 
+        merge operation on the result.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.basic.bounded-class.html">gMiner.operations.genomic_manip.basic.bounded</a></strong>:
+      <em class="summary">Given a stream of features and two integers `min_bound`, 
+        `max_bound`, this manipulation will output every feature unmodified
+        unless one of the features exceed the specified bounds, in which 
+        case it is cropped.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.basic.concatenate-class.html">gMiner.operations.genomic_manip.basic.concatenate</a></strong>:
+      <em class="summary">Concatenates N streams such as the resulting stream contains all 
+        the features of every inputed stream.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.standard.filter-class.html">gMiner.operations.genomic_manip.standard.filter</a></strong>:
+      <em class="summary">Computes the overlap of the first stream against the second stream 
+        returning only complete features from the first stream</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.basic.flatten-class.html">gMiner.operations.genomic_manip.basic.flatten</a></strong>:
+      <em class="summary">From a interval based format create the corresponding numeric 
+        vector</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.scores.mean_score_by_feature-class.html">gMiner.operations.genomic_manip.scores.mean_score_by_feature</a></strong>:
+      <em class="summary">Given a quantitative stream &quot;X&quot; and a qualitative stream 
+        &quot;Y&quot; computes the mean of scores of every of Y's features 
+        in X.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.standard.merge-class.html">gMiner.operations.genomic_manip.standard.merge</a></strong>:
+      <em class="summary">Merges features that are adjacent or overlapping in one stream</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.scores.merge_scores-class.html">gMiner.operations.genomic_manip.scores.merge_scores</a></strong>:
+      <em class="summary">Merges N quantitative streams using some average function.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.standard.neighborhood-class.html">gMiner.operations.genomic_manip.standard.neighborhood</a></strong>:
+      <em class="summary">Given a stream of features and four integers `before_start`, `after_end`,
+`after_start` and `before_end`, this manipulation will output,
+for every feature in the input stream, one or two features
+in the neighboorhod of the orginal feature.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.basic.qual_to_quan-class.html">gMiner.operations.genomic_manip.basic.qual_to_quan</a></strong>:
+      <em class="summary">Convert a qualitative stream to a quantitative one</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.basic.quan_to_qual-class.html">gMiner.operations.genomic_manip.basic.quan_to_qual</a></strong>:
+      <em class="summary">Convert a quantitative stream to a qualitative one</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.scores.threshold-class.html">gMiner.operations.genomic_manip.scores.threshold</a></strong>:
+      <em class="summary">Given a stream &quot;X&quot;, a real number &quot;s&quot; and an optional output datatype
+defaulting to the input datatype (`quantitative` or `qualitative`),
+will threshold the stream according to the scores of every feature
+and base pair.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.genomic_manip.scores.window_smoothing-class.html">gMiner.operations.genomic_manip.scores.window_smoothing</a></strong>:
+      <em class="summary">Given a quantitative stream and a window size in base pairs, will 
+        output a new quantitative stream with, at each position p, the mean
+        of the scores in the window [p-L, p+L].</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.common.collapse-class.html">gMiner.common.collapse</a></strong>:
+      <em class="summary">Collapse lists in specific ways</em>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.desc_stat.gmCharacteristic-class.html">gMiner.operations.desc_stat.gmCharacteristic</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.desc_stat.graphs.gmGraph-class.html">gMiner.operations.desc_stat.graphs.gmGraph</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.desc_stat.graphs.gmPlotElement-class.html">gMiner.operations.desc_stat.graphs.gmPlotElement</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="gMiner.operations.desc_stat.graphs.gmBarElement-class.html">gMiner.operations.desc_stat.graphs.gmBarElement</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.desc_stat.graphs.gmBoxElement-class.html">gMiner.operations.desc_stat.graphs.gmBoxElement</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.operations.desc_stat.gmSubtrack-class.html">gMiner.operations.desc_stat.gmSubtrack</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="gMiner.common.memoized_method-class.html">gMiner.common.memoized_method</a></strong>:
+      <em class="summary">Decorator that caches a function's return value the first time
+it is called.</em>
+    </li>
+    </ul>
+    </li>
+</ul>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="gMiner-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://bbcf.epfl.ch/gMiner">gMiner</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Aug 23 13:01:18 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
