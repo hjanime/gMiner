@@ -18,15 +18,12 @@ As well as access functionality involving genomic manipulations like:
 How do I install it ?
 ---------------------
 
-The ``pip`` utility is most probably already installed on your machine. If such is the case, you can simply proceed by typing the following on your command prompt::
+The ``easy_install`` or ``pip`` utilities are most probably already installed on your machine. If such is the case, you can simply proceed by typing one of the following on your command prompt::
 
+     $ sudo easy_install pip
      $ sudo pip install gMiner
 
 gFeatMiner is now installed on your computer. You can jump to the "How do I use it ?" section.
-
-If you are missing the ``pip`` utility just enter this on your command prompt::
-
-     $ sudo easy_install pip
 
 If you are missing the ``easy_install`` utility just enter one of the following commands::
 
@@ -60,13 +57,6 @@ To download a copy of the gFeatMiner code to your computer, simply use the follo
 
     $ git clone git://github.com/bbcf/gMiner.git
 
-Developement copy
-"""""""""""""""""
-Executing the previous command enables you to play with a second copy of gFeatMiner while leaving the one installed in the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory to the git repository root::
-
-    $ cd gMiner
-    $ python -c "import gMiner; print gMiner.__file__"
-
 Manual install
 """"""""""""""
 If you have downloaded the source code, you can switch to the git repository root and manually install gMiner like so::
@@ -76,7 +66,6 @@ If you have downloaded the source code, you can switch to the git repository roo
 If you need to install it in a particular directory, use::
 
     $ sudo python setup.py install --prefix=/prefix/path
-
 
 How do I use it ?
 -----------------
@@ -127,6 +116,18 @@ https://github.com/bbcf/gMiner/issues
 
 You will however need to create a github account if you don't already have one to open a new issue, sorry.
 
+How do develop it ?
+-------------------
+Developement copy
+"""""""""""""""""
+Executing the ``git clone`` command enables you to play with a second copy of gFeatMiner while leaving the one installed in the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory to the git repository root::
+
+    $ cd gMiner
+    $ python -c "import gMiner; print gMiner.__file__"
+
+Developement documentation
+""""""""""""""""""""""""""
+A more developer-oriented documentation is available on the  `project's github pages <http://bbcf.github.com/gMiner/>`_.
 '''
 
 b'This module needs Python 2.6 or later.'
