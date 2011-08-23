@@ -14,3 +14,5 @@ Contents:
    intro
    desc_stat
    genomic_manip
+
+* `Developer documentation <http://bbcf.github.com/gMiner/>`_
