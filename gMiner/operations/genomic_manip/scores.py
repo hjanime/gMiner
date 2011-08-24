@@ -111,7 +111,7 @@ class mean_score_by_feature(Manip):
                 else:            end   = f[1]
                 score += (end-start) * f[2]
             # Emit a feature #
-            yield (y[0], y[1], y[2], score/(y[1]-y[0]), y[4])
+            yield y[0:3]+(score/(y[1]-y[0]),)+y[4:]
 
 #-------------------------------------------------------------------------------------------#
 class threshold(Manip):
