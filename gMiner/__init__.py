@@ -2,7 +2,7 @@
 What is gFeatMiner?
 -------------------
 
-gFeatMiner is a Python module that can be seen as a framework for dealing with genomic data using a request based system. Typically the user has in his posession a few files containing genomic data. These files, refered to as tracks, contain genomic interval type information (.bed, .gff) or genomic score type information (.wig). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistices like:
+gFeatMiner is a Python module that can be seen as a framework for dealing with genomic data using a request based system. Typically the user has in his possession a few files containing genomic data. These files, referred to as tracks, contain genomic interval type information (.bed, .gff) or genomic score type information (.wig). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistics like:
 
 * What is the length distribution of the features inside the selection I made?
 * What is the score distribution of the features inside these three tracks?
@@ -163,10 +163,10 @@ def run(**request):
     run_op = getattr(operations, request['operation_type']).run
     # Mandatory request variables #
     if not request.get('output_location'):
-        raise Exception("There does not seem to be an output location specified in the request")
+        raise Exception("There does not seem to be an output location specified in the request.")
     output_dir = request['output_location'].rstrip('/')
     if not os.path.isdir(output_dir):
-        raise Exception("The output location specified is not a directory")
+        raise Exception("The output location '" + output_dir + "' specified is not a directory.")
     # Optional request variables #
     request['selected_regions']   = request.get('selected_regions', '')
     parse_regions(request)
@@ -195,7 +195,7 @@ def parse_tracks(request_dict):
 
     # Number of tracks #
     if 'track1' not in request_dict:
-        raise Exception("No tracks have been specified in the request")
+        raise Exception("No tracks have been specified in the request.")
     number_of_tracks_sent = 1
     while request_dict.has_key("track" + str(number_of_tracks_sent + 1)):
         number_of_tracks_sent += 1
@@ -203,7 +203,7 @@ def parse_tracks(request_dict):
     try:
         tracks = [dict([['path',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
     except KeyError:
-        raise Exception("Every track specified must have a name associated")
+        raise Exception("Every track specified must have a name associated.")
     # Chromosome info #
     for i, t in enumerate(tracks):
         if request_dict.has_key("track" + str(i+1) + '_chrs'):
@@ -221,8 +221,8 @@ def parse_regions(request):
     if request['selected_regions']:
         try:
             request['selected_regions'] = [dict([['chr',p[0]],['start',int(p[1])],['end',int(p[2])]]) for p in [r.split(':') for r in request['selected_regions'].split(';')]]
-        except ValueError, IndexError:
-            raise Exception("The selected regions are not properly formated.")
+        except (ValueError, IndexError):
+            raise Exception("The selected regions are not properly formated or the file doesn't exist: '" + request['selected_regions'] + "'")
 
 def parse_chrlist(request):
     '''
