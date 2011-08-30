@@ -187,7 +187,7 @@ def roman_to_integer(input):
     Convert a roman numeral to an integer.
 
     >>> orig_integers = range(1, 4000)
-    >>> romans = [integer_to_roman(i) for i in integers]
+    >>> romans = [integer_to_roman(i) for i in orig_integers]
     >>> computed_integers = [roman_to_integer(r) for r in romans]
     >>> print orig_integers == computed_integers
     True
