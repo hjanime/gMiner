@@ -99,10 +99,11 @@ Other types of job, for instance, might create new tracks instead of image files
        output_location = '/tmp/',
     )
 
-gFeatMiner is capable of numerous operations on genomic data. Currently, two modules are included:
+gFeatMiner is capable of numerous operations on genomic data. Currently, three modules are included:
 
 * :doc:`desc_stat`
 * :doc:`genomic_manip`
+* :doc:`plots`
 
 Warning
 -------
