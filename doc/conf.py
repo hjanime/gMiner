@@ -13,18 +13,10 @@
 
 import sys, os
 
-####### My modifications #######
-from inspect import getfile, currentframe
-this_dir = getfile(currentframe())
-current_gm_path = '/'.join(os.path.abspath(this_dir).split('/')[:-2]) + '/'
-sys.path.insert(0,current_gm_path)
-import gMiner.constants
-################################
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -48,6 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+import gMiner.constants
 project = gMiner.constants.gm_project_long_name
 
 # HTML footer
