@@ -6,6 +6,7 @@ setup(
     packages         = ['gMiner',
                         'gMiner.operations',
                         'gMiner.operations.desc_stat',
+                        'gMiner.operations.plot',
                         'gMiner.operations.genomic_manip'],
     license          = open('LICENSE.txt').read(),
     description      = "Manuiplations and statistics on genomic data.",
