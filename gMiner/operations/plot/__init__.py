@@ -25,33 +25,33 @@ Parameters
 
 Here are described all the parameters that can or should be passed to gFeatMiner's run function.
 
-====================== =====
-Key                    Value
-====================== =====
-**track_1**            This specifies the location of the first track file. At least one genomic file must be inputted to compute a statistic. Of course, an undefined number of supplementary tracks can be specified. The order in which they are given may or may not influence the output depending on the operation requested.
+======================== =====
+Key                      Value
+======================== =====
+**track_1**              This specifies the location of the first track file. At least one genomic file must be inputted to compute a statistic. Of course, an undefined number of supplementary tracks can be specified. The order in which they are given may or may not influence the output depending on the operation requested.
 
-**track_1_name**       This field is also required. Without a name, the resulting graph will not have a comprehensive legend associated and the user will get confused. Every track must have a name
+**track_1_name**         This field is also required. Without a name, the resulting graph will not have a comprehensive legend associated and the user will get confused. Every track must have a name
 
-**track_1_chrs**       If the track is missing required chromosome meta data, you can specify it here under the form of a chromosome file or an assembly name.
+**track_1_chrs**         If the track is missing required chromosome meta data, you can specify it here under the form of a chromosome file or an assembly name.
 
-**track_2**            The location of the second track file. This field is optional, for instance, if the operation only requires one genomic file
+**track_2**              The location of the second track file. This field is optional, for instance, if the operation only requires one genomic file
 
-**track_2_name**       The name of the second track.
+**track_2_name**         The name of the second track.
 
-**track_2_chrs**       Same as above.
+**track_2_chrs**         Same as above.
 
-*[More tracks ...]*    Following tracks are specified according to the standard ``track_N`` and ``track_N_name``
+*[More tracks ...]*      Following tracks are specified according to the standard ``track_N`` and ``track_N_name``
 
-**operation_type**     This field must be specified in the request and must take the value of ``plot`` if one wishes to perform descriptive statistic operations on the tracks provided.
+**operation_type**       This field must be specified in the request and must take the value of ``plot`` if one wishes to perform descriptive statistic operations on the tracks provided.
 
-**plot**               Can take any of the values described in the next section, "Plots".
+**plot**                 Can take any of the values described in the next section, "Plots".
 
-**output_location**    Specifies the location at which the newly created image will be written.
+**output_location**      Specifies the location at which the newly created image will be written.
 
-**output_name**        Optionally specifies the name of the file to be created in ``output_location``.
+**output_name**          Optionally specifies the name of the file to be created in ``output_location``.
 
 *[Extra parameters ...]* Depending on the plot requested, you may need to provide extra parameters. Refer to the plot documentation for more details.
-====================== =====
+======================== =====
 
 Plots
 ---------------
@@ -192,10 +192,10 @@ class scatter(Plot):
 
            scatterplot(Q1, Q2, R1, log_scale=True)
 
-        will make a scatterplot of the average of Q1 against
-        the average of Q2 in every feature of R1.
+       will make a scatterplot of the average of Q1 against
+       the average of Q2 in every feature of R1.
 
-        ``scatter`` returns a matplotlib figure object.
+       ``scatter`` returns a matplotlib figure object.
     '''
 
     def __init__(self):
