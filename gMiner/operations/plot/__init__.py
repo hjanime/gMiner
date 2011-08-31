@@ -110,8 +110,8 @@ class Plot(object):
             elif arg.get('optional'):
                 continue
             else:
-                raise Exception("The argument '" + key + "' is missing" + \
-                                " for the plot '" + self.name + "'.")
+                raise Exception("The argument '" + key + "' is missing" \
+                                + " for the plot '" + self.name + "'.")
             # Special conditions  tracks that are paths #
             if arg['kind'] == Track:
                 # Check if its a path #
@@ -121,8 +121,8 @@ class Plot(object):
                 # Check the datatype #
                 if arg.get('datatype'):
                     if value.datatype != arg['datatype']:
-                        raise Exception("The datatype of track '" + value.path + \
-                                        "isn't '" + arg['datatype'] + "'.")
+                        raise Exception("The datatype of track '" + value.path + "' " \
+                                        + "isn't '" + arg['datatype'] + "'.")
             # Is the value is not the right type, cast it #
             if not isinstance(value, arg['kind']):
                 value = arg['kind'](value)
