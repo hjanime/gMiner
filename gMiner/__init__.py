@@ -132,16 +132,16 @@ A more developer-oriented documentation is available on the  `project's github p
 
 b'This module needs Python 2.6 or later.'
 
-# General modules #
+# Built-in modules #
 import os
 from contextlib import nested
-
-# Other modules #
-from bbcflib import track
 
 # Internal modules #
 from constants import *
 from . import operations
+
+# Other modules #
+from bbcflib import track
 
 # Current version #
 __version__ = gm_project_version

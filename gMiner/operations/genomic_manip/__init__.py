@@ -111,12 +111,12 @@ Boolean
    :members:
 '''
 
+# Internal modules #
+from ... import common
+
 # Other modules #
 from bbcflib import track
 from bbcflib.track.track_bundle import TrackBundle
-
-# Internal modules #
-from ... import common
 
 ################################################################################
 def track_matches_desc(track, info):

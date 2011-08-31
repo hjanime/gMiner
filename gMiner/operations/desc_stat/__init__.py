@@ -81,13 +81,13 @@ gFeatMiner will produce one of the 8 different bar-graphs depending on the boole
 
 """
 
-# Other modules #
-from bbcflib.track import load
-
 # Internal modules #
 from ...constants import *
 from ... import common
 from .. import genomic_manip as manip
+
+# Other modules #
+from bbcflib.track import load
 
 ###########################################################################
 class gmSubtrack(object):
