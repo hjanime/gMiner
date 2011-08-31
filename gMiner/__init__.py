@@ -158,8 +158,8 @@ def run(**request):
     if not hasattr(operations, request['operation_type']):
         try:
             __import__('gMiner.operations.' + request['operation_type'])
-        except ImportError:
-            raise Exception("The operation " + request['operation_type'] + " is not supported.")
+        except ImportError as err:
+            raise Exception("The operation " + request['operation_type'] + " could not be imported because: " + str(err))
     run_op = getattr(operations, request['operation_type']).run
     # Mandatory request variables #
     if not request.get('output_location'):
