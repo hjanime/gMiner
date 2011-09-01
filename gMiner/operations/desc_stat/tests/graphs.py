@@ -13,8 +13,8 @@ import os, tempfile
 from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
-from .... import run
-from ....constants import *
+from gMiner import run
+from gMiner.constants import gm_terminal_colors
 
 ################################################################################
 # A naming convention dictonary #
@@ -87,7 +87,7 @@ collections = {
 
 #------------------------------------------------------------------------------#
 # Main loops #
-def run(result_path='/tmp/gMiner/'):
+def generate(result_path='/tmp/gMiner/'):
     if not os.path.isdir(result_path):
         raise Exception("The result location specified is not a directory")
     max_count = 2*2*2*2*4

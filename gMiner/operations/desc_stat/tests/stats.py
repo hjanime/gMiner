@@ -3,7 +3,7 @@ from bbcflib import track
 from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
-from ... import desc_stat
+from gMiner.operations import desc_stat
 
 # Unittesting #
 try:

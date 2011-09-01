@@ -6,8 +6,8 @@ Basic manipulations that are used internally by other more complex manipulations
 import sys
 
 # Internal modules #
-from . import Manipulation as Manip
-from ... import common
+from gMiner.operations.genomic_manip import Manipulation as Manip
+from gMiner import common
 
 ################################################################################
 class qual_to_quan(Manip):

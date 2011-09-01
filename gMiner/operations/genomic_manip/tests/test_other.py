@@ -2,8 +2,8 @@
 import numpy
 
 # Internal modules #
-from ... import genomic_manip
-from ..basic import flatten
+from gMiner.operations import genomic_manip
+from gMiner.operations.genomic_manip import flatten
 
 # Unittesting #
 try:

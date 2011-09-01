@@ -82,9 +82,8 @@ gFeatMiner will produce one of the 8 different bar-graphs depending on the boole
 """
 
 # Internal modules #
-from ...constants import *
-from ... import common
-from .. import genomic_manip as manip
+from gMiner import common
+from gMiner.operations import genomic_manip as manip
 
 # Other modules #
 from bbcflib.track import load
@@ -252,7 +251,7 @@ def run(request, tracks, output_dir):
     if not request.get('characteristic'):
         raise Exception("There does not seem to be a characteristic specified in the request")
     if not hasattr(gmCharacteristic, request['characteristic']):
-        raise Exception("The '" + object.__name__ + "' object does not seem to have '" + attribute + "'.")
+        raise Exception("The '" + object.__name__ + "' object does not seem to have '" + request['characteristic'] + "'.")
     # per_chromosome #
     request['per_chromosome'] = request.get('per_chromosome', False)
     request['per_chromosome'] = bool(request['per_chromosome'])

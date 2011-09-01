@@ -112,7 +112,7 @@ Boolean
 '''
 
 # Internal modules #
-from ... import common
+from gMiner import common
 
 # Other modules #
 from bbcflib import track

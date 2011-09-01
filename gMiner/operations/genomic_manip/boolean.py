@@ -6,8 +6,8 @@ The four boolean genomic manipulations.
 import sys
 
 # Internal modules #
-from . import Manipulation as Manip
-from ... import common
+from gMiner.operations.genomic_manip import Manipulation as Manip
+from gMiner import common
 
 ################################################################################
 class bool_not(Manip):

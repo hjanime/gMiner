@@ -6,8 +6,8 @@ Standard manipulations that are found in many different genomic tools.
 import sys
 
 # Internal modules #
-from . import Manipulation as Manip
-from ... import common
+from gMiner.operations.genomic_manip import Manipulation as Manip
+from gMiner import common
 
 ################################################################################
 class merge(Manip):

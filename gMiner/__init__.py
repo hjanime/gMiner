@@ -139,7 +139,7 @@ from contextlib import nested
 
 # Internal modules #
 from constants import *
-from . import operations
+from gMiner import operations
 
 # Other modules #
 from bbcflib import track

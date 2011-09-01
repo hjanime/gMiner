@@ -16,9 +16,9 @@ import matplotlib.pyplot as pyplot
 import time
 
 # Internal modules #
-from ...constants import *
-from ... import common
-from ..desc_stat import gmCharacteristic
+from gMiner.constants import gm_project_name, gm_default_color_parent, gm_default_color_selection, gm_default_plot_color
+from gMiner import common
+from gMiner.operations.desc_stat import gmCharacteristic
 
 ################################################################################
 class gmGraph(object):

@@ -2,8 +2,8 @@
 import os, tempfile
 
 # Internal modules #
-from ..tests import run_request
-from .... import run
+from gMiner import run
+from gMiner.operations.genomic_manip.tests import run_request
 
 # Other modules #
 from bbcflib.track.track_collection import track_collections, yeast_chr_file

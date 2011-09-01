@@ -5,7 +5,7 @@ import os
 from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
-from .... import run
+from gMiner import run
 
 # Unittesting #
 try:

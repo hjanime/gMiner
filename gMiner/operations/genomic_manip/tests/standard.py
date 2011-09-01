@@ -2,8 +2,8 @@
 from bbcflib.track.track_collection import track_collections
 
 # Internal modules #
-from ... import genomic_manip
-from ..tests import run_one
+from gMiner.operations import genomic_manip
+from gMiner.operations.genomic_manip.tests import run_one
 
 # Unittesting #
 try:

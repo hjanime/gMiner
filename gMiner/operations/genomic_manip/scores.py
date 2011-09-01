@@ -6,8 +6,8 @@ Manipulations that deal with or only make sense with quantitative information.
 import sys
 
 # Internal modules #
-from . import Manipulation as Manip
-from ... import common
+from gMiner.operations.genomic_manip import Manipulation as Manip
+from gMiner import common
 
 ################################################################################
 class merge_scores(Manip):
