@@ -221,11 +221,10 @@ def named_temporary_path(suffix=''):
     ''' Often, one needs a new random and temporary file path
         instead of the random and temporary file object provided
         by the tempfile module'''
-    import os, tempfile
-    file = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
+    import tempfile
+    file = tempfile.NamedTemporaryFile(suffix=suffix)
     path = file.name
     file.close()
-    os.remove(path)
     return path
 
 ###############################################################################

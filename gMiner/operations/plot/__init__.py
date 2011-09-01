@@ -81,6 +81,11 @@ __all__ = ['correlation', 'scatter']
 class Plot(object):
     '''Parent class to all plots'''
 
+    def generate(self, *args, **kwargs):
+        '''All child classes must implement
+           this method.'''
+        raise NotImplementedError
+
     def from_request(self, request, tracks):
         '''Put tracks and parameters in the right order.
            To be used when gMiner is called from the
@@ -106,7 +111,7 @@ class Plot(object):
             if key in kwargs:
                 value = kwargs[key]
             elif len(largs) >= arg['position']:
-                value = largs[arg['position']]
+                value = largs[arg['position']-1]
             elif arg.get('optional'):
                 continue
             else:
@@ -117,7 +122,7 @@ class Plot(object):
                 # Check if its a path #
                 if isinstance(value, basestring):
                     value = Track(value)
-                    tracks_to_unload += value
+                    tracks_to_unload.append(value)
                 # Check the datatype #
                 if arg.get('datatype'):
                     if value.datatype != arg['datatype']:
@@ -134,19 +139,6 @@ class Plot(object):
         for track in tracks_to_unload: track.unload()
         # Return a figure #
         return fig
-
-    def generate(self, *args, **kwargs):
-        '''All child classes must implement
-           this method.'''
-        raise NotImplementedError
-
-    def make_default_figure(self):
-        '''Create a simple figure and axes'''
-        fig = pyplot.figure()
-        fig.text(0.96, 0.96, time.asctime(), horizontalalignment='right')
-        fig.text(0.04, 0.96, gm_project_name + ' generated graph', horizontalalignment='left')
-        axes = fig.add_subplot(111)
-        return fig, axes
 
 #---------------------------------------------------------------------------------#
 class correlation(Plot):
@@ -177,11 +169,12 @@ class correlation(Plot):
         # Corr will contain the numeric vector #
         self.corr = scipy.correlate(x, y, mode='full')
         # Graph it #
-        fig, axes = self.make_default_figure()
+        fig, axes = make_default_figure()
         axes.set_title('Correlation of "' + X.name + '" and "' + Y.name + '"')
         axes.set_xlabel('Shift [base pairs]')
         axes.set_ylabel('Correlation [no units]')
         axes.plot(self.corr)
+        widen_axis(axes)
         # Return a figure #
         return fig
 
@@ -213,7 +206,7 @@ class scatter(Plot):
         x = [feature[3] for chrom in R1 for feature in manip(Q1.read(chrom), R1.read(chrom))]
         y = [feature[3] for chrom in R1 for feature in manip(Q2.read(chrom), R1.read(chrom))]
         # Graph it #
-        fig, axes = self.make_default_figure()
+        fig, axes = make_default_figure()
         axes.set_title('Scatter plot of "' + Q1.name + '" against "' + Q2.name + '"' + \
                        ' in "' + R1.name + '"')
         axes.set_xlabel('Score of "' + Q1.name + '" [unspecified units]')
@@ -223,6 +216,7 @@ class scatter(Plot):
         if log_scale:
             axes.set_xscale('log')
             axes.set_yscale('log')
+        widen_axis(axes)
         # Return a figure #
         return fig
 
@@ -256,6 +250,22 @@ def run(request, tracks, output_dir):
         figure.savefig(file, format='png', transparent=True)
     # Return a list of paths #
     return [path]
+
+#---------------------------------------------------------------------------------#
+def make_default_figure():
+    '''Create a simple figure and axes'''
+    fig = pyplot.figure()
+    fig.text(0.96, 0.96, time.asctime(), horizontalalignment='right')
+    fig.text(0.04, 0.96, gm_project_name + ' generated graph', horizontalalignment='left')
+    axes = fig.add_subplot(111)
+    return fig, axes
+
+def widen_axis(axes, factor=0.1):
+    '''Increase coordinates by 10%'''
+    left, right, bottom, top = axes.axis()
+    width  = (right - left) * factor
+    height = (top - bottom) * factor
+    axes.axis((left-width, right+width, bottom-height, top+height))
 
 #-----------------------------------#
 # This code was written by the BBCF #

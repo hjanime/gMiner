@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
            track1          = track_collections['Scores'][1]['path_sql'],
            track1_name     = 'Scores 1',
            track1_chrs     = small_chr_file,
-           track2          = track_collections['Scores'][1]['path_sql'],
+           track2          = track_collections['Scores'][2]['path_sql'],
            track2_name     = 'Scores 2',
            track2_chrs     = small_chr_file,
            track3          = track_collections['Validation'][1]['path_sql'],
