@@ -79,7 +79,9 @@ __all__ = ['correlation', 'scatter']
 
 ################################################################################
 class Plot(object):
-    '''Parent class to all plots'''
+    '''Parent class to all plots. It manly handles argument
+       parsing coming from gMiner.run requests and direct
+       class too.'''
 
     def generate(self, *args, **kwargs):
         '''All child classes must implement
@@ -101,7 +103,8 @@ class Plot(object):
     def __call__(self, *largs, **kwargs):
         '''Check that all arguments are present
            and load all tracks that are given as paths
-           instead of track objects.'''
+           instead of track objects. To be used
+           when a plot is called directly from a script.'''
         # Initialization #
         parsed_args = {}
         tracks_to_unload = []
@@ -253,7 +256,7 @@ def run(request, tracks, output_dir):
 
 #---------------------------------------------------------------------------------#
 def make_default_figure():
-    '''Create a simple figure and axes'''
+    '''Create a simple figure with axes.'''
     fig = pyplot.figure()
     fig.text(0.96, 0.96, time.asctime(), horizontalalignment='right')
     fig.text(0.04, 0.96, gm_project_name + ' generated graph', horizontalalignment='left')
@@ -261,7 +264,7 @@ def make_default_figure():
     return fig, axes
 
 def widen_axis(axes, factor=0.1):
-    '''Increase coordinates by 10%'''
+    '''Increase coordinates of a figure by 10%.'''
     left, right, bottom, top = axes.axis()
     width  = (right - left) * factor
     height = (top - bottom) * factor
