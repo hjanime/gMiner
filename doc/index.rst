@@ -3,10 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to gFeatMiner's documentation!
-======================================
+Welcome to *gFeatMiner's* documentation!
+========================================
+The library for analyzing and processing genomic data.
 
-Contents:
+Table of Contents:
+''''''''''''''''''
 
 .. toctree::
    :maxdepth: 2
@@ -16,4 +18,4 @@ Contents:
    genomic_manip
    plots
 
-* `Developer documentation <http://bbcf.github.com/gMiner/>`_
+Also see the `developer documentation <http://bbcf.github.com/gMiner/>`_.
