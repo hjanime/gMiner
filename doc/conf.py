@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# gFeatMiner documentation build configuration file, created by
-# sphinx-quickstart on Fri Mar 18 12:10:53 2011.
-#
 # This file is execfile()d with the current directory set to its containing dir.
 #
 # Note that not all possible configuration values are present in this
@@ -42,11 +39,7 @@ master_doc = 'index'
 # General information about the project.
 import gMiner.constants
 project = gMiner.constants.gm_project_long_name
-
-# HTML footer
-copyright = u'Kopimi'
-html_show_copyright = False
-html_show_sphinx = False
+copyright = u'2011, EPFL BBCF'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -104,23 +97,23 @@ html_theme = "rtd"
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["themes", ]
+html_theme_path = ["themes"]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = None
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
+html_short_title = project + " v" + release
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+html_logo = 'logo.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+html_favicon = 'logo.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -129,7 +122,7 @@ html_theme_path = ["themes", ]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -155,7 +148,7 @@ html_theme_path = ["themes", ]
 #html_show_sourcelink = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
-#html_show_sphinx = True
+html_show_sphinx = False
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
 #html_show_copyright = True
@@ -183,7 +176,7 @@ htmlhelp_basename = 'gFeatMinerdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'gFeatMiner.tex', u'gFeatMiner Documentation', u'Lucas Sinclair', 'manual'),
+  ('index', 'gFeatMiner.tex', u'gFeatMiner Documentation', u'EPFL BBCF', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -215,5 +208,5 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'gfeatminer', u'gFeatMiner Documentation', [u'Lucas Sinclair'], 1)
+    ('index', 'gfeatminer', u'gFeatMiner Documentation', [u'EPFL BBCF'], 1)
 ]
