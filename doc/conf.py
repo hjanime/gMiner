@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode', 'sphinxcontrib.googleanalytics']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['templates']
@@ -40,7 +40,6 @@ master_doc = 'index'
 import gMiner.constants
 project = gMiner.constants.gm_project_long_name
 copyright = u'2011, EPFL BBCF'
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
@@ -164,6 +163,8 @@ html_show_sphinx = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'gFeatMinerdoc'
 
+# Google analytics
+googleanalytics_id = "UA-24167610-18"
 
 # -- Options for LaTeX output --------------------------------------------------
 
@@ -210,3 +211,6 @@ latex_documents = [
 man_pages = [
     ('index', 'gfeatminer', u'gFeatMiner Documentation', [u'EPFL BBCF'], 1)
 ]
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'http://docs.python.org/': None}
