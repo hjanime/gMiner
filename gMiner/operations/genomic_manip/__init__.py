@@ -262,6 +262,7 @@ from .basic import *
 from .standard import *
 from .scores import *
 from .boolean import *
+from .association import *
 
 def run(request, tracks, output_dir):
     # Manipulation specified #
