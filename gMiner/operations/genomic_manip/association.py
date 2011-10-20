@@ -15,15 +15,15 @@ class find_closest_features(Manip):
 
     def __init__(self):
         self.name               = 'Find closest features'
-        self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name','score','strand']},
-                                   {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','score','strand']}]
+        self.input_tracks       = [{'type':'track', 'name':'X', 'kind':'qualitative', 'fields':['start','end','name']},
+                                   {'type':'track', 'name':'Y', 'kind':'qualitative', 'fields':['start','end','name','strand']}]
         self.input_constraints  = []
-        self.input_request      = [{'type': int, 'key': 'max_length',    'name': 'max_length',    'default': 1000},
-                                   {'type': int, 'key': 'utr_cutoff',    'name': 'utr_cutoff',    'default': 2000},
-                                   {'type': int, 'key': 'prom_cutoff',   'name': 'prom_cutoff',   'default': 3000}]
+        self.input_request      = [{'type': int, 'key': 'max_length',    'name': 'max_length',    'default': 100000},
+                                   {'type': int, 'key': 'utr_cutoff',    'name': 'utr_cutoff',    'default': 10},
+                                   {'type': int, 'key': 'prom_cutoff',   'name': 'prom_cutoff',   'default': 2000}]
         self.input_special      = []
         self.input_by_chrom     = []
-        self.output_tracks      = [{'type': 'track', 'kind': 'any', 'fields': ['start','end','name','strand','id','type','location']}]
+        self.output_tracks      = [{'type': 'track', 'kind': 'any', 'fields': ['start','end','name','id','type','location']}]
         self.output_constraints = []
         self.output_other       = []
 
@@ -32,7 +32,7 @@ class find_closest_features(Manip):
     def __call__(self, X, Y, max_length, utr_cutoff, prom_cutoff):
         x = X.next()
         y = Y.next()
-        print x,y
+        print x
         yield 0
 
 #-----------------------------------#
