@@ -20,8 +20,8 @@ class Test(unittest.TestCase):
         self.maxDiff = None
         my_test = {
                  'fn':     genomic_manip.association.find_closest_features(),
-                 'tracks': {'X': track_collections['Validation'][1]['path_sql'],
-                            'Y': track_collections['Validation'][2]['path_sql']},
+                 'tracks': {'X': track_collections['Validation'][6]['path_sql'],
+                            'Y': track_collections['Validation'][5]['path_sql']},
                  'input':  {'max_length':0, 'utr_cutoff':0, 'prom_cutoff': 45},
                  'expected': [0]
                  }
