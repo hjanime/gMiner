@@ -96,11 +96,15 @@ class mean_score_by_feature(Manip):
         # --- Core loop --- #
         for y in Y:
             # Check that we have all the scores necessary #
-            while F[-1][0] < y[1]: F.append(X.next())
+            xnext = F[-1]
+            while xnext[0] < y[1]: 
+                xnext = X.next()
+                if xnext[1] > y[0]: F.append(xnext)
             # Throw away the scores that are not needed anymore #
-            while True:
-                if F[0][1] <= y[0]: F.pop(0)
-                else: break
+            n = 0
+            while F[n][1] <= y[0]: 
+                n+=1
+            F = F[n:]
             # Compute the average #
             score = 0.0
             for f in F:
