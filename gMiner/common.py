@@ -1,19 +1,15 @@
 """
-=====================
-Module: gMiner.common
-=====================
-
 Common stuff used in several places.
 """
 
 ###############################################################################
 def split_thousands(s, tSep='\'', dSep='.'):
-    '''
+    """
     Splits a number on thousands.
 
     >>> split_thousands(1000012)
     "1'000'012"
-    '''
+    """
 
     if s == None: return 0
     if not isinstance(s, str): s = str(s)
@@ -38,15 +34,14 @@ def split_thousands(s, tSep='\'', dSep='.'):
         s = s[ :-3 ]
     return lhs + splt[ :-1 ] + rhs
 
-
 ###############################################################################
 def wrap_string(s, width):
-    '''
+    """
     Wrap a string to the specified width.
 
     >>> wrap_string('aaabbb', 3)
     'aaa\\nbbb'
-    '''
+    """
 
     import textwrap
     wrapper = textwrap.TextWrapper()
@@ -55,13 +50,13 @@ def wrap_string(s, width):
 
 ###############################################################################
 def andify_strings(list_of_strings):
-    '''
+    """
     Given a list of strings will join them with commas
     and a final "and" word.
 
     >>> andify_strings(['Apples', 'Oranges', 'Mangos'])
     'Apples, Oranges and Mangos'
-    '''
+    """
 
     result = ', '.join(list_of_strings)
     comma_index = result.rfind(',')
@@ -70,24 +65,26 @@ def andify_strings(list_of_strings):
 
 ###############################################################################
 def natural_sort(item):
-    '''
-    Will sort strings that contain numbers correctly
+    """
+    Sort strings that contain numbers correctly.
 
-    >>> l = ['v1.3.12', 'v1.3.3', 'v1.2.5', 'v1.2.15', 'v1.2.3', 'v1.2.1']
-    >>> l.sort(key=natural_sort)
-    >>> l.__repr__()
-    "['v1.2.1', 'v1.2.3', 'v1.2.5', 'v1.2.15', 'v1.3.3', 'v1.3.12']"
-    '''
+    ::
+
+        >>> l = ['v1.3.12', 'v1.3.3', 'v1.2.5', 'v1.2.15', 'v1.2.3', 'v1.2.1']
+        >>> l.sort(key=natural_sort)
+        >>> l.__repr__()
+        "['v1.2.1', 'v1.2.3', 'v1.2.5', 'v1.2.15', 'v1.3.3', 'v1.3.12']"
+    """
+    if item is None: return 0
     import re
     def try_int(s):
         try: return int(s)
-        except: return s
+        except ValueError: return s
     return map(try_int, re.findall(r'(\d+|\D+)', item))
-
 
 ###############################################################################
 def sort_table(table, cols):
-    '''
+    """
     Sorts a table by multiple columns
         table: a list of lists (or tuple of tuples) where each inner list
                represents a row
@@ -96,7 +93,7 @@ def sort_table(table, cols):
 
     >>> sort_table([['B','D'],['A','C'],['B','C'],['A','D']], (1,0))
     [['A', 'C'], ['B', 'C'], ['A', 'D'], ['B', 'D']]
-    '''
+    """
     import operator
     for col in reversed(cols):
         table = sorted(table, key=operator.itemgetter(col))
@@ -104,21 +101,21 @@ def sort_table(table, cols):
 
 ###############################################################################
 def sentinelize(iterable, sentinel):
-    '''
+    """
     Add an item to the end of an iterable
 
     >>> list(sentinelize(range(4), 99))
     [0, 1, 2, 3, 99]
-    '''
+    """
     for item in iterable: yield item
     yield sentinel
 
 ###############################################################################
 def import_module(name, path):
-    '''
+    """
     Import a module that is not in sys.path
     given it's relative path
-    '''
+    """
     import imp
     file, pathname, description = imp.find_module(name, [path])
     try:
@@ -128,7 +125,7 @@ def import_module(name, path):
 
 ###############################################################################
 class collapse(object):
-    '''
+    """
     Collapse lists in specific ways
 
     >>> collapse.by_adding([1,5,2])
@@ -143,7 +140,7 @@ class collapse(object):
     [1, 2, 3, 5]
     >>> collapse.by_intersection([[1,5,4],[5,3,3],[2,6,5]])
     [5]
-    '''
+    """
 
     @staticmethod
     def by_adding(l):
@@ -162,10 +159,12 @@ class collapse(object):
         return list(reduce(set.intersection, map(set,l)))
 
 ###############################################################################
-def named_temporary_path(suffix=''):
-    ''' Often, one needs a new random and temporary file path
-        instead of the random and temporary file object provided
-        by the tempfile module'''
+def temporary_path(suffix=''):
+    """
+    Often, one needs a new random and temporary file path
+    instead of the random and temporary file object provided
+    by the 'tempfile' module.
+    """
     import tempfile
     file = tempfile.NamedTemporaryFile(suffix=suffix)
     path = file.name
@@ -174,7 +173,7 @@ def named_temporary_path(suffix=''):
 
 ###############################################################################
 class memoized_method(object):
-    '''Decorator that caches a function's return value the first time
+    """Decorator that caches a function's return value the first time
     it is called. If called later, the cached value is returned, and
     not re-evaluated
 
@@ -191,7 +190,7 @@ class memoized_method(object):
             return self + arg
     Obj.add_to(1)    # not enough arguments
     Obj.add_to(1, 2) # returns 3, result is not cached
-    '''
+    """
     def __init__(self, func):
         self.func = func
     def __get__(self, obj, objtype=None):
@@ -212,11 +211,10 @@ class memoized_method(object):
             res = cache[key] = self.func(*args, **kw)
         return res
 
-
 ###############################################################################
 def get_this_module_path():
-    ''' Will return the absolute path of the file containing
-        this function'''
+    """ Will return the absolute path of the file containing
+        this function"""
     import os
     from inspect import getfile, currentframe
     return os.path.abspath(getfile(currentframe()))
@@ -224,10 +222,10 @@ def get_this_module_path():
 
 ###############################################################################
 def make_latex_string(string):
-    '''
+    """
     >>> make_latex_string('lorem_ipsum dolor_sit')
     'lorem\\\_ipsum\\\ dolor\\\_sit'
-    '''
+    """
 
     import re
     string = re.sub('_', '\_', string)
@@ -236,12 +234,12 @@ def make_latex_string(string):
 
 ###############################################################################
 def number_to_color(num=0):
-    '''
+    """
     Takes a number, returns a color
 
     >>> number_to_color(7)
     'pink'
-    '''
+    """
 
     num = int(num) % 8
     return {
@@ -254,7 +252,6 @@ def number_to_color(num=0):
         6: 'black',
         7: 'pink'
     }[num]
-
 
 def number_to_color_light(num=0):
     num = int(num) % 8
