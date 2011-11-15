@@ -2,7 +2,7 @@
 What is gFeatMiner?
 -------------------
 
-gFeatMiner is a Python module that can be seen as a framework for dealing with genomic data using a request based system. Typically the user has in his possession a few files containing genomic data. These files, referred to as tracks, contain genomic interval type information (.bed, .gff) or genomic score type information (.wig). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistics like:
+gFeatMiner is a framework written in python for analyzing and manipulating genomic data. Typically the user has in his possession a few files containing genomic data. These files, referred to as tracks, contain genomic interval type information (`.bed`, `.gff`) or genomic score type information (`.wig`). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistics like:
 
 * What is the length distribution of the features inside the selection I made?
 * What is the score distribution of the features inside these three tracks?
@@ -18,14 +18,13 @@ As well as access functionality involving genomic manipulations like:
 How do I install it ?
 ---------------------
 
-The ``easy_install`` or ``pip`` utilities are most probably already installed on your machine. If such is the case, you can simply proceed by typing one of the following on your command prompt::
+The ``easy_install`` tool is probably already on your machine. If such is the case, you can simply proceed by typing one of the following on your command prompt::
 
-     $ sudo easy_install pip
-     $ sudo pip install gMiner
+     $ sudo easy_install gMiner
 
 gFeatMiner is now installed on your computer. You can jump to the "How do I use it ?" section.
 
-If you are missing the ``easy_install`` utility just enter one of the following commands::
+If you are missing the ``easy_install`` tool just enter one of the following commands::
 
      $ sudo apt-get install python-setuptools
      $ sudo yum install python-setuptools
@@ -33,19 +32,7 @@ If you are missing the ``easy_install`` utility just enter one of the following 
 
 Requirements
 """"""""""""
-gFeatMiner doesn't depend on exotic libraries, but it requires Python 2.6 or above to work in addition to the two following packages: ``matplotlib, python-magic, bbcflib``. These package dependencies will automatically be resolved if you use the ``pip`` command.
-
-If you get strange errors when ``pip`` tries to install matplotlib (because of the ft2font extension for instance), just type one of the following commands::
-
-     $ sudo apt-get install python-matplotlib
-     $ sudo yum install python-matplotlib
-     $ sudo port install python-setuptools
-
-Upgrading
-"""""""""
-When upgrading to the latest version of gFeatMiner, to avoid also upgrading the dependencies, you can use::
-
-    $ sudo pip install --upgrade --no-deps gMiner
+gFeatMiner requires Python 2.6 or above to work in addition to the following packages: ``matplotlib, bbcflib, track``. These package dependencies can be automatically resolved if you use the ``easy_install`` command. Be aware that matplotlib only rarely builds without errors. It might be best to install matplotlib using a package manager specific to your system before hand.
 
 Source code
 """""""""""
@@ -59,8 +46,9 @@ To download a copy of the gFeatMiner code to your computer, simply use the follo
 
 Manual install
 """"""""""""""
-If you have downloaded the source code, you can switch to the git repository root and manually install gMiner like so::
+If you have downloaded the source code, you can switch to the repository directory and manually install gMiner like so::
 
+    $ cd gMiner
     $ sudo python setup.py install
 
 If you need to install it in a particular directory, use::
@@ -82,7 +70,7 @@ Once gFeatMiner is installed, you use it in a python script by importing it and 
         output_location = '/tmp/',
     )
 
-The ``files`` varaible now contains the a list of file paths. In this case::
+The ``files`` varaible now contains a list of file paths. In this case::
 
     ['/tmp/gminer_number_of_features.png']
 
@@ -98,6 +86,10 @@ Other types of job, for instance, might create new tracks instead of image files
        manipulation    = 'overlap',
        output_location = '/tmp/',
     )
+
+The ``files`` varaible now contains a list of file paths. In this case::
+
+    ['/tmp/gminer_overlap.sql']
 
 gFeatMiner is capable of numerous operations on genomic data. Currently, three modules are included:
 
@@ -117,17 +109,8 @@ https://github.com/bbcf/gMiner/issues
 
 You will however need to create a github account if you don't already have one to open a new issue, sorry.
 
-How do develop it ?
--------------------
-Developement copy
-"""""""""""""""""
-Executing the ``git clone`` command enables you to play with a second copy of gFeatMiner while leaving the one installed in the shared python packages untouched. Any ``import gMiner`` statement will still refer to the shared copy unless you set the current directory to the git repository root::
-
-    $ cd gMiner
-    $ python -c "import gMiner; print gMiner.__file__"
-
 Developement documentation
-""""""""""""""""""""""""""
+--------------------------
 A more developer-oriented documentation is available on the  `project's github pages <http://bbcf.github.com/gMiner/>`_.
 '''
 
@@ -138,14 +121,13 @@ import os
 from contextlib import nested
 
 # Internal modules #
-from constants import *
-from gMiner import operations
+from gMiner import constants, operations
 
 # Other modules #
 from bbcflib import track
 
 # Current version #
-__version__ = gm_project_version
+__version__ = constants.gm_project_version
 
 # Current path #
 try:
