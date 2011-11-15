@@ -3,7 +3,7 @@ import os
 
 # Internal modules #
 from gMiner.operations import plot
-from gMiner.common import named_temporary_path
+from gMiner.common import temporary_path
 
 # Other modules #
 from bbcflib.track import new
@@ -22,7 +22,7 @@ class Test_Scatter(unittest.TestCase):
     def runTest(self):
         outdir = '/tmp/gMiner/'
         if not os.path.exists(outdir): os.mkdir(outdir)
-        Q1, Q2, R1 = [named_temporary_path('.sql') for x in range(3)]
+        Q1, Q2, R1 = [temporary_path('.sql') for x in range(3)]
         with new(Q1, datatype='quantitative', name='Q1') as q1:
             q1.write('chr1', ((0, 10, 1.0), (10, 20, 2.0), (20, 30, 1.0), (30, 40, 9.0)))
         with new(Q2, datatype='quantitative', name='Q2') as q2:
