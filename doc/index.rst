@@ -14,8 +14,8 @@ Table of Contents:
    :maxdepth: 2
 
    intro
-   desc_stat
-   genomic_manip
-   plots
+   describe
+   manipulate
+   plot
 
 Also see the `developer documentation <http://bbcf.github.com/gMiner/>`_.

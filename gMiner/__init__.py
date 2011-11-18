@@ -1,6 +1,7 @@
-'''
+"""
+###################
 What is gFeatMiner?
--------------------
+###################
 
 gFeatMiner is a framework written in python for analyzing and manipulating genomic data. Typically the user has in his possession a few files containing genomic data. These files, referred to as tracks, contain genomic interval type information (`.bed`, `.gff`) or genomic score type information (`.wig`). Using the gFeatMiner module, he now can easily compute the answer to questions involving descriptive statistics like:
 
@@ -14,9 +15,9 @@ As well as access functionality involving genomic manipulations like:
 * View the overlapping intervals of two tracks.
 * Create a track that is the complement of another track.
 
-
+#####################
 How do I install it ?
----------------------
+#####################
 
 The ``easy_install`` tool is probably already on your machine. If such is the case, you can simply proceed by typing one of the following on your command prompt::
 
@@ -31,11 +32,11 @@ If you are missing the ``easy_install`` tool just enter one of the following com
      $ sudo port install python-setuptools
 
 Requirements
-""""""""""""
-gFeatMiner requires Python 2.6 or above to work in addition to the following packages: ``matplotlib, bbcflib, track``. These package dependencies can be automatically resolved if you use the ``easy_install`` command. Be aware that matplotlib only rarely builds without errors. It might be best to install matplotlib using a package manager specific to your system before hand.
+''''''''''''
+gFeatMiner requires Python 2.6 or above to work in addition to the following packages: ``matplotlib, track``. These package dependencies can be automatically resolved if you use the ``easy_install`` command. Be aware that matplotlib only rarely builds without errors. It might be best to install matplotlib using a package manager specific to your system before hand.
 
 Source code
-"""""""""""
+'''''''''''
 Downloading the source code is optional but, if you are interested, all of the files and testing material are stored in a git repository on github. You can explore the repository with a web browser here:
 
 https://github.com/bbcf/gMiner
@@ -45,7 +46,7 @@ To download a copy of the gFeatMiner code to your computer, simply use the follo
     $ git clone git://github.com/bbcf/gMiner.git
 
 Manual install
-""""""""""""""
+''''''''''''''
 If you have downloaded the source code, you can switch to the repository directory and manually install gMiner like so::
 
     $ cd gMiner
@@ -55,15 +56,16 @@ If you need to install it in a particular directory, use::
 
     $ sudo python setup.py install --prefix=/prefix/path
 
+#################
 How do I use it ?
------------------
+#################
 Once gFeatMiner is installed, you use it in a python script by importing it and running a job, like so::
 
     import gMiner
     files = gMiner.run(
         track1          = '/scratch/genomic/tracks/all_yeast_genes.sql',
         track1_name     = 'S. cer. genes (SGD)',
-        operation_type  = 'desc_stat',
+        operation       = 'describe',
         characteristic  = 'number_of_features',
         per_chromosome  = 'True',
         compare_parents = 'False',
@@ -82,7 +84,7 @@ Other types of job, for instance, might create new tracks instead of image files
        track1_name     = 'hg19 refSeq genome-wide from UCSC',
        track2          = '/scratch/genomic/tracks/hiv_bushman.sql',
        track2_name     = 'hg19 HIV integration sites from liftOver',
-       operation_type  = 'genomic_manip',
+       operation       = 'manipulate',
        manipulation    = 'overlap',
        output_location = '/tmp/',
     )
@@ -93,26 +95,29 @@ The ``files`` varaible now contains a list of file paths. In this case::
 
 gFeatMiner is capable of numerous operations on genomic data. Currently, three modules are included:
 
-* :doc:`desc_stat`
-* :doc:`genomic_manip`
-* :doc:`plots`
+* :doc:`describe`
+* :doc:`manipulate`
+* :doc:`plot`
 
+#######
 Warning
--------
+#######
 It is important to note that the general numbering convention of features on a chromosome varies depending on the source of the data. For instance, UCSC and Ensembl differ in this point such that an interval labeled `(start=4,end=8)` will span four base pairs according to UCSC but will span five base pairs according to Ensembl. The representation that the this packages sticks to is explained `here <http://bbcf.epfl.ch/twiki/bin/view/BBCF/NumberingConvention>`_.
 
+##############
 Reporting bugs
---------------
+##############
 The github repository provides an issue tracking system. You are welcome to open a new ticket in it if you think you have found a bug in gFeatMiner:
 
 https://github.com/bbcf/gMiner/issues
 
 You will however need to create a github account if you don't already have one to open a new issue, sorry.
 
+##########################
 Developement documentation
---------------------------
+##########################
 A more developer-oriented documentation is available on the  `project's github pages <http://bbcf.github.com/gMiner/>`_.
-'''
+"""
 
 b'This module needs Python 2.6 or later.'
 
@@ -120,102 +125,53 @@ b'This module needs Python 2.6 or later.'
 import os
 from contextlib import nested
 
-# Internal modules #
-from gMiner import constants, operations
-
 # Other modules #
-from bbcflib import track
+import track
 
-# Current version #
-__version__ = constants.gm_project_version
+# Constants #
+project_name = 'gMiner'
+project_long_name = 'gFeatMiner'
 
-# Current path #
-try:
-    gm_path = __path__[0]
-except NameError:
-    gm_path = 'gMiner'
+# Special variables #
+__version__ = '1.5.0'
+__all__ = ['run']
 
 ###########################################################################
-def run(**request):
-    # Import the correct operation #
-    if not hasattr(operations, request['operation_type']):
+def run(**kwargs):
+    # Mandatory 'operation_type' parameter #
+    module_name = kwargs['operation']
+    if not hasattr(gMiner, module_name):
         try:
-            __import__('gMiner.operations.' + request['operation_type'])
+            __import__('gMiner.' + module_name)
         except ImportError as err:
-            raise Exception("The operation " + request['operation_type'] + " could not be imported because: " + str(err))
-    run_op = getattr(operations, request['operation_type']).run
-    # Mandatory request variables #
-    if not request.get('output_location'):
+            raise Exception("The operation '%s' could not be imported because: %s" % (module_name, err))
+    run_func = getattr(gMiner, module_name).run
+    # Mandatory 'output_location' parameter #
+    if not kwargs.get('output_location'):
         raise Exception("There does not seem to be an output location specified in the request.")
-    output_dir = request['output_location'].rstrip('/')
+    output_dir = kwargs['output_location'].rstrip('/')
     if not os.path.isdir(output_dir):
-        raise Exception("The output location '" + output_dir + "' specified is not a directory.")
-    # Optional request variables #
-    request['selected_regions']   = request.get('selected_regions', '')
-    parse_regions(request)
-    request['wanted_chromosomes'] = request.get('wanted_chromosomes', '')
-    parse_chrlist(request)
-    # Prepare the tracks #
-    track_dicts = parse_tracks(request)
-    contexts = [track.load(t['path'], name=t['name'], chrmeta=t.get('chrs'), readonly=True) for t in track_dicts]
-    with nested(*contexts) as tracks:
-        # Assign numbers #
-        for i, t in enumerate(tracks): t.number = i
-        # Determine final chromosome list #
-        if request['wanted_chromosomes']:
-            for t in tracks: t.chrs = (set(t.all_chrs) & set(request['wanted_chromosomes']))
-        else:
-            for t in tracks: t.chrs = t.all_chrs
-        # Run it #
-        return run_op(request, tracks, output_dir)
-
-###########################################################################
-def parse_tracks(request_dict):
-    '''
-    >>> parse_tracks({'track1': 'aa', 'track1_name': 'ff', 'track1_chrs': 'bb'})
-    [{'path': 'aa', 'chrs': 'bb', 'name': 'ff'}]
-    '''
-
-    # Number of tracks #
-    if 'track1' not in request_dict:
+        raise Exception("The output location '%s' specified is not a directory." % output_dir)
+    # Mandatory 'track' parameter #
+    if 'track1' not in kwargs:
         raise Exception("No tracks have been specified in the request.")
     number_of_tracks_sent = 1
-    while request_dict.has_key("track" + str(number_of_tracks_sent + 1)):
+    while kwargs.has_key("track" + str(number_of_tracks_sent + 1)):
         number_of_tracks_sent += 1
-    # Make a list of dictionaries #
-    try:
-        tracks = [dict([['path',request_dict['track'+str(num)]],['name',request_dict['track'+str(num)+'_name']]]) for num in range(1,number_of_tracks_sent+1)]
-    except KeyError:
-        raise Exception("Every track specified must have a name associated.")
-    # Chromosome info #
-    for i, t in enumerate(tracks):
-        if request_dict.has_key("track" + str(i+1) + '_chrs'):
-            t['chrs'] = request_dict["track" + str(i+1) + '_chrs']
-    return tracks
-
-def parse_regions(request):
-    '''
-    >>> d = {'selected_regions': 'chr1:0:9;chr2:333:55555'}
-    >>> parse_regions(d)
-    >>> d
-    {'selected_regions': [{'start': 0, 'chr': 'chr1', 'end': 9}, {'start': 333, 'chr': 'chr2', 'end': 55555}]}
-    '''
-    if os.path.exists(request['selected_regions']): return
-    if request['selected_regions']:
-        try:
-            request['selected_regions'] = [dict([['chr',p[0]],['start',int(p[1])],['end',int(p[2])]]) for p in [r.split(':') for r in request['selected_regions'].split(';')]]
-        except (ValueError, IndexError):
-            raise Exception("The selected regions are not properly formated or the file doesn't exist: '" + request['selected_regions'] + "'")
-
-def parse_chrlist(request):
-    '''
-    >>> d = {'wanted_chromosomes': 'chr1;chr2;chr9'}
-    >>> parse_chrlist(d)
-    >>> d
-    {'wanted_chromosomes': ['chr1', 'chr2', 'chr9']}
-    '''
-    if request['wanted_chromosomes']:
-        request['wanted_chromosomes'] = [c for c in request['wanted_chromosomes'].split(';')]
+    # Make a list of tracks #
+    tracks = []
+    for i in xrange(1,number_of_tracks_sent):
+        name = "track_%i"%i
+        t = track.load(kwargs[name], readonly=True)
+        keys = [k for k in kwargs if k.startswith(name)]
+        for k in keys: setattr(t, k.split('_')[0], kwargs[k])
+        tracks.append(t)
+    # Enter them #
+    with nested(*tracks) as tracks:
+        # Assign numbers #
+        for i, t in enumerate(tracks): t.number = i
+        # Run it #
+        return run_func(kwargs, tracks, output_dir)
 
 #-----------------------------------#
 # This code was written by the BBCF #

@@ -10,8 +10,7 @@ def split_thousands(s, tSep='\'', dSep='.'):
     >>> split_thousands(1000012)
     "1'000'012"
     """
-
-    if s == None: return 0
+    if s is None: return 0
     if not isinstance(s, str): s = str(s)
     cnt=0
     numChars=dSep+'0123456789'
@@ -42,7 +41,6 @@ def wrap_string(s, width):
     >>> wrap_string('aaabbb', 3)
     'aaa\\nbbb'
     """
-
     import textwrap
     wrapper = textwrap.TextWrapper()
     wrapper.width = width
@@ -57,7 +55,6 @@ def andify_strings(list_of_strings):
     >>> andify_strings(['Apples', 'Oranges', 'Mangos'])
     'Apples, Oranges and Mangos'
     """
-
     result = ', '.join(list_of_strings)
     comma_index = result.rfind(',')
     if comma_index > -1: result = result[:comma_index] + ' and' + result[comma_index+1:]
@@ -172,53 +169,15 @@ def temporary_path(suffix=''):
     return path
 
 ###############################################################################
-class memoized_method(object):
-    """Decorator that caches a function's return value the first time
-    it is called. If called later, the cached value is returned, and
-    not re-evaluated
-
-    This class is meant to be used as a decorator of methods. The return value
-    from a given method invocation will be cached on the instance whose method
-    was invoked. All arguments passed to a method decorated with memoize must
-    be hashable.
-
-    If a memoized method is invoked directly on its class the result will not
-    be cached. Instead the method will be invoked like a static method:
-    class Obj(object):
-        @memoized_method
-        def add_to(self, arg):
-            return self + arg
-    Obj.add_to(1)    # not enough arguments
-    Obj.add_to(1, 2) # returns 3, result is not cached
-    """
-    def __init__(self, func):
-        self.func = func
-    def __get__(self, obj, objtype=None):
-        from functools import partial
-        if obj is None:
-            return self.func
-        return partial(self, obj)
-    def __call__(self, *args, **kw):
-        obj = args[0]
-        try:
-            cache = obj.__cache
-        except AttributeError:
-            cache = obj.__cache = {}
-        key = (self.func, args[1:], frozenset(kw.items()))
-        try:
-            res = cache[key]
-        except KeyError:
-            res = cache[key] = self.func(*args, **kw)
-        return res
-
-###############################################################################
 def get_this_module_path():
     """ Will return the absolute path of the file containing
         this function"""
+    # One way #
     import os
     from inspect import getfile, currentframe
     return os.path.abspath(getfile(currentframe()))
-    return os.path.realpath(__file__)
+    # Another way #
+    # return os.path.realpath(__file__)
 
 ###############################################################################
 def make_latex_string(string):
@@ -233,35 +192,80 @@ def make_latex_string(string):
     return string
 
 ###############################################################################
-def number_to_color(num=0):
+class Color:
+    """Shortcuts for the ANSI escape sequences to control
+       formatting, color, etc. on text terminals. Use it like this::
+
+            print Color.red + "Hello world" + Color.end
     """
-    Takes a number, returns a color
+    # Special #
+    end = '\033[0m'
+    # Regular #
+    blk   = '\033[0;30m' # Black
+    red   = '\033[0;31m' # Red
+    grn   = '\033[0;32m' # Green
+    ylw   = '\033[0;33m' # Yellow
+    blu   = '\033[0;34m' # Blue
+    pur   = '\033[0;35m' # Purple
+    cyn   = '\033[0;36m' # Cyan
+    wht   = '\033[0;37m' # White
+    # Bold #
+    bold  = '\033[1m'
+    b_blk = '\033[1;30m' # Black
+    b_red = '\033[1;31m' # Red
+    b_grn = '\033[1;32m' # Green
+    b_ylw = '\033[1;33m' # Yellow
+    b_blu = '\033[1;34m' # Blue
+    b_pur = '\033[1;35m' # Purple
+    b_cyn = '\033[1;36m' # Cyan
+    b_wht = '\033[1;37m' # White
+    # Light #
+    light = '\033[2m'
+    l_blk = '\033[2;30m' # Black
+    l_red = '\033[2;31m' # Red
+    l_grn = '\033[2;32m' # Green
+    l_ylw = '\033[2;33m' # Yellow
+    l_blu = '\033[2;34m' # Blue
+    l_pur = '\033[2;35m' # Purple
+    l_cyn = '\033[2;36m' # Cyan
+    l_wht = '\033[2;37m' # White
+    # Italic #
+    italic = '\033[1m'
+    i_blk = '\033[3;30m' # Black
+    i_red = '\033[3;31m' # Red
+    i_grn = '\033[3;32m' # Green
+    i_ylw = '\033[3;33m' # Yellow
+    i_blu = '\033[3;34m' # Blue
+    i_pur = '\033[3;35m' # Purple
+    i_cyn = '\033[3;36m' # Cyan
+    i_wht = '\033[3;37m' # White
+    # Underline #
+    underline = '\033[4m'
+    u_blk = '\033[4;30m' # Black
+    u_red = '\033[4;31m' # Red
+    u_grn = '\033[4;32m' # Green
+    u_ylw = '\033[4;33m' # Yellow
+    u_blu = '\033[4;34m' # Blue
+    u_pur = '\033[4;35m' # Purple
+    u_cyn = '\033[4;36m' # Cyan
+    u_wht = '\033[4;37m' # White
+    # Glitter #
+    flash = '\033[5m'
+    g_blk = '\033[5;30m' # Black
+    g_red = '\033[5;31m' # Red
+    g_grn = '\033[5;32m' # Green
+    g_ylw = '\033[5;33m' # Yellow
+    g_blu = '\033[5;34m' # Blue
+    g_pur = '\033[5;35m' # Purple
+    g_cyn = '\033[5;36m' # Cyan
+    g_wht = '\033[5;37m' # White
+    # Fill #
+    f_blk = '\033[40m'   # Black
+    f_red = '\033[41m'   # Red
+    f_grn = '\033[42m'   # Green
+    f_ylw = '\033[43m'   # Yellow
+    f_blu = '\033[44m'   # Blue
+    f_pur = '\033[45m'   # Purple
+    f_cyn = '\033[46m'   # Cyan
+    f_wht = '\033[47m'   # White
 
-    >>> number_to_color(7)
-    'pink'
-    """
-
-    num = int(num) % 8
-    return {
-        0: 'blue',
-        1: 'green',
-        2: 'red',
-        3: 'cyan',
-        4: 'magenta',
-        5: 'orange',
-        6: 'black',
-        7: 'pink'
-    }[num]
-
-def number_to_color_light(num=0):
-    num = int(num) % 8
-    return {
-        0: '#87CEFA', #'lightblue',
-        1: '#90EE90', #'lightgreen',
-        2: '#FFB6C1', #'lightpink',
-        3: '#48D1CC', #'mediumturquoise',
-        4: '#EE82EE', #'violet',
-        5: '#FFD700', #'gold',
-        6: '#C0C0C0', #'silver',
-        7: '#FFFAF0', #'floralwhite'
-    }[num]
