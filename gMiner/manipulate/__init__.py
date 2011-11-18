@@ -106,10 +106,9 @@ Several types of manipulations can be used to generate different types of tracks
 """
 
 # Built-in modules #
-import pkgutil
+import sys, pkgutil
 
 # Internal modules #
-from gMiner import common
 from gMiner.manipulate import all_manips
 
 # Other modules #
@@ -201,9 +200,16 @@ def run(request, tracks, output_dir):
     return manip.auto_prepare()
 
 ################################################################################
+def build_manip_fn(request, tracks, output_dir):
+    pass
+
+################################################################################
+self = sys.modules[__name__]
 list_of_manips = [name for _, name, _ in pkgutil.iter_modules(all_manips.__path__)]
 for manip in list_of_manips:
     print manip
+    #func = build_manip_fn(manip)
+    #setattr(self, manip, func)
 
 #-----------------------------------#
 # This code was written by the BBCF #
