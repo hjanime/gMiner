@@ -55,16 +55,21 @@ Using the library in a script
 -----------------------------
 Instead of accessing gFeatMiner services via the ``gMiner.run()`` function, you can directly import the wanted manipulation and call it manually with your own queries. Here is a short example where a new track is created containing the ``mean_score_by_feature`` computed on two other tracks::
 
+    from gMiner.genomic_manip import mean_score_by_feature
+    tmp_path = mean_score_by_feature('/scratch/tracks/pol2.sql', '/scratch/tracks/ribosome_proteins.sql')
+
+As you can see, manipulations accept path as input, but they can also accept track objects for more fine grained control::
+
     import track
     from gMiner.genomic_manip import mean_score_by_feature
-    with track.load('/scratch/genomic/tracks/pol2.sql') as pol2:
-        with track.load('/scratch/genomic/tracks/ribosome_proteins.sql') as rpgenes:
+    with track.load('/scratch/tracks/pol2.sql') as pol2:
+        with track.load('/scratch/tracks/ribosome_proteins.sql') as rpgenes:
             virtual_track = mean_score_by_feature(pol2,rpgenes)
             virtual_track.export('/tmp/result.sql')
 
 Chaining manipulations
 ----------------------
-The beautiful thing about this library is that operations can be chained one to an other without having to compute intermediary states. The following works::
+The beautiful thing about this library is that operations can be chained one to an other without having to compute intermediary states. The following also works::
 
     import track
     from gMiner.genomic_manip import overlap
@@ -75,7 +80,7 @@ The beautiful thing about this library is that operations can be chained one to 
 
 Using the library in "manual" mode
 ----------------------------------
-If you want to modify the input of your manipulation on the fly, you can dig in to the generator functions as is explained here. You just need to write a function taking a generator object and returning a generator object. In this example our generator will yield several new features for every original feature it receives::
+If you want to modify the input of your manipulation on the fly, you can also use the manipulations as generator functions. To do this, you just need to write a function taking a generator object and returning a generator object. In this example our generator will yield several new features for every original feature it receives::
 
     def create_bins(X, num_of_bins=10):
         for x in X:
@@ -86,8 +91,8 @@ If you want to modify the input of your manipulation on the fly, you can dig in 
     import track
     from gMiner.operations.genomic_manip.scores import mean_score_by_feature
     manip = mean_score_by_feature()
-    with track.load('/scratch/genomic/tracks/pol2.sql') as pol2:
-        with track.load('/scratch/genomic/tracks/ribosome_proteins.sql') as rpgenes:
+    with track.load('/scratch/tracks/pol2.sql') as pol2:
+        with track.load('/scratch/tracks/ribosome_proteins.sql') as rpgenes:
             with track.new('/tmp/result.sql') as r:
                 for chrom in pol2:
                     r.write(chrom, mean_score_by_feature(a.read(chrom), create_bins(b.read(chrom))))

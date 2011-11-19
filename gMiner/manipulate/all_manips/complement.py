@@ -1,17 +1,56 @@
+################################# Description ##################################
+label           = 'complement'
+short_name      = 'Complement'
+long_name       = 'Complement (boolean NOT)'
+input_tracks    = [{'key':'X', 'position':1, 'fields':['start','end']}]
+input_args      = []
+input_meta      = [{'key':'l', 'position':2, 'kind':'chrom_len'}]
+output_tracks   = [{'position':1, 'fields': ['start','end']}]
+tracks_collapse = None
+chroms_collapse = 'appending'
+
+################################ Documentation #################################
+tooltip = \
 """
-Standard manipulations that are found in many different genomic tools.
+The ``complement`` manipulation takes only one track
+for input. The output consists of all intervals that
+were not covered by a feature in the input track.
+This corresponds to the boolean NOT operation.
 """
 
-# Built-in modules #
-import sys
+################################## Examples ####################################
+numeric_example = \
+"""
+A: (10,20) (30,40)
+R: ( 0,10) (20,30) (40,100)
+"""
 
-# Internal modules #
-from gMiner.operations.genomic_manip import Manipulation as Manip
-from gMiner import common
+visual_example = \
+"""
+A: ......****.........*****...
+R: ******....*********.....***
+"""
 
-################################################################################
-class merge(Manip):
-    '''Merges features that are adjacent or overlapping in one stream'''
+#################################### Tests #####################################
+from track.test import samples
+tests = [
+    {'tracks':   [samples['small_features'][1]['sql']],
+     'args':     {'l':200},
+     'expected': [('chr1',  10, 20, '', 0.0, 0),
+                  ('chr1',  30, 40, '', 0.0, 0),
+                  ('chr1',  50, 60, '', 0.0, 0),
+                  ('chr1',  80, 90, '', 0.0, 0),
+                  ('chr1', 110, 120,'', 0.0, 0),
+                  ('chr1', 135, 200,'', 0.0, 0)]}]
 
-
-sys.modules[__name__] = mod_call()
+############################### Implementation #################################
+def generate(X, l):
+    end = 0
+    for x in X:
+        if x['start'] > end:
+            yield (end, x['start'])
+            end = x['end']
+        else:
+            end = max(x['start'], end)
+    if end < l:
+        yield (end, l)
