@@ -86,7 +86,7 @@ import os
 
 # Internal modules #
 from gMiner import common
-from gMiner.operations import genomic_manip
+from gMiner import manipulate
 
 # Other modules #
 from track import load
@@ -123,7 +123,7 @@ class gmSubtrack(object):
     def make_overlap(self, t, chrom):
         sel_feats  = t.read(chrom, ['start', 'end'])
         orig_feats = self.track.read(chrom, self.fields)
-        yield genomic_manip.filter()(orig_feats, sel_feats)
+        yield manipulate.filter()(orig_feats, sel_feats)
 
 ###########################################################################
 def track_cut_down(request, track):

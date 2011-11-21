@@ -14,7 +14,7 @@ import time
 # Internal modules #
 from gMiner import project_name
 from gMiner import common
-from gMiner.operations.desc_stat import gmCharacteristic
+from gMiner.describe import gmCharacteristic
 
 # Plot colors #
 default_plot_color      = 'magenta'

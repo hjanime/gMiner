@@ -105,9 +105,6 @@ Of course when you create tracks using this method, the resulting database is mi
 Manipulations
 -------------
 Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifying ``manipulation=`` followed by one of the values in bold below:
-
-.. automodule:: gMiner.manipulate
-    :members:
 """
 
 # Built-in modules #
@@ -205,16 +202,21 @@ def run(request, tracks, output_dir):
     return manip.auto_prepare()
 
 ################################################################################
-def build_manip_fn(request, tracks, output_dir):
-    pass
+def build_manip_fn(path):
+    print path
+    def lol(x):
+        """My function documentation"""
+        return 2
+    return ('lol', lol)
 
 ################################################################################
 self = sys.modules[__name__]
-list_of_manips = [name for _, name, _ in pkgutil.iter_modules(all_manips.__path__)]
+manips_path = all_manips.__path__[0]
+list_of_manips = [name for loader, name, ispkg in pkgutil.iter_modules([manips_path])]
+print list_of_manips
 for manip in list_of_manips:
-    print manip
-    #func = build_manip_fn(manip)
-    #setattr(self, manip, func)
+    name, func = build_manip_fn(manips_path + "/" + manip)
+    setattr(self, name, func)
 
 #-----------------------------------#
 # This code was written by the BBCF #

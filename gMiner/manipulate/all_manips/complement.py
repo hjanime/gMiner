@@ -12,7 +12,7 @@ chroms_collapse = 'appending'
 ################################ Documentation #################################
 tooltip = \
 """
-The ``complement`` manipulation takes only one track
+    The ``complement`` manipulation takes only one track
 for input. The output consists of all intervals that
 were not covered by a feature in the input track.
 This corresponds to the boolean NOT operation.

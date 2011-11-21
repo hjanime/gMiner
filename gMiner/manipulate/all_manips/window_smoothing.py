@@ -12,11 +12,11 @@ chroms_collapse = 'union'
 ################################ Documentation #################################
 tooltip = \
 """
-Given a signal track and a window size in base pairs,
-will output a new signal track with, at each position
-p, the mean of the scores in the window [p-L, p+L].
-Border cases are handled by zero padding and the signal's
-support is invariant.
+    Given a signal track and a window size in base pairs,
+the ``windows_smoothing`` manipulation will output a new signal
+track with, at each position p, the mean of the scores
+in the window [p-L, p+L]. Border cases are handled by zero padding
+and the signal's support is invariant.
 """
 
 ################################## Examples ####################################
