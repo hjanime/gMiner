@@ -80,18 +80,18 @@ __all__ = ['correlation', 'scatter']
 
 ################################################################################
 class Plot(object):
-    '''Parent class to all specific plots. It mainly handles argument
-       parsing coming from ``gMiner.run`` requests and also direct calls.'''
+    """Parent class to all specific plots. It mainly handles argument
+       parsing coming from ``gMiner.run`` requests and also direct calls."""
 
     def generate(self, *args, **kwargs):
-        '''All child classes must implement
-           this method.'''
+        """All child classes must implement
+           this method."""
         raise NotImplementedError
 
     def from_request(self, request, tracks):
-        '''Put tracks and parameters in the right order.
+        """Put tracks and parameters in the right order.
            To be used when gMiner is called from the
-           ``gMiner.run()`` function.'''
+           ``gMiner.run()`` function."""
         # Put the track in the order they came #
         tracks_needed = [(v['position'],k) for (k,v) in self.args.items() if v['kind'] == Track]
         tracks_needed.sort()
@@ -101,10 +101,10 @@ class Plot(object):
         return self(**request)
 
     def __call__(self, *largs, **kwargs):
-        '''Check that all arguments are present
+        """Check that all arguments are present
            and load all tracks that are given as paths
            instead of track objects. To be used
-           when a plot is called directly from a script.'''
+           when a plot is called directly from a script."""
         # Initialization #
         parsed_args = {}
         tracks_to_unload = []
@@ -145,7 +145,7 @@ class Plot(object):
 
 #---------------------------------------------------------------------------------#
 class correlation(Plot):
-    '''Plots the cross-correlation between all chromosomes of
+    """Plots the cross-correlation between all chromosomes of
        two tracks using the numeric vectors of scores at every
        position of the genome::
 
@@ -156,7 +156,7 @@ class correlation(Plot):
        memory. Be careful when using on large genomes.
 
         ``correlation`` returns a matplotlib figure object.
-    '''
+    """
 
     def __init__(self):
         self.name = 'Cross correlation'
@@ -183,7 +183,7 @@ class correlation(Plot):
 
 #---------------------------------------------------------------------------------#
 class scatter(Plot):
-    '''Draws a scatter plot of 2 scores tracks in one or many
+    """Draws a scatter plot of 2 scores tracks in one or many
        list of regions::
 
            scatterplot(Q1, Q2, R1, log_scale=True)
@@ -192,7 +192,7 @@ class scatter(Plot):
        the average of Q2 in every feature of R1.
 
        ``scatter`` returns a matplotlib figure object.
-    '''
+    """
 
     def __init__(self):
         self.name = 'Cross correlation'
@@ -225,6 +225,8 @@ class scatter(Plot):
 
 ################################################################################
 def run(request, tracks, output_dir):
+    """This function is called when running gMiner through
+       the ``gMiner.run()`` fashion."""
     # Mandatory 'plot' parameter #
     plot_type = request.get('plot')
     if not plot_type:

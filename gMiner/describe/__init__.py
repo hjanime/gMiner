@@ -98,7 +98,6 @@ class gmSubtrack(object):
         self.track = track
         self.selection = selection
         self.parent = parent
-
         # Unique chromosome #
         self.chr = None
         if self.selection['type'] == 'chr': self.chr = selection['chr']
@@ -157,6 +156,7 @@ def track_cut_down(request, track):
                     yield gmSubtrack(request, track, {'type': 'trackchr', 'chr': chr}, False)
                     if request['compare_parents']: yield gmSubtrack(request, track, {'type': 'chr', 'chr': chr}, True)
 
+#-------------------------------------------------------------------------#
 def gm_get_characteristic(subtrack, chara):
     # Variables #
     result = False
@@ -179,6 +179,7 @@ def gm_get_characteristic(subtrack, chara):
 
 #-------------------------------------------------------------------------#
 class gmCharacteristic(object):
+    """Container for characterisitcs (should refactor)"""
 
     def num_of_features_options(func):
         func.title        = '''Number of features'''
@@ -191,7 +192,7 @@ class gmCharacteristic(object):
     @classmethod
     @num_of_features_options
     def number_of_features(cls, iterable):
-        '''Returns the number of features'''
+        """Returns the number of features"""
         sum = 0
         for x in iterable: sum +=1
         return sum
@@ -207,7 +208,7 @@ class gmCharacteristic(object):
     @classmethod
     @base_coverage_options
     def base_coverage(cls, iterable):
-        '''Returns the base coverage'''
+        """Returns the base coverage"""
         sum = 0
         position = -1
         for x in iterable:
@@ -228,7 +229,7 @@ class gmCharacteristic(object):
     @classmethod
     @length_options
     def length(cls, iterable):
-        '''Returns the length distribution'''
+        """Returns the length distribution"""
         return [x[1]-x[0] for x in iterable]
 
     def score_options(func):
@@ -242,12 +243,14 @@ class gmCharacteristic(object):
     @classmethod
     @score_options
     def score(cls, iterable):
-        '''Returns the score distribution'''
+        """Returns the score distribution"""
         iterable = list(iterable)
         return [x[2] for x in iterable]
 
 ###########################################################################
 def run(request, tracks, output_dir):
+    """This function is called when running gMiner through
+       the ``gMiner.run()`` fashion."""
     # Mandatory 'characteristic' parameter #
     if not request.get('characteristic'):
         raise Exception("There does not seem to be a characteristic specified in the request")
@@ -281,7 +284,7 @@ def run(request, tracks, output_dir):
     return graph.generate()
 
 # Avoid circular imports #
-from . import graphs
+from gMiner.describe import graphs
 
 #-----------------------------------#
 # This code was written by the BBCF #

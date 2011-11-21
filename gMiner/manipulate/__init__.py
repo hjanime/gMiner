@@ -118,18 +118,18 @@ import track
 
 ################################################################################
 class Manipulation(object):
-    '''Parent class to all specific manipulations. It mainly handles argument
-       parsing coming from ``gMiner.run`` requests and also from direct calls.'''
+    """Parent class to all specific manipulations. It mainly handles argument
+       parsing coming from ``gMiner.run`` requests and also from direct calls."""
 
     def generate(self, *args, **kwargs):
-        '''All child classes must implement
-           this method.'''
+        """All child classes must implement
+           this method."""
         raise NotImplementedError
 
     def from_request(self, request, tracks):
-        '''Put tracks and parameters in the right order.
+        """Put tracks and parameters in the right order.
            To be used when gMiner is called from the
-           ``gMiner.run()`` function.'''
+           ``gMiner.run()`` function."""
         # Put the track in the order they came #
         tracks_needed = [(v['position'],k) for (k,v) in self.args.items() if v['kind'] == Track]
         tracks_needed.sort()
@@ -139,10 +139,10 @@ class Manipulation(object):
         return self(**request)
 
     def __call__(self, *largs, **kwargs):
-        '''Check that all arguments are present
+        """Check that all arguments are present
            and load all tracks that are given as paths
            instead of track objects. To be used
-           when a plot is called directly from a script.'''
+           when a manipulation is called directly from a script."""
         # Initialization #
         parsed_args = {}
         tracks_to_unload = []
@@ -181,8 +181,11 @@ class Manipulation(object):
         # Return a figure #
         return fig
 
+
 ################################################################################
 def run(request, tracks, output_dir):
+    """This function is called when running gMiner through
+       the ``gMiner.run()`` fashion."""
     # Mandatory 'manipulation' parameter #
     if not request.get('manipulation'):
         raise Exception("There does not seem to be a manipulation specified in the request")
@@ -203,6 +206,13 @@ def run(request, tracks, output_dir):
 
 ################################################################################
 def build_manip_fn(path):
+    """Taking the path of standard manipulation file
+    will build a callable function statisfying the three
+    access methods:
+        1) overlap('tracks/pol2.sql', 'rap1.sql')
+        2) overlap(pol2,rap1)
+        3) overlap(pol2.read(chrom), rap1.read(chrom))
+    """
     print path
     def lol(x):
         """My function documentation"""
@@ -210,13 +220,16 @@ def build_manip_fn(path):
     return ('lol', lol)
 
 ################################################################################
+# This module #
 self = sys.modules[__name__]
+# Where are the all the manipulations #
 manips_path = all_manips.__path__[0]
+# A list containing their names #
 list_of_manips = [name for loader, name, ispkg in pkgutil.iter_modules([manips_path])]
-print list_of_manips
+# For every one make a callable function #
 for manip in list_of_manips:
-    name, func = build_manip_fn(manips_path + "/" + manip)
-    setattr(self, name, func)
+    func = build_manip_fn(manips_path + "/" + manip)
+    setattr(self, manip, func)
 
 #-----------------------------------#
 # This code was written by the BBCF #

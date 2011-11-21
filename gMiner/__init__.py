@@ -138,6 +138,8 @@ __all__ = ['run']
 
 ###########################################################################
 def run(**kwargs):
+    """Simple entry point where request can be described as
+    dictionaries"""
     # Mandatory 'operation_type' parameter #
     module_name = kwargs['operation']
     if not hasattr(gMiner, module_name):
