@@ -108,17 +108,32 @@ def sentinelize(iterable, sentinel):
     yield sentinel
 
 ###############################################################################
-def import_module(name, path):
+def import_module(name):
+    """
+    Import a module that given it's name
+    and return that module.
+    """
+    __import__(name)
+    import sys
+    return sys.modules[name]
+
+###############################################################################
+def find_module(name):
     """
     Import a module that is not in sys.path
-    given it's relative path
+    given it's name and return that module.
     """
-    import imp
-    file, pathname, description = imp.find_module(name, [path])
+    import imp, sys
+    # See if the module has already been imported.
+    try: return sys.modules[name]
+    except KeyError: pass
+    # If any of the following calls raises an exception,
+    # there's a problem we can't handle -- let the caller handle it.
+    fp, pathname, description = imp.find_module(name)
     try:
-        return imp.load_module(name, file, pathname, description)
+        return imp.load_module(name, fp, pathname, description)
     finally:
-        if file: file.close()
+        if fp: fp.close()
 
 ###############################################################################
 class collapse(object):

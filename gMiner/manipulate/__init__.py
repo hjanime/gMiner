@@ -112,6 +112,7 @@ import sys, pkgutil
 
 # Internal modules #
 from gMiner.manipulate import all_manips
+from gMiner.common import import_module
 
 # Other modules #
 import track
@@ -120,6 +121,9 @@ import track
 class Manipulation(object):
     """Parent class to all specific manipulations. It mainly handles argument
        parsing coming from ``gMiner.run`` requests and also from direct calls."""
+
+    def __init__(self, module):
+        pass
 
     def generate(self, *args, **kwargs):
         """All child classes must implement
@@ -205,31 +209,24 @@ def run(request, tracks, output_dir):
     return manip.auto_prepare()
 
 ################################################################################
-def build_manip_fn(path):
-    """Taking the path of standard manipulation file
-    will build a callable function statisfying the three
-    access methods:
-        1) overlap('tracks/pol2.sql', 'rap1.sql')
-        2) overlap(pol2,rap1)
-        3) overlap(pol2.read(chrom), rap1.read(chrom))
-    """
-    print path
-    def lol(x):
-        """My function documentation"""
-        return 2
-    return ('lol', lol)
+"""Taking the module object of a standard manipulation file
+will build a callable function statisfying the three
+access methods:
+    1) overlap('tracks/pol2.sql', 'rap1.sql')
+    2) overlap(pol2,rap1)
+    3) overlap(pol2.read(chrom), rap1.read(chrom))
+"""
 
-################################################################################
 # This module #
-self = sys.modules[__name__]
+self_module = sys.modules[__name__]
 # Where are the all the manipulations #
-manips_path = all_manips.__path__[0]
+manips_directory = all_manips.__path__[0]
 # A list containing their names #
-list_of_manips = [name for loader, name, ispkg in pkgutil.iter_modules([manips_path])]
+list_of_manip_names = [name for loader, name, ispkg in pkgutil.iter_modules([manips_directory])]
 # For every one make a callable function #
-for manip in list_of_manips:
-    func = build_manip_fn(manips_path + "/" + manip)
-    setattr(self, manip, func)
+for manip_name in list_of_manip_names:
+    manip_module = import_module('gMiner.manipulate.all_manips.' + manip_name)
+    setattr(self_module, manip_name, Manipulation(manip_module))
 
 #-----------------------------------#
 # This code was written by the BBCF #
