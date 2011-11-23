@@ -140,9 +140,10 @@ __all__ = ['run']
 def run(**kwargs):
     """Simple entry point where request can be described as
     dictionaries"""
+    self_module = sys.modules[__name__]
     # Mandatory 'operation_type' parameter #
     module_name = kwargs['operation']
-    if not hasattr(gMiner, module_name):
+    if not hasattr(self_module, module_name):
         try:
             __import__('gMiner.' + module_name)
         except ImportError as err:

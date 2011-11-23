@@ -105,6 +105,11 @@ Of course when you create tracks using this method, the resulting database is mi
 Manipulations
 -------------
 Several types of manipulations can be used to generate different types of tracks. You can chose which manipulation to execute by specifying ``manipulation=`` followed by one of the values in bold below:
+
+   .. autofunction:: mean_score_by_feature
+   .. autofunction:: window_smoothing
+   .. autofunction:: complement
+
 """
 
 # Built-in modules #
@@ -117,36 +122,107 @@ from gMiner.common import import_module
 # Other modules #
 import track
 
+# Constants #
+base_attributes = ['label', 'short_name', 'long_name', 'input_tracks', 'input_args',
+                   'input_meta', 'output_tracks', 'tracks_collapse', 'chroms_collapse',
+                   'tooltip', 'numeric_example', 'visual_example', 'tests']
+base_functions = ['generate']
+
 ################################################################################
 class Manipulation(object):
-    """Parent class to all specific manipulations. It mainly handles argument
-       parsing coming from ``gMiner.run`` requests and also from direct calls."""
+    def __init__(self, *args):
+        """Taking the module object of a standard manipulation file
+            will build a callable instance satisfying the three
+            access methods:
 
-    def __init__(self, module):
+                1) overlap('tracks/pol2.sql', 'rap1.sql')
+                2) overlap(pol2,rap1)
+                3) overlap(pol2.read(chrom), rap1.read(chrom))
+        """
+        # Only one argument #
+        module = args[0]
+        # Module attributes become instance attributes #
+        for attr in base_attributes + base_functions: setattr(self, attr, getattr(module,attr))
+        # Update the documentation #
+        self.__doc__ = self.documentation
+
+    @property
+    def documentation(self):
+        """Generate the sphinx docstring from the attributes of the manipulation."""
+        # The long title #
+        msg = self.long_name + "."
+        # The tool tip #
+        msg += "\n\n" + self.tooltip.replace('\n',' ') + '\n'
+        # The input tracks #
+        for t in self.input_tracks:
+            sub_msg = "\n:param %s: A track or the path to a track. Eventually, a generator yielding features."
+            sub_msg = sub_msg % t['key']
+            if 'fields' in t:
+                sub_msg += " The minimum fields required for this track are: ``%s``" % t['fields']
+                if '...' in t['fields']: sub_msg += ", extra fields can be used."
+                else:                    sub_msg += ", extra fields cannot be used."
+            msg += sub_msg + '\n'
+        # The arguments #
+        for p in self.input_args:
+            msg += ":param %s:" % p['key']
+            if 'doc' in p: msg += " " + p['doc']
+            if 'default' in p: msg += " By default ``%s``." % p['default']
+            if 'type' in p: msg += "\n:type %s: %s" % (p['key'], p['type'].__name__)
+            msg += '\n'
+        # The special parameter #
+        for p in self.input_meta:
+            msg += "\n:param %s:" % p['key']
+            if 'kind' in p and p['kind'] == 'chrom_len':
+                msg += " The length of the current chromosome " \
+                       "(only necessary when calling the manipulation with generators).\n" \
+                       ":type %s: int" % p['key']
+            msg += '\n'
+        # The output #
+        for t in self.output_tracks:
+            if 'fields' in t: msg += ":returns: A track with the following fields: ``%s``." % t['fields']
+            else:             msg += ":returns: A track."
+            msg += '\n'
+        # The numeric example #
+        if self.numeric_example:
+            msg += '\nA numerical example::\n %s\n' % self.numeric_example.replace('\n','\n     ')
+        # The viusal example #
+        if self.visual_example:
+            msg += '\nA visual example::\n %s\n' % self.visual_example.replace('\n','\n    ')
+        # Chromosomes collapse #
+        if self.chroms_collapse: msg += "\n"\
+        "If the list of chromosomes contained in the various tracks differ," \
+        " the conflict will be resolved by applying the '%s' principle." \
+        % self.chroms_collapse
+        # Tracks collapse #
+        if self.tracks_collapse: msg += "\n"\
+        "If the list of tracks supplied is more than the two authorized," \
+        " the conflict will be resolved by applying the '%s' principle." \
+        % self.tracks_collapse
+        # Return the message #
+        return msg
+
+    def test(self):
+        #TODO
+        """Run all the unittests"""
         pass
 
-    def generate(self, *args, **kwargs):
-        """All child classes must implement
-           this method."""
-        raise NotImplementedError
-
     def from_request(self, request, tracks):
-        """Put tracks and parameters in the right order.
-           To be used when gMiner is called from the
+        #TODO
+        """To be used when gMiner is called from the
            ``gMiner.run()`` function."""
         # Put the track in the order they came #
         tracks_needed = [(v['position'],k) for (k,v) in self.args.items() if v['kind'] == Track]
         tracks_needed.sort()
         for index,(pos,name) in enumerate(tracks_needed):
             request.update({name:tracks[index]})
-        # Call child class #
+        # Call the manipulation #
         return self(**request)
 
     def __call__(self, *largs, **kwargs):
         """Check that all arguments are present
            and load all tracks that are given as paths
-           instead of track objects. To be used
-           when a manipulation is called directly from a script."""
+           instead of track objects. Also check for
+           direct calls with generators."""
         # Initialization #
         parsed_args = {}
         tracks_to_unload = []
@@ -185,7 +261,6 @@ class Manipulation(object):
         # Return a figure #
         return fig
 
-
 ################################################################################
 def run(request, tracks, output_dir):
     """This function is called when running gMiner through
@@ -194,29 +269,18 @@ def run(request, tracks, output_dir):
     if not request.get('manipulation'):
         raise Exception("There does not seem to be a manipulation specified in the request")
     try:
-        manipulation = globals()[request['manipulation']]
+        manipulation = getattr(self_module, request['manipulation'])
     except KeyError:
         raise Exception("The specified manipulation '%s' does not exist." % request['manipulation'])
     except TypeError:
         raise Exception("The specified manipulation '%s' is a special object in python."  % request['manipulation'])
     if not issubclass(manipulation, Manipulation):
         raise Exception("The specified manipulation '%s' is not a manipulation." % request['manipulation'])
-    manip = manipulation()
     # Run it #
-    manip.request    = request
-    manip.req_tracks = tracks
-    manip.output_dir = output_dir
-    return manip.auto_prepare()
+    paths = manipulation(request, tracks)
+    return paths[0]
 
 ################################################################################
-"""Taking the module object of a standard manipulation file
-will build a callable function statisfying the three
-access methods:
-    1) overlap('tracks/pol2.sql', 'rap1.sql')
-    2) overlap(pol2,rap1)
-    3) overlap(pol2.read(chrom), rap1.read(chrom))
-"""
-
 # This module #
 self_module = sys.modules[__name__]
 # Where are the all the manipulations #

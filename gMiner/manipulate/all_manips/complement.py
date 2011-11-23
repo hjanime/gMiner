@@ -7,7 +7,7 @@ input_args      = []
 input_meta      = [{'key':'l', 'position':2, 'kind':'chrom_len'}]
 output_tracks   = [{'position':1, 'fields': ['start','end']}]
 tracks_collapse = None
-chroms_collapse = 'appending'
+chroms_collapse = None
 
 ################################ Documentation #################################
 tooltip = \

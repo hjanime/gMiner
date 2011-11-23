@@ -3,7 +3,7 @@ label           = 'window_smoothing'
 short_name      = 'Window smoothing'
 long_name       = 'Smooth scores with a moving window'
 input_tracks    = [{'key':'X', 'position':1, 'fields':['start','end','score']}]
-input_args      = [{'key':'L', 'position':2, 'type': int, 'default': 200}]
+input_args      = [{'key':'L', 'position':2, 'type': int, 'default': 200, 'doc':'The window radius.'}]
 input_meta      = [{'key':'l', 'position':3, 'kind':'chrom_len'}]
 output_tracks   = [{'position':1, 'fields': ['start','end','score']}]
 tracks_collapse = None
@@ -21,14 +21,10 @@ and the signal's support is invariant.
 
 ################################## Examples ####################################
 numeric_example = \
-"""
-TODO
-"""
+""""""
 
 visual_example = \
-"""
-TODO
-"""
+""""""
 
 #################################### Tests #####################################
 tests = [

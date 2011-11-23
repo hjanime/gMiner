@@ -21,14 +21,10 @@ similar to ``Y`` but with a new score value property for every feature.
 
 ################################## Examples ####################################
 numeric_example = \
-"""
-TODO
-"""
+""""""
 
 visual_example = \
-"""
-TODO
-"""
+""""""
 
 #################################### Tests #####################################
 tests = [
