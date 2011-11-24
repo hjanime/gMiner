@@ -1,10 +1,12 @@
+# coding: utf-8
+
 ################################# Description ##################################
 label           = 'window_smoothing'
 short_name      = 'Window smoothing'
 long_name       = 'Smooth scores with a moving window'
-input_tracks    = [{'key':'X', 'position':1, 'fields':['start','end','score']}]
+input_tracks    = [{'key':'X', 'position':1, 'kind':'single', 'fields':['start','end','score']}]
 input_args      = [{'key':'L', 'position':2, 'type': int, 'default': 200, 'doc':'The window radius.'}]
-input_meta      = [{'key':'l', 'position':3, 'kind':'chrom_len'}]
+input_meta      = [{'key':'l', 'position':3, 'type': int, 'kind':'chrom_len'}]
 output_tracks   = [{'position':1, 'fields': ['start','end','score']}]
 tracks_collapse = None
 chroms_collapse = 'union'
@@ -24,7 +26,7 @@ numeric_example = \
 """"""
 
 visual_example = \
-""""""
+u""""""
 
 #################################### Tests #####################################
 tests = [
@@ -46,7 +48,7 @@ tests = [
                   (9,  10,  2.0),]}]
 
 ############################### Implementation #################################
-def generate(X, L, l):
+def generate(manip, X, L, l):
     # Sentinel #
     sentinel = (sys.maxint, sys.maxint, 0.0)
     X = common.sentinelize(X, sentinel)

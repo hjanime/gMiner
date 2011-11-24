@@ -174,7 +174,7 @@ def gm_get_characteristic(subtrack, chara):
     if shortcut: result = shortcut
     # Do it #
     subtrack.fields = charafn.fields
-    result = getattr(common.collapse, charafn.collapse)([charafn(data) for data in subtrack])
+    result = common.collapse(charafn.collapse, [charafn(data) for data in subtrack])
     subtrack.stat = result
 
 #-------------------------------------------------------------------------#
@@ -187,7 +187,7 @@ class gmCharacteristic(object):
         func.shortcutable = True
         func.storable     = True
         func.units        = 'Count'
-        func.collapse     = 'by_adding'
+        func.collapse     = 'adding'
         return func
     @classmethod
     @num_of_features_options
@@ -203,7 +203,7 @@ class gmCharacteristic(object):
         func.shortcutable = False
         func.storable     = True
         func.units        = 'Base pairs'
-        func.collapse     = 'by_adding'
+        func.collapse     = 'adding'
         return func
     @classmethod
     @base_coverage_options
@@ -224,7 +224,7 @@ class gmCharacteristic(object):
         func.shortcutable = False
         func.storable     = False
         func.units        = 'Base Pairs'
-        func.collapse     = 'by_appending'
+        func.collapse     = 'appending'
         return func
     @classmethod
     @length_options
@@ -238,7 +238,7 @@ class gmCharacteristic(object):
         func.shortcutable = False
         func.storable     = False
         func.units        = 'Undefined'
-        func.collapse     = 'by_appending'
+        func.collapse     = 'appending'
         return func
     @classmethod
     @score_options

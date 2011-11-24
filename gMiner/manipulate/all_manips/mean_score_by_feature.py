@@ -1,9 +1,11 @@
+# coding: utf-8
+
 ################################# Description ##################################
 label           = 'mean_score_by_feature'
 short_name      = 'Mean score by feature'
 long_name       = 'Mean score of the signal in every feature'
-input_tracks    = [{'key':'X', 'position':1, 'fields':['start','end','...']},
-                   {'key':'Y', 'position':2, 'fields':['start','end','score']}]
+input_tracks    = [{'key':'X', 'position':1, 'kind':'single', 'fields':['start','end','...']},
+                   {'key':'Y', 'position':2, 'kind':'single', 'fields':['start','end','score']}]
 input_args      = []
 input_meta      = []
 output_tracks   = [{'position':1, 'fields': ['start','end','score','...']}]
@@ -24,7 +26,7 @@ numeric_example = \
 """"""
 
 visual_example = \
-""""""
+u""""""
 
 #################################### Tests #####################################
 tests = [
@@ -46,7 +48,7 @@ tests = [
                   (9,  10,  2.0),]}]
 
 ############################### Implementation #################################
-def generate(X, Y):
+def generate(manip, X, Y):
     # Sentinel #
     sentinel = (sys.maxint, sys.maxint, 0.0)
     X = common.sentinelize(X, sentinel)

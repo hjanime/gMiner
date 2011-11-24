@@ -136,39 +136,33 @@ def find_module(name):
         if fp: fp.close()
 
 ###############################################################################
-class collapse(object):
+def collapse(method, collection):
     """
-    Collapse lists in specific ways
+    Collapse lists in specific ways.
 
-    >>> collapse.by_adding([1,5,2])
+    :param method: the method used to collapse. Can be one of: ``adding``, ``appending``, ``union`` or ``intersection``,
+    :type method: string
+    :param collection: a list of things
+    :type collection: list
+    :returns: a new list
+
+    >>> collapse('adding',[1,5,2])
     8
-    >>> collapse.by_adding([3])
+    >>> collapse('adding',[3])
     3
-    >>> collapse.by_appending([[1,5],[5,3],[2,1]])
+    >>> collapse('appending',[[1,5],[5,3],[2,1]])
     [1, 5, 5, 3, 2, 1]
-    >>> collapse.by_appending([[1,2,3]])
+    >>> collapse('appending',[[1,2,3]])
     [1, 2, 3]
-    >>> collapse.by_union([[1,5],[5,3],[2,1]])
+    >>> collapse('union',[[1,5],[5,3],[2,1]])
     [1, 2, 3, 5]
-    >>> collapse.by_intersection([[1,5,4],[5,3,3],[2,6,5]])
+    >>> collapse('intersection',[[1,5,4],[5,3,3],[2,6,5]])
     [5]
     """
-
-    @staticmethod
-    def by_adding(l):
-        return sum(l)
-
-    @staticmethod
-    def by_appending(l):
-        return [x for y in l for x in y]
-
-    @staticmethod
-    def by_union(l):
-        return list(set(collapse.by_appending(l)))
-
-    @staticmethod
-    def by_intersection(l):
-        return list(reduce(set.intersection, map(set,l)))
+    if   method == 'adding':       return sum(collection)
+    elif method == 'appending':    return [x for y in collection for x in y]
+    elif method == 'union':        return list(set([x for y in collection for x in y]))
+    elif method == 'intersection': return list(reduce(set.intersection, map(set,collection)))
 
 ###############################################################################
 def temporary_path(suffix=''):
@@ -200,11 +194,30 @@ def make_latex_string(string):
     >>> make_latex_string('lorem_ipsum dolor_sit')
     'lorem\\\_ipsum\\\ dolor\\\_sit'
     """
-
     import re
     string = re.sub('_', '\_', string)
     string = re.sub(' ', '\ ', string)
     return string
+
+###############################################################################
+def make_file_names(path):
+    """
+    Given a path to a file, generate more filenames.
+
+    ::
+
+        >>> g = make_file_names("tmp/test.png")
+        >>> g.next()
+        'tmp/test.png'
+        >>> g.next()
+        'tmp/test_1.png'
+        >>> g.next()
+        'tmp/test_2.png'
+    """
+    yield path
+    import sys, os
+    constant, ext = os.path.splitext(path)
+    for i in xrange(1,sys.maxint): yield constant + "_" + str(i) + ext
 
 ###############################################################################
 class Color:

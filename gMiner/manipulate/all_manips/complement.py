@@ -1,10 +1,12 @@
+# coding: utf-8
+
 ################################# Description ##################################
 label           = 'complement'
 short_name      = 'Complement'
 long_name       = 'Complement (boolean NOT)'
-input_tracks    = [{'key':'X', 'position':1, 'fields':['start','end']}]
+input_tracks    = [{'key':'X', 'position':1, 'kind':'single', 'fields':['start','end']}]
 input_args      = []
-input_meta      = [{'key':'l', 'position':2, 'kind':'chrom_len'}]
+input_meta      = [{'key':'l', 'position':2, 'type': int, 'kind':'chrom_len'}]
 output_tracks   = [{'position':1, 'fields': ['start','end']}]
 tracks_collapse = None
 chroms_collapse = None
@@ -21,14 +23,14 @@ This corresponds to the boolean NOT operation.
 ################################## Examples ####################################
 numeric_example = \
 """
-A: (10,20) (30,40)
+X: (10,20) (30,40)
 R: ( 0,10) (20,30) (40,100)
 """
 
 visual_example = \
-"""
-A: ......****.........*****...
-R: ******....*********.....***
+u"""
+X: ──────█████─────────█████──────
+R: ██████─────█████████─────██████
 """
 
 #################################### Tests #####################################
@@ -44,7 +46,7 @@ tests = [
                   ('chr1', 135, 200,'', 0.0, 0)]}]
 
 ############################### Implementation #################################
-def generate(X, l):
+def generate(manip, X, l):
     end = 0
     for x in X:
         if x['start'] > end:

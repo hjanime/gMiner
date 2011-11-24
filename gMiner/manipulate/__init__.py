@@ -56,7 +56,8 @@ Using the library in a script
 Instead of accessing gFeatMiner services via the ``gMiner.run()`` function, you can directly import the wanted manipulation and call it manually with your own queries. Here is a short example where a new track is created containing the ``mean_score_by_feature`` computed on two other tracks::
 
     from gMiner.genomic_manip import mean_score_by_feature
-    tmp_path = mean_score_by_feature('/scratch/tracks/pol2.sql', '/scratch/tracks/ribosome_proteins.sql')
+    virtual_track = mean_score_by_feature('/scratch/tracks/pol2.sql', '/scratch/tracks/ribosome_proteins.sql')
+    virtual_track.export('/tmp/result.sql')
 
 As you can see, manipulations accept path as input, but they can also accept track objects for more fine grained control::
 
@@ -109,18 +110,19 @@ Several types of manipulations can be used to generate different types of tracks
    .. autofunction:: mean_score_by_feature
    .. autofunction:: window_smoothing
    .. autofunction:: complement
-
+   .. autofunction:: merge_scores
 """
 
 # Built-in modules #
-import sys, pkgutil
+import sys, types, pkgutil, sqlite3
 
 # Internal modules #
+from gMiner.common import import_module, temporary_path, collapse, andify_strings, make_file_names
 from gMiner.manipulate import all_manips
-from gMiner.common import import_module
 
 # Other modules #
 import track
+from track.extras import TrackCollection, VirtualTrack
 
 # Constants #
 base_attributes = ['label', 'short_name', 'long_name', 'input_tracks', 'input_args',
@@ -135,9 +137,16 @@ class Manipulation(object):
             will build a callable instance satisfying the three
             access methods:
 
-                1) overlap('tracks/pol2.sql', 'rap1.sql')
-                2) overlap(pol2,rap1)
-                3) overlap(pol2.read(chrom), rap1.read(chrom))
+                1) overlap('tracks/pol2.sql', 'rap1.sql') # returns a virtual track
+                2) overlap(pol2,rap1) # returns a virtual track
+                3) overlap(pol2.read(chrom), rap1.read(chrom)) # returns a generator
+
+            Other special cases:
+
+                1) window_smoothing(pol2,rap1,L=100)
+                2) merge_scores([pol2,rap1,ifhl,fhl1])
+                3) overlap(pol2,rap1,ifhl,fhl1)
+                4) complement(pol2.read(chrom), l=pol2.chrmeta[chrom]['length'])
         """
         # Only one argument #
         module = args[0]
@@ -155,13 +164,20 @@ class Manipulation(object):
         msg += "\n\n" + self.tooltip.replace('\n',' ') + '\n'
         # The input tracks #
         for t in self.input_tracks:
-            sub_msg = "\n:param %s: A track or the path to a track. Eventually, a generator yielding features."
+            if t.get('kind') == 'many':
+                sub_msg = "\n:param %s: An arbitrary number of tracks or paths to tracks." \
+                          " Eventually, generators yielding features."
+            else:
+                sub_msg = "\n:param %s: A track or the path to a track. Eventually, a generator yielding features."
             sub_msg = sub_msg % t['key']
             if 'fields' in t:
-                sub_msg += " The minimum fields required for this track are: ``%s``" % t['fields']
+                if t.get('kind')=='many': sub_msg += " The minimum fields required for these tracks are: ``%s``"
+                else:                     sub_msg += " The minimum fields required for this track are: ``%s``"
+                sub_msg = sub_msg % t['fields']
                 if '...' in t['fields']: sub_msg += ", extra fields can be used."
                 else:                    sub_msg += ", extra fields cannot be used."
             msg += sub_msg + '\n'
+            if t.get('kind') == 'many': msg += ":type %s: list\n" % t['key']
         # The arguments #
         for p in self.input_args:
             msg += ":param %s:" % p['key']
@@ -202,64 +218,128 @@ class Manipulation(object):
         return msg
 
     def test(self):
-        #TODO
         """Run all the unittests"""
         pass
 
-    def from_request(self, request, tracks):
-        #TODO
+    def from_request(self, request, tracks, output_dir):
         """To be used when gMiner is called from the
            ``gMiner.run()`` function."""
         # Put the track in the order they came #
-        tracks_needed = [(v['position'],k) for (k,v) in self.args.items() if v['kind'] == Track]
+        tracks_needed = [(v['position'],k) for (k,v) in self.input_tracks]
         tracks_needed.sort()
         for index,(pos,name) in enumerate(tracks_needed):
             request.update({name:tracks[index]})
         # Call the manipulation #
-        return self(**request)
+        virtual_tracks = self(*tracks, **request)
+        # Filename generator #
+        if 'output_dir' in request:
+            folder = request['output_dir']
+            if 'output_name' in kwargs: file_names = make_file_names(folder + '/' + request['output_name'] + '.sql')
+            else:                       file_names = make_file_names(folder + '/' + self.short_name + '.sql')
+        else:
+            file_names = make_file_names(temporary_path('.sql'))
 
-    def __call__(self, *largs, **kwargs):
+    def __call__(self, *args, **kwargs):
         """Check that all arguments are present
            and load all tracks that are given as paths
-           instead of track objects. Also check for
+           instead of track objects. Also checks for
            direct calls with generators."""
         # Initialization #
-        parsed_args = {}
+        found_args = {}
+        found_tracks = []
         tracks_to_unload = []
-        # Parse arguments #
-        for key, arg in self.args.items():
-            # The value is either in largs or kwargs#
-            if key in kwargs:
-                value = kwargs[key]
-            elif len(largs) >= arg['position']:
-                value = largs[arg['position']-1]
-            elif arg.get('optional'):
-                continue
+        virtual_tracks = []
+        generator_call = False
+        # Parse tracks #
+        for t in self.input_tracks:
+            if t['key'] in kwargs: value = kwargs[t['key']]
+            elif len(args) >= t['position']: value = args[t['position']-1]
+            elif t.get('default'): value = t['default']
+            elif t.get('optional'): continue
+            else: raise Exception("The argument '%s' is missing for the manipulation '%s'." \
+                                  % (t['key'], self.short_name))
+            # Check is path #
+            if isinstance(value, basestring):
+                value = track.load(value, readonly=True)
+                tracks_to_unload.append(value)
+            # Check is generator #
+            is_gen  = lambda x: isinstance(x, sqlite3.Cursor) or \
+                                isinstance(x, track.FeatureStrem) or \
+                                isinstance(x, types.GeneratorType)
+            is_list = lambda x: isinstance(x, tuple) or \
+                                isinstance(x, list)
+            # Track collection case#
+            if t.get('kind') == 'many':
+                if not is_list(value): raise Exception("The track collection '%s' for the manipulation '%s'" \
+                                                       " is not a list or a tuple: %s" \
+                                                       % (t['key'], self.short_name, value))
+                if is_gen(value[0]): generator_call = True
+                else: value = track.TrackCollection(value)
+            # Only one track case #
             else:
-                raise Exception("The argument '" + key + "' is missing" \
-                                + " for the plot '" + self.name + "'.")
-            # Special conditions  tracks that are paths #
-            if arg['kind'] == Track:
-                # Check if its a path #
-                if isinstance(value, basestring):
-                    value = track.load(value)
-                    tracks_to_unload.append(value)
-                # Check the datatype #
-                if arg.get('datatype'):
-                    if value.datatype != arg['datatype']:
-                        raise Exception("The datatype of track '" + value.path + "' " \
-                                        + "isn't '" + arg['datatype'] + "'.")
-            # Is the value is not the right type, cast it #
-            if not isinstance(value, arg['kind']):
-                value = arg['kind'](value)
+                if is_gen(value): generator_call = True
             # Add it to the dict #
-            parsed_args[key] = value
-        # Call generate #
-        fig = self.generate(**parsed_args)
+            found_args[t['key']] = value
+            # Add it another list #
+            found_tracks.append(value)
+        # Parse arguments #
+        for p in self.input_args:
+            if p['key'] in kwargs: value = kwargs[p['key']]
+            elif len(args) >= p['position']: value = args[p['position']-1]
+            elif p.get('default'): value = p['default']
+            elif p.get('optional'): continue
+            else: raise Exception("The argument '%s' is missing for the manipulation '%s'." \
+                                  % (p['key'], self.short_name))
+            # Cast it if it's not the right type #
+            if not isinstance(value, p['type']): value = p['type'](value)
+            # Add it to the dict #
+            found_args[p['key']] = value
+        # Check for generator case #
+        if generator_call: return self.from_generator(found_args, args, kwargs)
+        # Collapse chromosomes #
+        if not self.chroms_collapse: chromosomes = found_tracks[0].chromosomes
+        else: chromosomes = collapse(self.chroms_collapse, [t.chromosomes for t in found_tracks])
+        # Output tracks #
+        for t in self.output_tracks:
+            # Get the output path #
+            out_path = file_names.next()
+            # Create a new track #
+            out_track = track.new(out_path)
+            # Iterate on chromosomes #
+            for chrom in chromosomes:
+                # Get special input arguments #
+                # Call generate #
+                self.generate(**found_args)
+            # Output name #
+            name = self.long_name + ' on ' + andify_strings([i['obj'].name for i in self.input_tracks])
+            # Output chromosome metadata #
+
+            # Output attributes #
+
+            # Add it #
+            virtual_tracks.append()
         # Close tracks #
-        for track in tracks_to_unload: track.unload()
-        # Return a figure #
-        return fig
+        for t in tracks_to_unload: t.unload()
+        # Return a list of paths #
+        return [out_path]
+
+    def from_generator(self, found_args, args, kwargs):
+        """To be used when the manipulation is accessed
+        directly with generators"""
+        # Parse special input arguments #
+        for p in self.input_meta:
+            if p['key'] in kwargs: value = kwargs[p['key']]
+            elif len(args) >= p['position']: value = args[p['position']-1]
+            elif p.get('default'): value = p['default']
+            elif p.get('optional'): continue
+            else: raise Exception("The special argument '%s' is missing for the generator '%s'." \
+                                  % (p['kind'], self.short_name))
+            # Cast it if it's not the right type #
+            if not isinstance(value, p['type']): value = p['type'](value)
+            # Add it to the dict #
+            found_args[p['key']] = value
+        # Call the generator #
+        return self.generate(**found_args)
 
 ################################################################################
 def run(request, tracks, output_dir):
@@ -276,9 +356,8 @@ def run(request, tracks, output_dir):
         raise Exception("The specified manipulation '%s' is a special object in python."  % request['manipulation'])
     if not issubclass(manipulation, Manipulation):
         raise Exception("The specified manipulation '%s' is not a manipulation." % request['manipulation'])
-    # Run it #
-    paths = manipulation(request, tracks)
-    return paths[0]
+    # Run it and return a list of paths #
+    return manipulation.from_request(request, tracks, output_dir)
 
 ################################################################################
 # This module #

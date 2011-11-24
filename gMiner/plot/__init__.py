@@ -139,7 +139,7 @@ class Plot(object):
         # Call generate #
         fig = self.generate(**parsed_args)
         # Close tracks #
-        for track in tracks_to_unload: track.unload()
+        for t in tracks_to_unload: t.unload()
         # Return a figure #
         return fig
 
